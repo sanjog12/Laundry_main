@@ -5,7 +5,6 @@ can select the work and start navigation and all the distance and the
  
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class work extends StatefulWidget {
@@ -29,6 +28,10 @@ class _workState extends State<work> {
   
   
   getworkdetails(){
+    /*
+    Function to get data from the cloud_firebase and displaying details in the ListView as soon as the
+    the details are uploaded in the the fire_store
+     */
     if(workdata != null){
       return StreamBuilder(
         stream: workdata,
@@ -52,8 +55,6 @@ class _workState extends State<work> {
   }
   
   
-  
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,10 +74,12 @@ getData() {
 
 
 class workcards extends StatelessWidget{
+  /*
+  Class to generate TileView from the gathered data from from the fire_store
+   */
   
   final  name;
   final  address;
-  
   workcards(this.name,this.address);
   
   
