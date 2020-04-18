@@ -2,11 +2,11 @@
 will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
- 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_discription_1.dart';
 
 class work extends StatefulWidget {
   @override
@@ -15,7 +15,8 @@ class work extends StatefulWidget {
 
 class _workState extends State<work> {
   
-  var workdata;                        //Variable to get the snapshort of the works available in the firestore
+  var workdata;                        //Variable to get the snapshot of the works available in the firestore
+  
   
   @override
   void initState() {
@@ -145,14 +146,11 @@ class workcards extends StatelessWidget{
             ButtonBar(
               children: <Widget>[
                 RaisedButton(
-                  child: const Text('OPEN'),
-                  onPressed: () {/* ... */},
+                  child: Text('OPEN'),
+                  onPressed: () {
+                  	work_description(context,name, address);
+                  },
                   focusElevation: 10,
-                ),
-                RaisedButton(
-                  child: const Text('SHARE'),
-                  onPressed: () {/* ... */},
-                  focusElevation: 20,
                 ),
               ],
             ),
@@ -162,3 +160,5 @@ class workcards extends StatelessWidget{
     );
   }
 }
+
+
