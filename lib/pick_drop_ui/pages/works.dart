@@ -6,6 +6,7 @@ can select the work and start navigation and all the distance and the
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 
 class work extends StatefulWidget {
   @override
@@ -62,11 +63,46 @@ class _workState extends State<work> {
         title: Text("Jobs Assigned"),
       ),
       
-      body: getworkdetails(),
+      body:  StreamBuilder(
+          stream: Connectivity().onConnectivityChanged,
+          builder:(BuildContext context,
+              AsyncSnapshot<ConnectivityResult> snapShot){
+            if (!snapShot.hasData) return CircularProgressIndicator();
+            var result = snapShot.data;
+            switch (result){
+              case ConnectivityResult.none:
+                print("no net");
+                return Padding(padding: EdgeInsets.all(10.0),child: Malfunction());
+              case ConnectivityResult.mobile:
+              case ConnectivityResult.wifi:
+                print("yes net");
+                return Container(
+                  child: getworkdetails(),
+                );
+              default:
+                return Padding(padding: EdgeInsets.all(10.0),child: Malfunction());
+            }
+          } ),
     );
   }
 }
+class Malfunction extends StatelessWidget {
 
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(image: AssetImage('images/network.gif'),fit: BoxFit.contain),
+            borderRadius:BorderRadius.circular(10.0)
+        ),
+      ),
+    );
+  }
+
+}
 
 getData() {
   return Firestore.instance.collection('Jobs').snapshots();
