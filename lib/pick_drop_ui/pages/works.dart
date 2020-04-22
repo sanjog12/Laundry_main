@@ -3,18 +3,30 @@ will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
 
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_discription_1.dart';
+import 'package:laundry/Test/test1.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
+
+getData() {
+  return Firestore.instance.collection('Jobs').snapshots();
+}
+
 
 class work extends StatefulWidget {
   @override
   _workState createState() => _workState();
 }
 
+
+
 class _workState extends State<work> {
   
+  double lat;
+  double long;
   var workdata;                        //Variable to get the snapshot of the works available in the firestore
   
   
@@ -85,8 +97,11 @@ class _workState extends State<work> {
     );
   }
 }
+
+
+
+
 class Malfunction extends StatelessWidget {
-  
   /*
     Image to show whether net is connected or not
    */
@@ -108,15 +123,13 @@ class Malfunction extends StatelessWidget {
 
 }
 
-getData() {
-  return Firestore.instance.collection('Jobs').snapshots();
-}
 
 
 class workcards extends StatelessWidget{
   /*
   Class to generate TileView from the gathered data from from the fire_store
    */
+  
   final  name;
   final  address;
   workcards(this.name,this.address);
@@ -150,6 +163,7 @@ class workcards extends StatelessWidget{
                 RaisedButton(
                   child: Text('OPEN'),
                   onPressed: () {
+                   
                   	work_description(context,name, address);
                   },
                   focusElevation: 10,
