@@ -27,7 +27,7 @@ class _workState extends State<work> {
   
   double lat;
   double long;
-  var workdata;                        //Variable to get the snapshot of the works available in the firestore
+  var workdata;                         ///Variable to get the snapshot of the works available in the firestore
   
   
   @override
@@ -58,7 +58,7 @@ class _workState extends State<work> {
             },
           );
           }else{
-            return Text("Malfunction");
+            return loading();
           }
         },
       );
@@ -86,12 +86,12 @@ class _workState extends State<work> {
             var result = snapShot.data;
             switch (result){
               case ConnectivityResult.none:
-                return Padding(padding: EdgeInsets.all(10.0),child: Malfunction());
+                return Padding(padding: EdgeInsets.all(10.0),child: internet_check());
               case ConnectivityResult.mobile:
               case ConnectivityResult.wifi:
                 return get_work_details();
               default:
-                return Padding(padding: EdgeInsets.all(10.0),child: Malfunction());
+                return Padding(padding: EdgeInsets.all(10.0),child: internet_check());
             }
           } ),
     );
@@ -101,11 +101,10 @@ class _workState extends State<work> {
 
 
 
-class Malfunction extends StatelessWidget {
+class internet_check extends StatelessWidget {
   /*
     Image to show whether net is connected or not
    */
-  
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -120,7 +119,37 @@ class Malfunction extends StatelessWidget {
       ),
     );
   }
+}
 
+
+
+class loading extends StatelessWidget {
+	/*
+    Loading gif for various purposes
+   */
+	
+	@override
+	Widget build(BuildContext context) {
+		// TODO: implement build
+		return Center(
+		  child: Column(
+		    children: <Widget>[
+		      Container(
+		      		height : 200,
+		      		width: 200,
+		      		decoration: BoxDecoration(
+		      				image: DecorationImage(image: AssetImage('images/loading.gif'),fit: BoxFit.contain),
+		      				borderRadius:BorderRadius.circular(10.0)
+		      		),
+		      ),
+		  	  Text("Laoding....", style: TextStyle(
+		  		  fontSize: 10,
+		  		  fontWeight: FontWeight.bold,
+		  	  ),)
+		    ],
+		  ),
+		);
+	}
 }
 
 

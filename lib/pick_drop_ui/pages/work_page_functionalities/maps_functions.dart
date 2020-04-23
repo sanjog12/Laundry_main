@@ -28,24 +28,62 @@ class polyline {
 	 */
 	
 	CameraUpdate _update;
+	bool check;
 	List<LatLng> _listltlg = [];
 	Completer<GoogleMapController> _controller = Completer();
 	Map<PolylineId,Polyline> polylines = <PolylineId, Polyline>{};
 	int _polylineIdCounter =1;
 	
 	
-	start_record() {
+	LatLngBounds _latLngBounds(List<LatLng> list){
 		
+		/*
+		    Function to return the boundary based on the points recorded in the list
+		that bounds the google_map to a specified boundary and sets the zoom level
+		 */
+		
+		print("About to check assert function in _latlongBoubds function");
+		assert(list.isNotEmpty); /// If true then execution will happen normally
+	                         	 /// if false then execution will be stopped here only
+		
+		print("assert is false exicuting further codes ");
+		double x0,x1,y0,y1;
+		for(LatLng latLng in list){
+			if(x0==null){
+				x0 = x1 =latLng.latitude;
+				y0 = y1 =latLng.longitude;
+			}else{
+				if(latLng.latitude > x1) x1 = latLng.latitude;
+				if(latLng.latitude < x0) x0 = latLng.latitude;
+				if(latLng.longitude > y1) y1 = latLng.longitude;
+				if(latLng.longitude < y0) y0 = latLng.longitude;
+			}
+		}
+		return LatLngBounds(northeast: LatLng(x1,y1) , southwest: LatLng(x0 , y0));
+	}
+	
+	
+	start_record() {
+		/*
+		Starts background location tracking
+		 */
 		BackgroundLocation.startLocationService();
 		BackgroundLocation.getLocationUpdates((location) {
-			_listltlg.add(LatLng(location.latitude, location.longitude));
+			this._listltlg.add(LatLng(location.latitude, location.longitude));
+			this.check = this._listltlg.isNotEmpty;
+			print("location change detected and stored " + '$check');
 		});
 	}
 	
 	
 	void trip_details(){
-		final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
-		_polylineIdCounter++;
+		print("trip_details invoked ");
+		/*
+		Makes polyline connecting consecutive recorded points
+		 */
+		
+		final String polylineIdVal = 'polyline_id_${this._polylineIdCounter}';
+		this._polylineIdCounter++;
 		
 		final PolylineId polylineId = PolylineId(polylineIdVal);
 		
@@ -56,20 +94,31 @@ class polyline {
 			consumeTapEvents: true,
 			color: Colors.lightBlueAccent,
 			width: 5,
-			points: _listltlg,
+			points: this._listltlg,
 			onTap: (){},
 		);
-		polylines[polylineId]=polyline;
+		this.polylines[polylineId]=polyline;
 	}
 	
+	
+	
 	Widget stop_polyline() {
+		this.check = this._listltlg.isNotEmpty;
+		print("stop_polyline function is invoked " + '${this.check}');
+		
+		/*
+		     Function that returns the plotted map on the screen and stops the background process
+		 */
+		
 		BackgroundLocation.stopLocationService();
 		return Container(
 			child: GoogleMap(
 			  polylines: Set<Polyline>.of(polylines.values),
+				initialCameraPosition: CameraPosition(target: _listltlg.first),
 				mapType: MapType.normal,
+				cameraTargetBounds: CameraTargetBounds(_latLngBounds(this._listltlg)),
 				onMapCreated: (GoogleMapController controller){
-			  	_controller.complete(controller);
+			  	this._controller.complete(controller);
 			  	},
 			),
 		);
