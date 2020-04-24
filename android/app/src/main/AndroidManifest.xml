@@ -14,7 +14,7 @@
         android:label="laundry"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="API - Key"/>
+            android:value="api _ key"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
