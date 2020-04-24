@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:laundry/Test/test1.dart';
+
 import 'pick_drop_ui/home_page.dart';
 
 void main() => runApp(start());
