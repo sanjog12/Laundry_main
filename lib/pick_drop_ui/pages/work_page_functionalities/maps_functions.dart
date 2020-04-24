@@ -42,15 +42,10 @@ class polyline {
 		Starts background location tracking
 		 */
 		BackgroundLocation.startLocationService();
-		this._listltlg.add(LatLng(28.593888, 77.082024));
-		this._listltlg.add(LatLng(28.593651, 77.081753));
-		this._listltlg.add(LatLng(28.593611, 77.081347));
-		this._listltlg.add(LatLng(28.594308, 77.080779));
-//		BackgroundLocation.getLocationUpdates((location) {
-//			this._listltlg.add(LatLng(location.latitude, location.longitude));
-//			this.check = this._listltlg.isNotEmpty;
-//			print("location change detected and stored " + '$check');
-//		});
+
+		BackgroundLocation.getLocationUpdates((location) {
+			this._listltlg.add(LatLng(location.latitude, location.longitude));
+		});
 	}
 	
 	

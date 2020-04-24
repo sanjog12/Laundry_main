@@ -18,6 +18,7 @@ class screen_shot extends StatefulWidget {
 
 class _screen_shotState extends State<screen_shot> {
 	
+	
 	Size size;
 	Completer<GoogleMapController> _controller = Completer();
 	int _polylineIdCounter =1;
