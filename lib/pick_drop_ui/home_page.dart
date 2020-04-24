@@ -31,6 +31,9 @@ class _home_pageState extends State<home_page> {
       ),
     );
   }
+  
+  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,6 +170,7 @@ class _home_pageState extends State<home_page> {
                           ),
                         ),
                         Container(
+                          
                           decoration: BoxDecoration(
                             color: Colors.blue[800],
                             borderRadius: BorderRadius.circular(30.0),
