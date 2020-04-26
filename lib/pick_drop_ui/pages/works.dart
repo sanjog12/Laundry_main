@@ -8,7 +8,7 @@ can select the work and start navigation and all the distance and the
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:laundry/Test/test1.dart';
+
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
 
 getData() {
