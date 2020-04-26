@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'pick_drop_ui/home_page.dart';
-
 void main() => runApp(start());
 
 class start extends StatelessWidget {
