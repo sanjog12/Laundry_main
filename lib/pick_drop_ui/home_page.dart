@@ -181,9 +181,9 @@ class _home_pageState extends State<home_page> {
                                 size: 25.0,
                               ),
                               onPressed: (){
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context)=>profile()));
+//                                Navigator.push(
+//                                    context,
+//                                    MaterialPageRoute(builder: (context)=>profile()));
                               },
                             ),
                           ),

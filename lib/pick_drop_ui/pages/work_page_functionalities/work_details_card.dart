@@ -6,14 +6,10 @@ which is specified in the work card in the work section .
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
+import 'package:flutter/rendering.dart';
 
 Future<bool> work_description(context,name , address){
 
@@ -71,11 +67,11 @@ class _MapPageState extends State<Mappage>{
 					child: Container(
 						height: 300,
 						width: 200,
-						child: new Stack(
+						child: Stack(
 							children: <Widget>[
-								new Center(
+								Center(
 									child: Container(
-										child: new GoogleMap(initialCameraPosition: _intial,markers: Set.from(markers),
+										child: GoogleMap(initialCameraPosition: _intial,markers: Set.from(markers),
 										mapType: MapType.normal,onMapCreated: (GoogleMapController controller){
 											_controller.complete(controller);
 											},)

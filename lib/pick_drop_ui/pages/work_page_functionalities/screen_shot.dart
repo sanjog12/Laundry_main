@@ -1,12 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 class screen_shot extends StatefulWidget {
-	
 	polyline object;
 	screen_shot(this.object , {Key key}): super(key: key);
   @override
@@ -18,13 +19,19 @@ class screen_shot extends StatefulWidget {
 
 class _screen_shotState extends State<screen_shot> {
 	
-	
 	Size size;
 	Completer<GoogleMapController> _controller = Completer();
 	int _polylineIdCounter =1;
 	Map<PolylineId,Polyline> polylines = <PolylineId, Polyline>{};
 	
 	
+	@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    trip_details();
+    widget.object.stop_polyline();
+  }
 	
 	
 	LatLngBounds _latLngBounds(List<LatLng> list){
@@ -54,18 +61,6 @@ class _screen_shotState extends State<screen_shot> {
 		return LatLngBounds(northeast: LatLng(x1,y1) , southwest: LatLng(x0 , y0));
 	}
 	
-	
-	@override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    trip_details();
-    widget.object.stop_polyline();
-  }
-	
-  
-  
-  
 	void trip_details(){
 		print("trip_details invoked ");
 		/*
@@ -94,6 +89,14 @@ class _screen_shotState extends State<screen_shot> {
 		
 	}
 	
+	
+	upload_pic(png) async {
+		final StorageReference firebaseStorageRef =
+				FirebaseStorage.instance.ref().child('${Random(1000)}');
+		final StorageUploadTask task = firebaseStorageRef.putData(png);
+	}
+	
+	
   @override
   Widget build(BuildContext context) {
 	
@@ -102,17 +105,22 @@ class _screen_shotState extends State<screen_shot> {
   	size = MediaQuery.of(context).size;
   	print("calling stop_polyline function ");
     return Container(
-	    child: GoogleMap(
-		    polylines: Set<Polyline>.of(polylines.values),
-		    initialCameraPosition: CameraPosition(target: widget.object.getlist().first , zoom: 17),
-		    mapType: MapType.normal,
-		    zoomGesturesEnabled: true,
-		    zoomControlsEnabled: true,
-		    onMapCreated: (GoogleMapController controller){
-			    _controller.complete(controller);
-		    },
-	    ),
-    );
-  
+	    height: size.height-200,
+	        child: GoogleMap(
+		      polylines: Set<Polyline>.of(polylines.values),
+		      initialCameraPosition: CameraPosition(target: widget.object.getlist().first),
+		      mapType: MapType.normal,
+		      zoomGesturesEnabled: true,
+		      zoomControlsEnabled: true,
+		      onMapCreated: (GoogleMapController controller) async {
+			      _controller.complete(controller);
+			      controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(widget.object.getlist()),2));
+			      await Future.delayed(Duration(seconds: 4));
+			      print("ss initiated");
+			      var png = await controller.takeSnapshot();
+			      upload_pic(png);
+			    },
+	        ),
+	      );
   }
 }
