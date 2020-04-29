@@ -115,11 +115,13 @@ class _screen_shotState extends State<screen_shot> {
 		      onMapCreated: (GoogleMapController controller) async {
 			      _controller.complete(controller);
 			      controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(widget.object.getlist()),2));
+			      
 			      await Future.delayed(Duration(seconds: 4));
 			      print("ss initiated");
 			      var png = await controller.takeSnapshot();
 			      upload_pic(png);
 			    },
+		       
 	        ),
 	      );
   }
