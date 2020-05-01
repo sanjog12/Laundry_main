@@ -141,6 +141,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1+2"
+  firebase_storage:
+    dependency: "direct main"
+    description:
+      name: firebase_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.5"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -152,7 +159,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.6"
+    version: "1.0.7"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -169,7 +176,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.26"
+    version: "0.5.26+2"
   http:
     dependency: transitive
     description:
@@ -321,14 +328,14 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.4.2"
+    version: "5.4.5"
   url_launcher_macos:
     dependency: transitive
     description:
       name: url_launcher_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+4"
+    version: "0.0.1+5"
   url_launcher_platform_interface:
     dependency: transitive
     description:
