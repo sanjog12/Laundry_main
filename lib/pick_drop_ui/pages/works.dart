@@ -8,7 +8,6 @@ can select the work and start navigation and all the distance and the
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:laundry/Test/test1.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
 
 getData() {
@@ -72,7 +71,16 @@ class _workState extends State<work> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Jobs Assigned"),
+        title: Text(
+          "JOBS ASSIGNED",
+        style: TextStyle(
+          fontFamily: "OpenSans",
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.0
+        ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.indigoAccent[200],
       ),
       
       body:  StreamBuilder(
@@ -168,7 +176,7 @@ class workcards extends StatelessWidget{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Card(
-      color: Colors.blueGrey[50],
+      color: Colors.blue[50],
       child: InkWell(
         splashColor: Colors.blue[100].withAlpha(100),
         onTap: () {
@@ -177,7 +185,8 @@ class workcards extends StatelessWidget{
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
              ListTile(
-              leading: Icon(Icons.view_module),
+              leading: Icon(Icons.view_module,
+              color: Colors.grey[700],),
               title: Text(
                 name,
                 style: TextStyle(
@@ -195,7 +204,7 @@ class workcards extends StatelessWidget{
                    
                   	work_description(context,name, address);
                   },
-                  focusElevation: 10,
+                  focusElevation: 15,
                 ),
               ],
             ),

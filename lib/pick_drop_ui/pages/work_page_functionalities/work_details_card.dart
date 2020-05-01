@@ -4,7 +4,6 @@ which is specified in the work card in the work section .
  */
 
 import 'package:flutter/material.dart';
-import 'package:laundry/Test/test1.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
