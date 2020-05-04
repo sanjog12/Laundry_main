@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -122,7 +122,9 @@ class _Screen_shotState extends State<Screen_shot> {
 			      controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(widget.object.getlist()),2));
 			      
 			      await Future.delayed(Duration(seconds: 4));
-			      print("ss initiated");
+			      Firestore.instance.collection('Location Points').document(widget.doc_name).setData({
+				      '${DateTime.now()}' : 'Screen Short Taken'
+			      },merge: true);
 			      var png = await controller.takeSnapshot();
 			      upload_pic(png);
 			    },
