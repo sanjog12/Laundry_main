@@ -129,9 +129,8 @@ class _Screen_shotState extends State<Screen_shot> {
 			      },merge: true);
 			      var png = await controller.takeSnapshot();
 			      upload_pic(png);
-			    },
-		       
+			      },
 	        ),
-	      );
+    );
   }
 }

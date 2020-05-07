@@ -110,6 +110,4 @@ class _MapPageState extends State<Mappage>{
 			],
 		);
   }
-
 }
-
