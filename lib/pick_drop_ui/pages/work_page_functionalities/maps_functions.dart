@@ -3,7 +3,6 @@ All works related to the maps and navigation
  */
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:background_location/background_location.dart';

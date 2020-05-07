@@ -1,5 +1,6 @@
 import 'dart:async';
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,6 @@ class _Screen_shotState extends State<Screen_shot> {
 	Completer<GoogleMapController> _controller = Completer();
 	int _polylineIdCounter =1;
 	Map<PolylineId,Polyline> polylines = <PolylineId, Polyline>{};
-	
 	
 	@override
   void initState() {
@@ -79,8 +79,10 @@ class _Screen_shotState extends State<Screen_shot> {
 		final PolylineId polylineId = PolylineId(polylineIdVal);
 		
 		final Polyline polyline =Polyline(
-			jointType: JointType.round,
-			geodesic: true,
+			jointType: JointType.mitered,
+			startCap: Cap.roundCap,
+			endCap: Cap.squareCap,
+			geodesic: false,
 			polylineId: polylineId,
 			consumeTapEvents: true,
 			color: Colors.lightBlueAccent,
