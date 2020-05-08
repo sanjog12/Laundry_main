@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'pick_drop_ui/home_page.dart';
+import 'pick_drop_ui/Home_page.dart';
+void main() => runApp(Start());
 
-void main() => runApp(start());
-
-class start extends StatelessWidget {
+class Start extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,7 +11,7 @@ class start extends StatelessWidget {
           canvasColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white
       ),
-      home: home_page(),
+      home: Home_page(),
     );
   }
 }
