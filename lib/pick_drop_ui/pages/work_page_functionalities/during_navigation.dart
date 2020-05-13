@@ -21,12 +21,11 @@ class _During_navigationState extends State<During_navigation> {
   Widget build(BuildContext context) {
     return Container(
 	    color: Colors.white,
-	    
 	    child: Column(
 	      children: <Widget>[
 	        Padding(
 		        padding: EdgeInsets.only(top: 200, left: 50),
-		        child: Text("During navigation page ",style: TextStyle(fontSize: 20),),
+		        child: Text("During navigation page",style: TextStyle(fontSize: 20),),
 	        ),
 		      
 		      Padding(

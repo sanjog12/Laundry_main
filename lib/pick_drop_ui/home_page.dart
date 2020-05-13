@@ -13,8 +13,6 @@ class Home_page extends StatefulWidget {
 class _Home_pageState extends State<Home_page> {
   
   int i =0;
-  
-  
   // widget drawer for side menu
   Widget buildSideMenu(){
     return Container(

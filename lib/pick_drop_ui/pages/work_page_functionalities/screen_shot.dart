@@ -73,7 +73,7 @@ class _Screen_shotState extends State<Screen_shot> {
 		 */
 		
 		
-		print(widget.object.getlist());
+		print(widget.object.getrecordedlist());
 		final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
 		_polylineIdCounter++;
 		final PolylineId polylineId = PolylineId(polylineIdVal);
@@ -87,7 +87,7 @@ class _Screen_shotState extends State<Screen_shot> {
 			consumeTapEvents: true,
 			color: Colors.lightBlueAccent,
 			width: 5,
-			points: widget.object.getlist(),
+			points: widget.object.getrecordedlist(),
 			onTap: (){},
 		);
 		setState(() {
@@ -115,13 +115,13 @@ class _Screen_shotState extends State<Screen_shot> {
 	    height: size.height-200,
 	        child: GoogleMap(
 		      polylines: Set<Polyline>.of(polylines.values),
-		      initialCameraPosition: CameraPosition(target: widget.object.getlist().first),
+		      initialCameraPosition: CameraPosition(target: widget.object.getrecordedlist().first),
 		      mapType: MapType.normal,
 		      zoomGesturesEnabled: true,
 		      zoomControlsEnabled: true,
 		      onMapCreated: (GoogleMapController controller) async {
 			      _controller.complete(controller);
-			      controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(widget.object.getlist()),2));
+			      controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(widget.object.getrecordedlist()),2));
 			      
 			      await Future.delayed(Duration(seconds: 4));
 			      Firestore.instance.collection('Location Points').document(widget.doc_name).setData({

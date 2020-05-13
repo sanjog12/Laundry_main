@@ -8,7 +8,7 @@ can select the work and start navigation and all the distance and the
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Work_details_card.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
 
 getData() {
   return Firestore.instance.collection('Jobs').snapshots();
@@ -57,7 +57,13 @@ class _workState extends State<work> {
             },
           );
           }else{
-            return loading();
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+                
+                semanticsLabel: 'Loading ......',
+              ),
+            );
           }
         },
       );
@@ -201,8 +207,7 @@ class workcards extends StatelessWidget{
                 RaisedButton(
                   child: Text('OPEN'),
                   onPressed: () {
-                   
-                  	work_description(context,name, address);
+                    work_description(context, name, address);
                   },
                   focusElevation: 15,
                 ),
