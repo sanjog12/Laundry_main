@@ -1,49 +1,30 @@
+import 'dart:convert';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
+import 'package:http/http.dart' as http;
 
-class SnappedPoints {
+
+
+Future<List<LatLng>> FetchRoadSnapped() async{
+	/*
+	   Using a google's built in api called  *Road snapped* by passing a set of coordinates through a HTTPS
+	   to process the points and return the set of a road points which user might have taken which is predicted
+	   by the passed set of location points
+	 */
 	
-	
-	final List<SnappedPoint> snappedpoints;
-
-	SnappedPoints({this.snappedpoints});
-
-	factory SnappedPoints.fromJson(Map<String, dynamic> json){
-		return SnappedPoints(
-			snappedpoints: List<SnappedPoint>.from(json["snappedPoints"].map((x) => SnappedPoint.fromJson(x)))
-		);
+	List<LatLng> points =[];
+	http.Response response = await http.get('https://roads.googleapis.com/v1/snapToRoads?path=28.594094,77.082039|28.593753,77.082030|28.593654,77.081619|28.593628,77.080884&key=AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc');
+	if(response.statusCode==200){
+		
+		Map<String, dynamic> map = json.decode(response.body);
+		for(int i=0 ; i<map['snappedPoints'].length ;i++ ){
+			points.add(LatLng(map['snappedPoints'][i]['location']['latitude'] as double,
+					map['snappedPoints'][i]['location']['longitude'] as double));
+		}
+		return points;
 	}
-}
-
-
-
-class SnappedPoint{
-	final Location location;
-	final int originalIndex;
-	final String placeId;
 	
-	SnappedPoint({this.location,this.originalIndex , this.placeId});
-	
-	factory SnappedPoint.fromJson(Map<String,dynamic> json) => SnappedPoint(
-		location: Location.fromJson(json["location"]),
-		originalIndex: json["originalIndex"],
-		placeId: json["placeId"],
-	);
-}
-
-
-
-class Location {
-	final double latitude;
-	final double longitude;
-	Location({this.latitude,this.longitude});
-	factory Location.fromJson(Map<String , dynamic > json){
-		double lat = json["latitude"].toDouble();
-		double long = json["longitude"].toDouble();
-		polyline.Snappedlist(lat, long);
-		return Location(
-			latitude: lat,
-			longitude:long,
-		);
+	else{
+		print("Error");
 	}
 }

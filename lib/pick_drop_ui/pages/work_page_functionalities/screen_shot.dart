@@ -1,15 +1,15 @@
 import 'dart:async';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:laundry/pick_drop_ui/pages/Work_Page_Functionalities/Maps_functions.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 class Screen_shot extends StatefulWidget {
-	polyline object;
+	createPolyline object;
 	String doc_name;
 	Screen_shot(this.object , this.doc_name ,{Key key}): super(key: key);
   @override
@@ -21,9 +21,8 @@ class Screen_shot extends StatefulWidget {
 
 class _Screen_shotState extends State<Screen_shot> {
 	
-	
-	
-	
+	List<LatLng> _points;
+	bool waiting = true;
 	Size size;
 	Completer<GoogleMapController> _controller = Completer();
 	int _polylineIdCounter =1;
@@ -31,11 +30,25 @@ class _Screen_shotState extends State<Screen_shot> {
 	
 	@override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    trip_details();
-    widget.object.stop_polyline();
+    widget.object.stopPolyline();
+    print("FetchRoadSnapped function is called ");
+    callFetchRoadSnapped();
+    print("FetchRoadSnapped function is complited");
+    polylineIdGenerate();
+    
   }
+  
+  callFetchRoadSnapped() async{
+			_points = await FetchRoadSnapped();
+			setState(() {
+			  waiting = false;
+			});
+  }
+  
+  
+  
+  
 	
 	
 	LatLngBounds _latLngBounds(List<LatLng> list){
@@ -43,10 +56,9 @@ class _Screen_shotState extends State<Screen_shot> {
 		    Function to return the boundary based on the points recorded in the list
 		that bounds the google_map to a specified boundary and sets the zoom level
 		 */
-		
 		print("About to check assert function in _latlongBoubds function");
-		assert(list.isNotEmpty); /// If true then execution will happen normally
-		/// if false then execution will be stopped here only
+		assert(list.isNotEmpty);
+		print(list.length);
 		
 		print("assert is false exicuting further codes ");
 		double x0,x1,y0,y1;
@@ -66,14 +78,12 @@ class _Screen_shotState extends State<Screen_shot> {
 	}
 	
 	
-	void trip_details(){
+	void polylineIdGenerate(){
 		print("trip_details invoked ");
 		/*
 		Makes polyline connecting consecutive recorded points
 		 */
 		
-		
-		print(widget.object.getrecordedlist());
 		final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
 		_polylineIdCounter++;
 		final PolylineId polylineId = PolylineId(polylineIdVal);
@@ -87,50 +97,51 @@ class _Screen_shotState extends State<Screen_shot> {
 			consumeTapEvents: true,
 			color: Colors.lightBlueAccent,
 			width: 5,
-			points: widget.object.getrecordedlist(),
+			points: _points,
 			onTap: (){},
 		);
 		setState(() {
 			polylines[polylineId]=polyline;
 		});
-		
 	}
 	
 	
-	upload_pic(png) async {
+	uploadPic(png) async {
 		final StorageReference firebaseStorageRef =
 				FirebaseStorage.instance.ref().child(widget.doc_name);
-		final StorageUploadTask task = firebaseStorageRef.putData(png);
+		firebaseStorageRef.putData(png);
 	}
 	
 	
   @override
   Widget build(BuildContext context) {
-	
-	  print(Set<Polyline>.of(polylines.values));
 		
   	size = MediaQuery.of(context).size;
-  	print("calling stop_polyline function ");
-    return Container(
+  	print("Map Container started");
+  	
+    return waiting ? Container(child: Center(child: CircularProgressIndicator(
+    ))):
+    Container(
 	    height: size.height-200,
-	        child: GoogleMap(
-		      polylines: Set<Polyline>.of(polylines.values),
-		      initialCameraPosition: CameraPosition(target: widget.object.getrecordedlist().first),
-		      mapType: MapType.normal,
-		      zoomGesturesEnabled: true,
-		      zoomControlsEnabled: true,
-		      onMapCreated: (GoogleMapController controller) async {
-			      _controller.complete(controller);
-			      controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(widget.object.getrecordedlist()),2));
+	    child: GoogleMap(
+		  polylines: Set<Polyline>.of(polylines.values),
+		  initialCameraPosition: CameraPosition(target: _points.first),
+		  mapType: MapType.normal,
+		  zoomGesturesEnabled: true,
+		  zoomControlsEnabled: true,
+		  onMapCreated: (GoogleMapController controller) async {
+			   _controller.complete(controller);
+			   controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),2));
+			   await Future.delayed(Duration(seconds: 4));
+			   
+			   Firestore.instance.collection('Location Points').document(widget.doc_name).setData({
+				   '${DateTime.now()}' : 'Screen Short Taken'
+			   },merge: true);
 			      
-			      await Future.delayed(Duration(seconds: 4));
-			      Firestore.instance.collection('Location Points').document(widget.doc_name).setData({
-				      '${DateTime.now()}' : 'Screen Short Taken'
-			      },merge: true);
-			      var png = await controller.takeSnapshot();
-			      upload_pic(png);
-			      },
-	        ),
+			   var png = await controller.takeSnapshot();
+			   uploadPic(png);
+			   },
+	    ),
     );
   }
 }

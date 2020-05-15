@@ -9,18 +9,18 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:laundry/pick_drop_ui/pages/Work_Page_Functionalities/During_navigation.dart';
-import 'package:laundry/pick_drop_ui/pages/Work_Page_Functionalities/Maps_functions.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:flutter/rendering.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 
-Future<bool> work_description(context,name , address){
+Future<bool> workDescription(context,name , address){
 
 	return showDialog(
 			context: context,
 			builder: (BuildContext context){
-				return Mappage();
+				return mapPage();
 			}
 	);
 }
@@ -28,7 +28,7 @@ Future<bool> work_description(context,name , address){
 
 
 
-class Mappage extends StatefulWidget{
+class mapPage extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -37,7 +37,7 @@ class Mappage extends StatefulWidget{
 }
 
 
-class _MapPageState extends State<Mappage>{
+class _MapPageState extends State<mapPage>{
 	Completer<GoogleMapController> _controller = Completer();
 	static final CameraPosition _intial = CameraPosition(target: LatLng(28.640884,77.126071), zoom: 19);
 	 List<Marker> markers = [];
@@ -97,9 +97,9 @@ class _MapPageState extends State<Mappage>{
 						child: new Text("NAVIGATE",textAlign: TextAlign.center,),
 						onPressed: (){
 							final String doc_name ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
-							polyline object = polyline(doc_name);
-							object.start_record();
-							get_navigation();
+							createPolyline object = createPolyline(doc_name);
+							object.startRecord();
+							googleMapNavigation();
 							Navigator.of(context).pop();
 							Navigator.push(context,
 									MaterialPageRoute(builder: (context)=>During_navigation(object , doc_name))

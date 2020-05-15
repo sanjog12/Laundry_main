@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:laundry/pick_drop_ui/pages/Work_Page_Functionalities/Maps_functions.dart';
-import 'package:laundry/pick_drop_ui/pages/Work_Page_Functionalities/Screen_shot.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/screen_shot.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 
 class During_navigation extends StatefulWidget {
 	
 	String doc_name ;
-	polyline object;
+	createPolyline object;
 	During_navigation(this.object , this.doc_name , {Key key}):super(key : key);
 	
   @override

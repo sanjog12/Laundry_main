@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:laundry/Test/test1.dart';
-import 'pick_drop_ui/Home_page.dart';
+import 'package:laundry/pick_drop_ui/home_page.dart';
+import 'pick_drop_ui/home_page.dart';
 void main() => runApp(Start());
 
 class Start extends StatelessWidget {
@@ -12,7 +13,7 @@ class Start extends StatelessWidget {
           canvasColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white
       ),
-      home: test(),
+      home: Home_page(),
     );
   }
 }

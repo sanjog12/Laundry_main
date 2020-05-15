@@ -58,9 +58,8 @@ class _workState extends State<work> {
           );
           }else{
             return Center(
-              child: CircularProgressIndicator(
+              child:CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
-                
                 semanticsLabel: 'Loading ......',
               ),
             );
@@ -207,7 +206,7 @@ class workcards extends StatelessWidget{
                 RaisedButton(
                   child: Text('OPEN'),
                   onPressed: () {
-                    work_description(context, name, address);
+                    workDescription(context, name, address);
                   },
                   focusElevation: 15,
                 ),
