@@ -13,7 +13,7 @@ class Start extends StatelessWidget {
           canvasColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white
       ),
-      home: Home_page(),
+      home: HomePage(),
     );
   }
 }

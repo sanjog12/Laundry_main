@@ -20,14 +20,14 @@ googleMapNavigation(){
 }
 
 
-class createPolyline {
+class CreatePolyline {
 	/*
 	   Class that makes polyline of the trip first records it and then makes a polyline on the google maps for storing
 	the ss in of the google map in the database along with the specified job
 	 */
 	
 	String docName;
-	createPolyline(this.docName);
+	CreatePolyline(this.docName);
 	GeoPoint a ;
 	
 	bool check;
@@ -67,9 +67,7 @@ class createPolyline {
 	
 	
 	void coordinateFilter(location) {
-		
 		print('inside filter property');
-		
 		if(_listltlg.last.longitude != location.longitude && _listltlg.last.latitude != location.latitude){
 			print('Condition for not recording same points ');
 			this._listltlg.add(LatLng(location.latitude,location.longitude));

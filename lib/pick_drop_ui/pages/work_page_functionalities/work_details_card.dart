@@ -97,12 +97,12 @@ class _MapPageState extends State<mapPage>{
 						child: new Text("NAVIGATE",textAlign: TextAlign.center,),
 						onPressed: (){
 							final String doc_name ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
-							createPolyline object = createPolyline(doc_name);
+							CreatePolyline object = CreatePolyline(doc_name);
 							object.startRecord();
 							googleMapNavigation();
 							Navigator.of(context).pop();
 							Navigator.push(context,
-									MaterialPageRoute(builder: (context)=>During_navigation(object , doc_name))
+									MaterialPageRoute(builder: (context)=>DuringNavigation(object , doc_name))
 							);
 						},
 					),

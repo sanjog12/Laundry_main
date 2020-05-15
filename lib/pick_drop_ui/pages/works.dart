@@ -15,45 +15,44 @@ getData() {
 }
 
 
-class work extends StatefulWidget {
+class Work extends StatefulWidget {
   @override
-  _workState createState() => _workState();
+  _WorkState createState() => _WorkState();
 }
 
 
 
-class _workState extends State<work> {
+class _WorkState extends State<Work> {
   
   double lat;
   double long;
-  var workdata;                         ///Variable to get the snapshot of the works available in the firestore
+  var workData;                         ///Variable to get the snapshot of the works available in the firestore
   
   
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
-      workdata = getData();
+      workData = getData();
     });
   }
   
   
-  get_work_details(){
+  fetchWorkDetails(){
     /*
     Function to get data from the cloud_firebase and displaying details in the ListView as soon as the
     the details are uploaded in the the fire_store
      */
-    if(workdata != null){
+    if(workData != null){
       return StreamBuilder(
-        stream: workdata,
+        stream: workData,
         builder: (context,snapshot){
           if(snapshot.data != null){
           return ListView.builder(
             shrinkWrap: true,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context,i){
-              return workcards(snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
+              return WorkCards(snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
             },
           );
           }else{
@@ -99,12 +98,12 @@ class _workState extends State<work> {
             var result = snapShot.data;
             switch (result){
               case ConnectivityResult.none:
-                return Padding(padding: EdgeInsets.all(10.0),child: internet_check());
+                return Padding(padding: EdgeInsets.all(10.0),child: InternetCheck());
               case ConnectivityResult.mobile:
               case ConnectivityResult.wifi:
-                return get_work_details();
+                return fetchWorkDetails();
               default:
-                return Padding(padding: EdgeInsets.all(10.0),child: internet_check());
+                return Padding(padding: EdgeInsets.all(10.0),child: InternetCheck());
             }
           } ),
     );
@@ -114,13 +113,12 @@ class _workState extends State<work> {
 
 
 
-class internet_check extends StatelessWidget {
+class InternetCheck extends StatelessWidget {
   /*
     Image to show whether net is connected or not
    */
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Center(
       child: Container(
 	      height : 200,
@@ -136,14 +134,13 @@ class internet_check extends StatelessWidget {
 
 
 
-class loading extends StatelessWidget {
+class Loading extends StatelessWidget {
 	/*
     Loading gif for various purposes
    */
 	
 	@override
 	Widget build(BuildContext context) {
-		// TODO: implement build
 		return Center(
 		  child: Column(
 		    children: <Widget>[
@@ -167,19 +164,18 @@ class loading extends StatelessWidget {
 
 
 
-class workcards extends StatelessWidget{
+class WorkCards extends StatelessWidget{
   /*
   Class to generate TileView from the gathered data from from the fire_store
    */
   
   final  name;
   final  address;
-  workcards(this.name,this.address);
+  WorkCards(this.name,this.address);
   
   
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Card(
       color: Colors.blue[50],
       child: InkWell(

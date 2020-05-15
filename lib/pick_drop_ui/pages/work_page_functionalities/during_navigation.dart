@@ -4,19 +4,17 @@ import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functi
 
 
 
-class During_navigation extends StatefulWidget {
+class DuringNavigation extends StatefulWidget {
 	
-	String doc_name ;
-	createPolyline object;
-	During_navigation(this.object , this.doc_name , {Key key}):super(key : key);
+	final String docName ;
+	final CreatePolyline object;
+	DuringNavigation(this.object , this.docName , {Key key}):super(key : key);
 	
   @override
-  _During_navigationState createState() => _During_navigationState();
+  _DuringNavigationState createState() => _DuringNavigationState();
 }
 
-
-
-class _During_navigationState extends State<During_navigation> {
+class _DuringNavigationState extends State<DuringNavigation> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,7 +34,7 @@ class _During_navigationState extends State<During_navigation> {
 			       	print("Navigating to screen shot page");
 			       	Navigator.of(context).pop();
 			      	 Navigator.push(context,
-						       MaterialPageRoute(builder: (context) => Screen_shot(widget.object, widget.doc_name)));
+						       MaterialPageRoute(builder: (context) => ScreenShot(widget.object, widget.docName)));
 			       },
 		        ),
 		      ),

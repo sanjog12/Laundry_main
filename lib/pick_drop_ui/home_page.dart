@@ -1,16 +1,14 @@
 /* Home page of the pick and drop worker */
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
-import 'package:laundry/pick_drop_ui/pages/Works.dart';
-import 'package:laundry/pick_drop_ui/EmpProfile.dart';
-class Home_page extends StatefulWidget {
+import 'package:laundry/pick_drop_ui/pages/works.dart';
+class HomePage extends StatefulWidget {
   @override
-  _Home_pageState createState() => _Home_pageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _Home_pageState extends State<Home_page> {
+class _HomePageState extends State<HomePage> {
   
   int i =0;
   // widget drawer for side menu
@@ -122,9 +120,9 @@ class _Home_pageState extends State<Home_page> {
 }
   }
   class ListGrid extends StatelessWidget {               //Class for grid display of homepage
-  IconData icon;
-  String text;
-  int color;
+  final IconData icon;
+  final String text;
+  final int color;
 
   ListGrid(this.icon,this.text,this.color);
     @override
@@ -173,7 +171,7 @@ class _Home_pageState extends State<Home_page> {
                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context)=>work()),
+                        MaterialPageRoute(builder: (context)=>Work()),
                       );
                     },
                   ),
@@ -187,10 +185,10 @@ class _Home_pageState extends State<Home_page> {
   }
   
 class CustomListTile extends StatelessWidget {         //Class for items to be displayed in the drawer
-  IconData icon;
-  String text;
-  Function ontap;
-  CustomListTile(this.icon,this.text,this.ontap);
+  final IconData icon;
+  final String text;
+  final Function onTap;
+  CustomListTile(this.icon,this.text,this.onTap);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -205,7 +203,7 @@ class CustomListTile extends StatelessWidget {         //Class for items to be d
         ),
         child: InkWell(
           splashColor: Colors.blue[50],
-          onTap: ontap,
+          onTap: onTap,
           child: Container(
             height: 55,
             child: Row(
