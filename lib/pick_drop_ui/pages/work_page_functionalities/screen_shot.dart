@@ -23,6 +23,7 @@ class ScreenShot extends StatefulWidget {
 class _ScreenShotState extends State<ScreenShot> {
 	
 	List<LatLng> _points = [];
+	List<LatLng> _temp = [];
 	bool waiting = true;
 	Size size;
 	Completer<GoogleMapController> _controller = Completer();
@@ -34,25 +35,23 @@ class _ScreenShotState extends State<ScreenShot> {
     super.initState();
     widget.object.stopPolyline();
     print("FetchRoadSnapped function is called ");
-    callFetchRoadSnapped();
+    callFetchRoadSnapped().whenComplete(polylineIdGenerate);
     print("FetchRoadSnapped function is complited");
-    polylineIdGenerate();
-    
   }
   
+  
+  
   Future<void> callFetchRoadSnapped() async{
-			_points = await fetchRoadSnapped();
+			_temp = await fetchRoadSnapped(widget.object.getrecordedlist());
 			print(_points);
 			setState(() {
+				_points = _temp;
 			  waiting = false;
 			});
   }
 	
+  
 	 LatLngBounds _latLngBounds(List<LatLng> list){
-		/*
-		    Function to return the boundary based on the points recorded in the list
-		that bounds the google_map to a specified boundary and sets the zoom level
-		 */
 		print("About to check assert function in _latlongBoubds function");
 		assert(list.isNotEmpty);
 		print(list.length);
@@ -75,12 +74,10 @@ class _ScreenShotState extends State<ScreenShot> {
 	}
 	
 	
+	
+	
 	Future<void> polylineIdGenerate() async{
 		print("trip_details invoked ");
-		/*
-		Makes polyline connecting consecutive recorded points
-		 */
-		
 		final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
 		_polylineIdCounter++;
 		final PolylineId polylineId = PolylineId(polylineIdVal);
@@ -91,7 +88,7 @@ class _ScreenShotState extends State<ScreenShot> {
 			endCap: Cap.squareCap,
 			geodesic: true,
 			polylineId: polylineId,
-			color: Colors.lightBlueAccent,
+			color: Colors.red,
 			width: 5,
 			points: _points,
 			onTap: (){},
@@ -100,6 +97,7 @@ class _ScreenShotState extends State<ScreenShot> {
 			polyLines[polylineId]=polyline;
 		});
 	}
+	
 	
 	
 	Future<void> uploadPic(png) async {
@@ -113,8 +111,9 @@ class _ScreenShotState extends State<ScreenShot> {
   Widget build(BuildContext context) {
   	size = MediaQuery.of(context).size;
   	print("Map Container started");
-  	
-    return waiting ? Container(child: Center(child: CircularProgressIndicator(
+  	print(_points);
+    return waiting ?
+		    Container(child: Center(child: CircularProgressIndicator(
     ))):
     Container(
 	    
@@ -127,7 +126,7 @@ class _ScreenShotState extends State<ScreenShot> {
 		  zoomControlsEnabled: true,
 		  onMapCreated: (GoogleMapController controller) async {
 		  	 _controller.complete(controller);
-			   await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),2));
+			   controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),2));
 			   
 			   await Firestore.instance.collection('Location Points').document(widget.docName).setData({
 				   '${DateTime.now()}' : 'Screen Short Taken'
