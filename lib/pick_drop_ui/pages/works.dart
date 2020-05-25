@@ -10,10 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
 
-getData() {
-  return Firestore.instance.collection('Jobs').snapshots();
-}
-
 
 class Work extends StatefulWidget {
   @override
@@ -27,7 +23,10 @@ class _WorkState extends State<Work> {
   double lat;
   double long;
   var workData;                         ///Variable to get the snapshot of the works available in the firestore
-  
+
+  getData() {
+    return Firestore.instance.collection('Jobs').snapshots();
+  }
   
   @override
   void initState() {
@@ -43,11 +42,20 @@ class _WorkState extends State<Work> {
     Function to get data from the cloud_firebase and displaying details in the ListView as soon as the
     the details are uploaded in the the fire_store
      */
-    if(workData != null){
+    if(workData == null){
+      print("getting workdata");
+    }else{
       return StreamBuilder(
         stream: workData,
         builder: (context,snapshot){
-          if(snapshot.data != null){
+          if(snapshot.data == null){
+            return Center(
+              child:CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+                semanticsLabel: 'Loading ......',
+              ),
+            );
+          }else{
           return ListView.builder(
             shrinkWrap: true,
             itemCount: snapshot.data.documents.length,
@@ -55,18 +63,9 @@ class _WorkState extends State<Work> {
               return WorkCards(snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
             },
           );
-          }else{
-            return Center(
-              child:CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
-                semanticsLabel: 'Loading ......',
-              ),
-            );
           }
         },
       );
-    }else{
-      print("getting workdata");
     }
   }
   
@@ -130,36 +129,6 @@ class InternetCheck extends StatelessWidget {
       ),
     );
   }
-}
-
-
-
-class Loading extends StatelessWidget {
-	/*
-    Loading gif for various purposes
-   */
-	
-	@override
-	Widget build(BuildContext context) {
-		return Center(
-		  child: Column(
-		    children: <Widget>[
-		      Container(
-		      		height : 200,
-		      		width: 200,
-		      		decoration: BoxDecoration(
-		      				image: DecorationImage(image: AssetImage('images/loading.gif'),fit: BoxFit.contain),
-		      				borderRadius:BorderRadius.circular(10.0)
-		      		),
-		      ),
-		  	  Text("Laoding....", style: TextStyle(
-		  		  fontSize: 10,
-		  		  fontWeight: FontWeight.bold,
-		  	  ),)
-		    ],
-		  ),
-		);
-	}
 }
 
 

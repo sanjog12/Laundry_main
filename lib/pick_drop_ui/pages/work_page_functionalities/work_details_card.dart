@@ -19,31 +19,27 @@ Future<bool> workDescription(context,name , address){
 
 	return showDialog(
 			context: context,
-			builder: (BuildContext context){
-				return mapPage();
-			}
+			builder: (BuildContext context) => MapPage()
 	);
 }
 
 
 
 
-class mapPage extends StatefulWidget{
+class MapPage extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _MapPageState();
   }
 }
 
 
-class _MapPageState extends State<mapPage>{
+class _MapPageState extends State<MapPage>{
 	Completer<GoogleMapController> _controller = Completer();
-	static final CameraPosition _intial = CameraPosition(target: LatLng(28.640884,77.126071), zoom: 19);
+	static final CameraPosition _intial = CameraPosition(target: LatLng(28.640884,77.126071), zoom: 15);
 	 List<Marker> markers = [];
 	 @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     markers.add(Marker(
 			markerId: MarkerId("Sanjog House"),
@@ -58,56 +54,47 @@ class _MapPageState extends State<mapPage>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return SimpleDialog(
+    return AlertDialog(
 			shape: RoundedRectangleBorder(
 					borderRadius: BorderRadius.circular(10)
 			),
-			title: Padding(padding:EdgeInsets.all(10.0),child: Text("JOB ASSIGNED",textAlign: TextAlign.center,style: TextStyle(fontSize: 20),)),
-			titlePadding: EdgeInsets.only(left: 20),
+			title: Text("Job Assigned"),
 			backgroundColor: Colors.lightBlueAccent,
-			children: <Widget>[
-				Padding(
-					padding: EdgeInsets.only(top: 30),
-					child: Container(
-						height: 300,
-						width: 200,
-						child: Stack(
-							children: <Widget>[
-								Center(
-									child: Container(
-										child: GoogleMap(initialCameraPosition: _intial,markers: Set.from(markers),
-										mapType: MapType.normal,onMapCreated: (GoogleMapController controller){
-											_controller.complete(controller);
-											},)
-									),
-								),
-
-							],
-						),
-						decoration: BoxDecoration(
-							color: Colors.white,
-						),
-					),
-				),
-
-				Padding(
-					padding: EdgeInsets.only(left: 20, right: 60),
-					child: RaisedButton(
-						child: new Text("NAVIGATE",textAlign: TextAlign.center,),
-						onPressed: (){
-							final String doc_name ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
-							CreatePolyline object = CreatePolyline(doc_name);
-							object.startRecord();
-							googleMapNavigation();
-							Navigator.of(context).pop();
-							Navigator.push(context,
-									MaterialPageRoute(builder: (context)=>DuringNavigation(object , doc_name))
-							);
-						},
-					),
-				)
-			],
+			
+	    
+	    content:SingleChildScrollView(
+	      child: Container(
+	      	height: 300,
+	      	width: 220,
+	      	child: Center(
+	      		child: GoogleMap(
+	      			initialCameraPosition: _intial,
+	      			markers: Set.from(markers),
+	      			mapType: MapType.normal,
+	      			onMapCreated: (GoogleMapController controller){
+	      				_controller.complete(controller);
+	      			},),
+	      	),
+	      	decoration: BoxDecoration(
+	      		color: Colors.white,
+	      	),
+	      ),
+	    ),
+	    actions: <Widget>[
+		    RaisedButton(
+			    child: Text("NAVIGATE",textAlign: TextAlign.center,),
+			    onPressed: (){
+				    final String docName ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
+				    CreatePolyline object = CreatePolyline(docName);
+				    object.startRecord();
+				    googleMapNavigation();
+				    Navigator.of(context).pop();
+				    Navigator.push(context,
+						    MaterialPageRoute(builder: (context)=>DuringNavigation(object , docName))
+				    );
+			    },
+		    ),
+	    ],
 		);
   }
 }
