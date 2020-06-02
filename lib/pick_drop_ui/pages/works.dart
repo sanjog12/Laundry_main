@@ -3,19 +3,30 @@ will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
 
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_discription_1.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Work_details_card.dart';
+
+getData() {
+  return Firestore.instance.collection('Jobs').snapshots();
+}
+
 
 class work extends StatefulWidget {
   @override
   _workState createState() => _workState();
 }
 
+
+
 class _workState extends State<work> {
   
-  var workdata;                        //Variable to get the snapshot of the works available in the firestore
+  double lat;
+  double long;
+  var workdata;                         ///Variable to get the snapshot of the works available in the firestore
   
   
   @override
@@ -46,7 +57,7 @@ class _workState extends State<work> {
             },
           );
           }else{
-            return Text("Malfunction");
+            return loading();
           }
         },
       );
@@ -60,7 +71,16 @@ class _workState extends State<work> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Jobs Assigned"),
+        title: Text(
+          "JOBS ASSIGNED",
+        style: TextStyle(
+          fontFamily: "OpenSans",
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.0
+        ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.indigoAccent[200],
       ),
       
       body:  StreamBuilder(
@@ -74,23 +94,25 @@ class _workState extends State<work> {
             var result = snapShot.data;
             switch (result){
               case ConnectivityResult.none:
-                return Padding(padding: EdgeInsets.all(10.0),child: Malfunction());
+                return Padding(padding: EdgeInsets.all(10.0),child: internet_check());
               case ConnectivityResult.mobile:
               case ConnectivityResult.wifi:
                 return get_work_details();
               default:
-                return Padding(padding: EdgeInsets.all(10.0),child: Malfunction());
+                return Padding(padding: EdgeInsets.all(10.0),child: internet_check());
             }
           } ),
     );
   }
 }
-class Malfunction extends StatelessWidget {
-  
+
+
+
+
+class internet_check extends StatelessWidget {
   /*
     Image to show whether net is connected or not
    */
-  
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -105,18 +127,46 @@ class Malfunction extends StatelessWidget {
       ),
     );
   }
-
 }
 
-getData() {
-  return Firestore.instance.collection('Jobs').snapshots();
+
+
+class loading extends StatelessWidget {
+	/*
+    Loading gif for various purposes
+   */
+	
+	@override
+	Widget build(BuildContext context) {
+		// TODO: implement build
+		return Center(
+		  child: Column(
+		    children: <Widget>[
+		      Container(
+		      		height : 200,
+		      		width: 200,
+		      		decoration: BoxDecoration(
+		      				image: DecorationImage(image: AssetImage('images/loading.gif'),fit: BoxFit.contain),
+		      				borderRadius:BorderRadius.circular(10.0)
+		      		),
+		      ),
+		  	  Text("Laoding....", style: TextStyle(
+		  		  fontSize: 10,
+		  		  fontWeight: FontWeight.bold,
+		  	  ),)
+		    ],
+		  ),
+		);
+	}
 }
+
 
 
 class workcards extends StatelessWidget{
   /*
   Class to generate TileView from the gathered data from from the fire_store
    */
+  
   final  name;
   final  address;
   workcards(this.name,this.address);
@@ -126,7 +176,7 @@ class workcards extends StatelessWidget{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Card(
-      color: Colors.blueGrey[50],
+      color: Colors.blue[50],
       child: InkWell(
         splashColor: Colors.blue[100].withAlpha(100),
         onTap: () {
@@ -135,7 +185,8 @@ class workcards extends StatelessWidget{
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
              ListTile(
-              leading: Icon(Icons.view_module),
+              leading: Icon(Icons.view_module,
+              color: Colors.grey[700],),
               title: Text(
                 name,
                 style: TextStyle(
@@ -150,9 +201,10 @@ class workcards extends StatelessWidget{
                 RaisedButton(
                   child: Text('OPEN'),
                   onPressed: () {
+                   
                   	work_description(context,name, address);
                   },
-                  focusElevation: 10,
+                  focusElevation: 15,
                 ),
               ],
             ),
