@@ -125,15 +125,17 @@ class _ScreenShotState extends State<ScreenShot> {
 		  zoomGesturesEnabled: true,
 		  zoomControlsEnabled: true,
 		  onMapCreated: (GoogleMapController controller) async {
+		  	
+		  	fun() async{
+				  var png = await controller.takeSnapshot();
+				  uploadPic(png);
+				  await Firestore.instance.collection('Location Points').document(widget.docName).setData({
+					  '${DateTime.now()}' : 'Screen Short Taken'
+				  },merge: true);
+			  }
 		  	 _controller.complete(controller);
-			   controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),2));
+			   controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),2)).whenComplete(fun);
 			   
-			   await Firestore.instance.collection('Location Points').document(widget.docName).setData({
-				   '${DateTime.now()}' : 'Screen Short Taken'
-			   },merge: true);
-			      
-			   var png = await controller.takeSnapshot();
-			   uploadPic(png);
 			   },
 	    ),
     );
