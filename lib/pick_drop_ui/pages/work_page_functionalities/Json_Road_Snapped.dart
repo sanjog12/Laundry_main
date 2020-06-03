@@ -35,3 +35,15 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList) async{
 		return null;
 	}
 }
+
+
+
+Future<void> distanceTimeNavigation() async{
+	
+	String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=kilometers&origins=28.594208,77.082083&destinations=28.598174,77.081450&key=AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc";
+	
+	http.Response response = await http.get(url);
+	print("response\n" + '${response.body}');
+	
+	
+}

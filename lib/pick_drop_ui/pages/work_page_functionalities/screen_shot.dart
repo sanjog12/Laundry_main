@@ -127,6 +127,7 @@ class _ScreenShotState extends State<ScreenShot> {
 		  onMapCreated: (GoogleMapController controller) async {
 		  	
 		  	fun() async{
+		  		await Future.delayed(Duration(seconds: 2));
 				  var png = await controller.takeSnapshot();
 				  uploadPic(png);
 				  await Firestore.instance.collection('Location Points').document(widget.docName).setData({

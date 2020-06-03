@@ -138,6 +138,7 @@ class InternetCheck extends StatelessWidget {
 	      height : 200,
         width: 200,
         decoration: BoxDecoration(
+          
             image: DecorationImage(image: AssetImage('images/network.gif'),fit: BoxFit.contain),
             borderRadius:BorderRadius.circular(10.0)
         ),

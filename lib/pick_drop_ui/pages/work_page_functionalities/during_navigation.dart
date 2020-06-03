@@ -14,6 +14,8 @@ class DuringNavigation extends StatefulWidget {
   _DuringNavigationState createState() => _DuringNavigationState();
 }
 
+
+
 class _DuringNavigationState extends State<DuringNavigation> {
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 		      
 		      RaisedButton(
 			       child: Text("Reached the destination "),
+			       
 			       onPressed: (){
 			       	print("Navigating to screen shot page");
 			       	Navigator.of(context).pop();

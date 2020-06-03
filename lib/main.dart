@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
 import 'pick_drop_ui/home_page.dart';
+
 void main() => runApp(Start());
 
 class Start extends StatelessWidget {
@@ -13,7 +15,7 @@ class Start extends StatelessWidget {
           canvasColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white
       ),
-      home: HomePage(),
+      home: Login(),
     );
   }
 }

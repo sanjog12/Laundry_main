@@ -8,6 +8,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
 
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:flutter/rendering.dart';
@@ -38,9 +39,11 @@ class _MapPageState extends State<MapPage>{
 	Completer<GoogleMapController> _controller = Completer();
 	static final CameraPosition _intial = CameraPosition(target: LatLng(28.640884,77.126071), zoom: 15);
 	 List<Marker> markers = [];
+	 
 	 @override
   void initState() {
     super.initState();
+    distanceTimeNavigation();
     markers.add(Marker(
 			markerId: MarkerId("Sanjog House"),
 			draggable: false,
