@@ -28,16 +28,16 @@ class _SignUpState extends State<SignUp> {
 			body: Stack(
 				children:<Widget> [
 					
-//					Container(
-//						height: size.height,
-//						width: size.width,
-//						child: Image.asset('assets/Images/fd2.jpg',
-//							colorBlendMode: BlendMode.saturation,
-//							fit: BoxFit.fill,
-//							height: double.infinity,
-//							width: double.infinity,
-//						),
-//					),
+					Container(
+						height: size.height,
+						width: size.width,
+						child: Image.asset('images/12.jpg',
+							colorBlendMode: BlendMode.saturation,
+							fit: BoxFit.fill,
+							height: double.infinity,
+							width: double.infinity,
+						),
+					),
 					
 					SingleChildScrollView(
 						child: Container(
@@ -196,11 +196,15 @@ class _SignUpState extends State<SignUp> {
 												SizedBox(height: 30,),
 												
 												Container(
-													child: submitButtonLoading?Center(
-														child: CircularProgressIndicator(),
-													):FlatButton(
-														color: Color(0xf815D43),
-														child:Text("Sign up", style: TextStyle(
+													child: FlatButton(
+														color: Colors.black54,
+														child
+																:submitButtonLoading
+																?Center(
+															child: CircularProgressIndicator(),
+														)
+																:Text("Sign up", style: TextStyle(
+															color: Colors.white
 														),),
 														onPressed: (){
 															createUser();

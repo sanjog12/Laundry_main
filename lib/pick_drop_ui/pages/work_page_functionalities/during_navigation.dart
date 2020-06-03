@@ -104,7 +104,6 @@ class _DuringNavigationState extends State<DuringNavigation> {
 																			MaterialPageRoute(builder: (context) => ScreenShot(widget.object, widget.docName)));
 																},
 															),
-
 														),
 													),
 

@@ -159,6 +159,7 @@ class _HomePageState extends State<HomePage> {
     );
 }
   }
+  
   class ListGrid extends StatelessWidget {               //Class for grid display of homepage
   final IconData icon;
   final String text;

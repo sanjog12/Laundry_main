@@ -19,10 +19,12 @@ class _WrapperState extends State<Wrapper> {
 	@override
   void initState() {
     super.initState();
+    getUserFirebaseId();
   }
   
   Future<String> getUserFirebaseId() async{
 		String _firebaseUserID = await SharedPrefs.getStringPreference('uid');
+		print(_firebaseUserID);
 		this.setState((){
 		firebaseID =_firebaseUserID;
 		});
