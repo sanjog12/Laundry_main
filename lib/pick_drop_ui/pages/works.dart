@@ -2,9 +2,6 @@
 will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
-
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +58,7 @@ class _WorkState extends State<Work> {
             shrinkWrap: true,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context,i){
-              return WorkCards(snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
+              return workCards(context,snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
             },
           );
           }
@@ -138,6 +135,7 @@ class InternetCheck extends StatelessWidget {
 	      height : 200,
         width: 200,
         decoration: BoxDecoration(
+          
             image: DecorationImage(image: AssetImage('images/network.gif'),fit: BoxFit.contain),
             borderRadius:BorderRadius.circular(10.0)
         ),
@@ -148,73 +146,71 @@ class InternetCheck extends StatelessWidget {
 
 
 
-class WorkCards extends StatelessWidget{
+workCards(BuildContext context ,name,address) {
   /*
   Class to generate TileView from the gathered data from from the fire_store
    */
-  
-  final  name;
-  final  address;
-  WorkCards(this.name,this.address);
-  
-  
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 3.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      color: Colors.blueGrey[50],
-      child: InkWell(
-        splashColor: Colors.blue[100].withAlpha(100),
-        onTap: () {
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-             ListTile(
-              leading: Icon(Icons.view_module,
-              color: Colors.blueGrey[700],),
-              title: Text(
-                name,
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Card(
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        color: Colors.blueGrey[50],
+        child: InkWell(
+          splashColor: Colors.blue[100].withAlpha(100),
+          onTap: () {
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+               ListTile(
+                leading: Icon(Icons.view_module,
+                color: Colors.blueGrey[700],),
+                title: Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: .5,
+                    color: Color.fromRGBO(88, 89, 91,1)
+                  ),
+                ),
+                subtitle:  Text(address,
                 style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: .5,
-                  color: Color.fromRGBO(88, 89, 91,1)
+                  color:Color.fromRGBO(88, 89, 91,1)
+                ),
                 ),
               ),
-              subtitle:  Text(address,
-              style: TextStyle(
-                color:Color.fromRGBO(88, 89, 91,1)
-              ),
-              ),
-            ),
-            ButtonBar(
-              children: <Widget>[
-                RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  color:Colors.blueGrey[700],
-                  child: Text(
-                      'OPEN',
-                    style: TextStyle(
-                      color: Colors.blue[100],
+              
+              
+              ButtonBar(
+                children: <Widget>[
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
+                    color:Colors.blueGrey[700],
+                    child: Text(
+                        'OPEN',
+                      style: TextStyle(
+                        color: Colors.blue[100],
+                      ),
+                    ),
+                    onPressed: () {
+                      workDescription(context, name, address);
+                    },
+                    focusElevation: 15,
                   ),
-                  onPressed: () {
-                    workDescription(context, name, address);
-                  },
-                  focusElevation: 15,
-                ),
-              ],
-            ),
-          ],
+                  SizedBox(width: 10,),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
 
 

@@ -68,7 +68,9 @@ class CreatePolyline {
 	
 	void coordinateFilter(location) {
 		print('inside filter property');
-		if(_listltlg.last.longitude != location.longitude && _listltlg.last.latitude != location.latitude){
+		if(_listltlg.last.longitude.toStringAsFixed(3) != location.longitude.toStringAsFixed(3)
+				&& _listltlg.last.latitude.toStringAsFixed(3) != location.latitude.toStringAsFixed(3)){
+			
 			print('Condition for not recording same points ');
 			this._listltlg.add(LatLng(location.latitude,location.longitude));
 			

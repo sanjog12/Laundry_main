@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -113,8 +112,28 @@ class _ScreenShotState extends State<ScreenShot> {
   	print("Map Container started");
   	print(_points);
     return waiting ?
-		    Container(child: Center(child: CircularProgressIndicator(
-    ))):
+		    Material(
+			    type: MaterialType.transparency,
+		      child: Container(
+			    color: Colors.grey,
+				    child: Column(
+							    mainAxisAlignment: MainAxisAlignment.center,
+				      children: <Widget>[
+				        CircularProgressIndicator(
+							    valueColor: AlwaysStoppedAnimation<Color>
+								    (Colors.white),
+				        ),
+					      SizedBox(height: 20,),
+					      Container(child: Text('Getting things Up....',style: TextStyle(
+						      color: Colors.blueGrey[100],
+						      fontSize: 20,
+						      fontWeight: FontWeight.w500,
+					      ),))
+					      
+				      ],
+				    ),
+		      ),
+		    ):
     Container(
 	    
 	    height: size.height-200,
@@ -127,6 +146,7 @@ class _ScreenShotState extends State<ScreenShot> {
 		  onMapCreated: (GoogleMapController controller) async {
 		  	
 		  	fun() async{
+		  		await Future.delayed(Duration(seconds: 2));
 				  var png = await controller.takeSnapshot();
 				  uploadPic(png);
 				  await Firestore.instance.collection('Location Points').document(widget.docName).setData({

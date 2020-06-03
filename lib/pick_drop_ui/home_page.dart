@@ -1,9 +1,18 @@
 /* Home page of the pick and drop worker */
-
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:laundry/Classes/UserDetails.dart';
+import 'package:laundry/Services/AuthServices.dart';
+import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
+
+
 class HomePage extends StatefulWidget {
+  final User user;
+
+  const HomePage({Key key, this.user}) : super(key: key);
+  
+  
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -74,7 +83,18 @@ class _HomePageState extends State<HomePage> {
               CustomListTile(Icons.question_answer,"FAQ",()=>{}),
               CustomListTile(Icons.description,"Terms & Conditions",()=>{}),
               CustomListTile(Icons.help,"Support",()=>{}),
-              CustomListTile(Icons.lock,"Logout",()=>{}),
+              CustomListTile(Icons.lock,"Logout",(){
+                try {
+                  AuthServices().logOutUser();
+                  Navigator.push(context,
+                  MaterialPageRoute(
+                    builder: (context)=>Login()
+                  )
+                  );
+                }catch(e){
+                
+                }
+              }),
             ],
           ),
         ),
@@ -139,6 +159,7 @@ class _HomePageState extends State<HomePage> {
     );
 }
   }
+  
   class ListGrid extends StatelessWidget {               //Class for grid display of homepage
   final IconData icon;
   final String text;
