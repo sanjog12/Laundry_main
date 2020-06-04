@@ -2,10 +2,8 @@
 will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
-
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
@@ -60,7 +58,7 @@ class _WorkState extends State<Work> {
             shrinkWrap: true,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context,i){
-              return WorkCards(snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
+              return workCards(context,snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
             },
           );
           }
@@ -74,37 +72,51 @@ class _WorkState extends State<Work> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.blue[100]
+        ),
         title: Text(
           "JOBS ASSIGNED",
         style: TextStyle(
           fontFamily: "OpenSans",
           fontWeight: FontWeight.bold,
-          letterSpacing: 1.0
-        ),
+          letterSpacing: 1.0,
+          color: Colors.blue[100]
+,        ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.indigoAccent[200],
+        backgroundColor: Colors.blueGrey[700],
       ),
       
-      body:  StreamBuilder(
+      body:  Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: StreamBuilder(
 	      /*
 	         To check whether net is connected or not when the user opens work page
 	       */
-          stream: Connectivity().onConnectivityChanged,
-          builder:(BuildContext context,
-              AsyncSnapshot<ConnectivityResult> snapShot){
-            if (!snapShot.hasData) return CircularProgressIndicator();
-            var result = snapShot.data;
-            switch (result){
-              case ConnectivityResult.none:
-                return Padding(padding: EdgeInsets.all(10.0),child: InternetCheck());
-              case ConnectivityResult.mobile:
-              case ConnectivityResult.wifi:
-                return fetchWorkDetails();
-              default:
-                return Padding(padding: EdgeInsets.all(10.0),child: InternetCheck());
-            }
-          } ),
+            stream: Connectivity().onConnectivityChanged,
+            builder:(BuildContext context,
+                AsyncSnapshot<ConnectivityResult> snapShot){
+              if (!snapShot.hasData) return CircularProgressIndicator();
+              var result = snapShot.data;
+              switch (result){
+                case ConnectivityResult.none:
+                  return Padding(padding: EdgeInsets.all(10.0),child: InternetCheck());
+                case ConnectivityResult.mobile:
+                case ConnectivityResult.wifi:
+                  return fetchWorkDetails();
+                default:
+                  return Padding(padding: EdgeInsets.all(10.0),child: InternetCheck());
+              }
+            } ),
+    decoration: BoxDecoration(
+    image: DecorationImage(
+    image: AssetImage("images/12.jpg"),
+    fit: BoxFit.fill,
+    ),
+      ),
+    ),
     );
   }
 }
@@ -123,6 +135,7 @@ class InternetCheck extends StatelessWidget {
 	      height : 200,
         width: 200,
         decoration: BoxDecoration(
+          
             image: DecorationImage(image: AssetImage('images/network.gif'),fit: BoxFit.contain),
             borderRadius:BorderRadius.circular(10.0)
         ),
@@ -133,55 +146,71 @@ class InternetCheck extends StatelessWidget {
 
 
 
-class WorkCards extends StatelessWidget{
+workCards(BuildContext context ,name,address) {
   /*
   Class to generate TileView from the gathered data from from the fire_store
    */
-  
-  final  name;
-  final  address;
-  WorkCards(this.name,this.address);
-  
-  
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blue[50],
-      child: InkWell(
-        splashColor: Colors.blue[100].withAlpha(100),
-        onTap: () {
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-             ListTile(
-              leading: Icon(Icons.view_module,
-              color: Colors.grey[700],),
-              title: Text(
-                name,
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Card(
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        color: Colors.blueGrey[50],
+        child: InkWell(
+          splashColor: Colors.blue[100].withAlpha(100),
+          onTap: () {
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+               ListTile(
+                leading: Icon(Icons.view_module,
+                color: Colors.blueGrey[700],),
+                title: Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: .5,
+                    color: Color.fromRGBO(88, 89, 91,1)
+                  ),
+                ),
+                subtitle:  Text(address,
                 style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: .5,
+                  color:Color.fromRGBO(88, 89, 91,1)
+                ),
                 ),
               ),
-              subtitle:  Text(address),
-            ),
-            ButtonBar(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text('OPEN'),
-                  onPressed: () {
-                    workDescription(context, name, address);
-                  },
-                  focusElevation: 15,
-                ),
-              ],
-            ),
-          ],
+              
+              
+              ButtonBar(
+                children: <Widget>[
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    color:Colors.blueGrey[700],
+                    child: Text(
+                        'OPEN',
+                      style: TextStyle(
+                        color: Colors.blue[100],
+                      ),
+                    ),
+                    onPressed: () {
+                      workDescription(context, name, address);
+                    },
+                    focusElevation: 15,
+                  ),
+                  SizedBox(width: 10,),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
 
 

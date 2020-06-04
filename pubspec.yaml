@@ -21,6 +21,9 @@ dependencies:
   background_location:
   url_launcher:
   http:
+  firebase_auth:
+  shared_preferences:
+  fluttertoast:
   cloud_firestore:
   flutter:
     sdk: flutter
@@ -56,6 +59,8 @@ flutter:
     - images/profileimg.png
     - assets/profile1.png
     - images/loading.gif
+    - images/12.jpg
+    - images/laundry.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

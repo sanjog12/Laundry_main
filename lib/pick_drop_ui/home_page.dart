@@ -1,9 +1,18 @@
 /* Home page of the pick and drop worker */
-
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:laundry/Classes/UserDetails.dart';
+import 'package:laundry/Services/AuthServices.dart';
+import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
+
+
 class HomePage extends StatefulWidget {
+  final User user;
+
+  const HomePage({Key key, this.user}) : super(key: key);
+  
+  
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -14,8 +23,13 @@ class _HomePageState extends State<HomePage> {
   // widget drawer for side menu
   Widget buildSideMenu(){
     return Container(
-        color: Colors.white,
         width: 260,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/12.jpg"),
+            fit: BoxFit.cover
+          ),
+        ),
         child: Drawer(
           elevation: 0,
           child: ListView(
@@ -61,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.indigoAccent[200],
+                    color: Colors.blueGrey[700],
                   ),
                 ),
               ),
@@ -69,7 +83,18 @@ class _HomePageState extends State<HomePage> {
               CustomListTile(Icons.question_answer,"FAQ",()=>{}),
               CustomListTile(Icons.description,"Terms & Conditions",()=>{}),
               CustomListTile(Icons.help,"Support",()=>{}),
-              CustomListTile(Icons.lock,"Logout",()=>{}),
+              CustomListTile(Icons.lock,"Logout",(){
+                try {
+                  AuthServices().logOutUser();
+                  Navigator.push(context,
+                  MaterialPageRoute(
+                    builder: (context)=>Login()
+                  )
+                  );
+                }catch(e){
+                
+                }
+              }),
             ],
           ),
         ),
@@ -83,14 +108,18 @@ class _HomePageState extends State<HomePage> {
     
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigoAccent[200],
+        backgroundColor: Colors.blueGrey[700],
         elevation: 8,
+        iconTheme: IconThemeData(
+          color:Colors.blue[100],
+        ),
         title: Text(
           "HOME",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontFamily: "OpenSans",
                   letterSpacing: 1.0,
+                color:Colors.blue[100],
               ),
         ),
         centerTitle: true,
@@ -98,33 +127,44 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(
               Icons.notifications,
+              color:Colors.blue[100],
             ),
             onPressed: () {},
           ),
         ],
       ),
       drawer: buildSideMenu(),
-      body: GridView.count(
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 10,
-          crossAxisCount: 2,
-          children: <Widget>[
-          ListGrid(Icons.work,"TASK",0xFF1A237E),
-            ListGrid(Icons.directions_run,"DISTANCE",0xFF1565C0),
-            ListGrid(Icons.access_time,"TIME",0xFF0277BD),
-            ListGrid(Icons.assignment_turned_in,"ATTENDANCE",0xFF00838F),
-            ListGrid(Icons.history,"HISTORY",0xFF512DA8),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: GridView.count(
+            mainAxisSpacing: 5,
+            crossAxisCount: 2,
+            childAspectRatio: 0.88,
+            children: <Widget>[
+            ListGrid(Icons.work,"TASK"),
+              ListGrid(Icons.directions_run,"DISTANCE"),
+              ListGrid(Icons.access_time,"TIME"),
+              ListGrid(Icons.assignment_turned_in,"ATTENDANCE"),
+              ListGrid(Icons.history,"HISTORY"),
     ],
+        ),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/12.jpg"),
+            fit: BoxFit.fill,
+          ),
+        ),
       ),
     );
 }
   }
+  
   class ListGrid extends StatelessWidget {               //Class for grid display of homepage
   final IconData icon;
   final String text;
-  final int color;
 
-  ListGrid(this.icon,this.text,this.color);
+  ListGrid(this.icon,this.text);
     @override
     Widget build(BuildContext context) {
       return Padding(
@@ -132,41 +172,40 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           padding:  EdgeInsets.all(8),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40),
-            color: Colors.blue[50],
-            border: Border.all(
-              width: 1.5,
-              color: Colors.blueGrey[600],
+            image: DecorationImage(
+              image: AssetImage("images/laundry.png"),
+              fit: BoxFit.fill,
             ),
           ) ,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
+                padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
                   text,
                   style: TextStyle(
-                      color: Color(color),
+                      color: Color.fromRGBO(88,89,91,1),
                       fontFamily: "OpenSans",
                       fontWeight: FontWeight.w600,
-                      fontSize: 15.0,
-                      letterSpacing: 0.5
+                      fontSize: 13,
                   ),
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(color),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(4.0),
+              Padding(
+                padding: const EdgeInsets.only(bottom:3.0),
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(88,89,91,1),
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
                   child: IconButton(
                     icon: Icon(
                       icon,
                       color: Colors.white,
-                      size: 25.0,
+                      size: 23.0,
                     ),
                     onPressed: (){
                       Navigator.push(
@@ -197,7 +236,7 @@ class CustomListTile extends StatelessWidget {         //Class for items to be d
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Colors.grey.shade500,
+              color: Colors.grey.shade700,
             ),
           ),
         ),
@@ -211,19 +250,25 @@ class CustomListTile extends StatelessWidget {         //Class for items to be d
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Icon(icon),
+                    Icon(icon,
+                      color:Color.fromRGBO(88,89,91,1),
+                    ),
                     Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
                         text,
                         style: TextStyle(
-                          fontSize: 16.0
+                          fontSize: 16.0,
+                          color: Color.fromRGBO(88,89,91,1),
+                          fontWeight: FontWeight.w600
                         ),
                       ),
                     ),
                   ],
                 ),
-                Icon(Icons.arrow_right)
+                Icon(Icons.arrow_right,
+                color: Color.fromRGBO(88,89,91,1),
+                )
               ],
             ),
           ),
