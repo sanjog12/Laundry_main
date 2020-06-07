@@ -1,18 +1,17 @@
 /* Home page of the pick and drop worker */
+import 'package:background_location/background_location.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
+import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 
 class HomePage extends StatefulWidget {
-  final User user;
-
-  const HomePage({Key key, this.user}) : super(key: key);
-  
-  
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -20,7 +19,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   
   int i =0;
-  // widget drawer for side menu
+  FirebaseUser user ;
+  UserAuth userAuth =UserAuth();
+  
+  
+  Future<void> userDetails() async{
+    user = await FirebaseAuth.instance.currentUser();
+    userAuth.email = user.email;
+    print(userAuth.email);
+  }
+  
+  
   Widget buildSideMenu(){
     return Container(
         width: 260,
@@ -101,7 +110,47 @@ class _HomePageState extends State<HomePage> {
       );
   }
 
+  void locationPermission() async{
+    PermissionStatus f = await BackgroundLocation.checkPermissions();
+  
+    if(f.value ==0 ){
+      await BackgroundLocation.getPermissions(onDenied:(){
+        alertPop();
+      },onGranted: (){
+      
+      });
+    }
+  }
 
+
+  alertPop() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text("Administrator"),
+            content: Text("It is Compulsory to give location permission"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Ok"),
+                onPressed: (){
+                  Navigator.pop(context);
+                  locationPermission();
+                },
+              )
+            ],
+          );
+        }
+    );
+  }
+
+  
+  @override
+  void initState() {
+    super.initState();
+    locationPermission();
+    userDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,11 +191,11 @@ class _HomePageState extends State<HomePage> {
             crossAxisCount: 2,
             childAspectRatio: 0.88,
             children: <Widget>[
-            ListGrid(Icons.work,"TASK"),
-              ListGrid(Icons.directions_run,"DISTANCE"),
-              ListGrid(Icons.access_time,"TIME"),
-              ListGrid(Icons.assignment_turned_in,"ATTENDANCE"),
-              ListGrid(Icons.history,"HISTORY"),
+            ListGrid(userAuth,Icons.work,"TASK"),
+              ListGrid(userAuth,Icons.directions_run,"DISTANCE"),
+              ListGrid(userAuth,Icons.access_time,"TIME"),
+              ListGrid(userAuth,Icons.assignment_turned_in,"ATTENDANCE"),
+              ListGrid(userAuth,Icons.history,"HISTORY"),
     ],
         ),
         decoration: BoxDecoration(
@@ -158,13 +207,14 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 }
-  }
+}
   
-  class ListGrid extends StatelessWidget {               //Class for grid display of homepage
+  class ListGrid extends StatelessWidget {//Class for grid display of homepage
   final IconData icon;
   final String text;
+  UserAuth userAuth;
 
-  ListGrid(this.icon,this.text);
+  ListGrid(this.userAuth,this.icon,this.text);
     @override
     Widget build(BuildContext context) {
       return Padding(
@@ -193,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom:3.0),
+                padding: EdgeInsets.only(bottom:3.0),
                 child: Container(
                   height: 40,
                   width: 40,
@@ -210,7 +260,9 @@ class _HomePageState extends State<HomePage> {
                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context)=>Work()),
+                        MaterialPageRoute(builder: (context)=>Work(
+                          userAuth: userAuth,
+                        )),
                       );
                     },
                   ),

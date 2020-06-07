@@ -6,10 +6,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:laundry/Classes/UserAuth.dart';
+import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
 
 
 class Work extends StatefulWidget {
+  final UserAuth userAuth;
+
+  const Work({Key key, this.userAuth}) : super(key: key);
   @override
   _WorkState createState() => _WorkState();
 }
@@ -22,9 +27,9 @@ class _WorkState extends State<Work> {
   double long;
   var workData;                         ///Variable to get the snapshot of the works available in the firestore
 
-  getData() {
-    return Firestore.instance.collection('Jobs').snapshots();
-  }
+  getData() => Firestore.instance.collection('Jobs').snapshots();
+  
+  
   
   @override
   void initState() {
@@ -36,10 +41,6 @@ class _WorkState extends State<Work> {
   
   
   fetchWorkDetails(){
-    /*
-    Function to get data from the cloud_firebase and displaying details in the ListView as soon as the
-    the details are uploaded in the the fire_store
-     */
     if(workData == null){
       print("getting workdata");
     }else{
@@ -49,8 +50,7 @@ class _WorkState extends State<Work> {
           if(snapshot.data == null){
             return Center(
               child:CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
-                semanticsLabel: 'Loading ......',
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
               ),
             );
           }else{
@@ -58,7 +58,7 @@ class _WorkState extends State<Work> {
             shrinkWrap: true,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context,i){
-              return workCards(context,snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
+              return workCards(context,snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address'],widget.userAuth);
             },
           );
           }
@@ -89,25 +89,26 @@ class _WorkState extends State<Work> {
       ),
       
       body:  Container(
+        padding: EdgeInsets.all(24),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: StreamBuilder(
-	      /*
-	         To check whether net is connected or not when the user opens work page
-	       */
             stream: Connectivity().onConnectivityChanged,
             builder:(BuildContext context,
                 AsyncSnapshot<ConnectivityResult> snapShot){
-              if (!snapShot.hasData) return CircularProgressIndicator();
+              if (!snapShot.hasData) return Center(child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>
+                  (Colors.blueGrey),
+              ));
               var result = snapShot.data;
               switch (result){
                 case ConnectivityResult.none:
-                  return Padding(padding: EdgeInsets.all(10.0),child: InternetCheck());
+                  return Container(padding:EdgeInsets.all(10),child: InternetCheck());
                 case ConnectivityResult.mobile:
                 case ConnectivityResult.wifi:
                   return fetchWorkDetails();
                 default:
-                  return Padding(padding: EdgeInsets.all(10.0),child: InternetCheck());
+                  return Container(padding: EdgeInsets.all(10),child: InternetCheck());
               }
             } ),
     decoration: BoxDecoration(
@@ -123,11 +124,7 @@ class _WorkState extends State<Work> {
 
 
 
-
 class InternetCheck extends StatelessWidget {
-  /*
-    Image to show whether net is connected or not
-   */
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -135,7 +132,6 @@ class InternetCheck extends StatelessWidget {
 	      height : 200,
         width: 200,
         decoration: BoxDecoration(
-          
             image: DecorationImage(image: AssetImage('images/network.gif'),fit: BoxFit.contain),
             borderRadius:BorderRadius.circular(10.0)
         ),
@@ -146,10 +142,7 @@ class InternetCheck extends StatelessWidget {
 
 
 
-workCards(BuildContext context ,name,address) {
-  /*
-  Class to generate TileView from the gathered data from from the fire_store
-   */
+workCards(BuildContext context ,name,address,UserAuth userAuth) {
     return Container(
       padding: EdgeInsets.all(10),
       child: Card(
@@ -169,20 +162,40 @@ workCards(BuildContext context ,name,address) {
                ListTile(
                 leading: Icon(Icons.view_module,
                 color: Colors.blueGrey[700],),
-                title: Text(
-                  name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: .5,
-                    color: Color.fromRGBO(88, 89, 91,1)
-                  ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 2,),
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: .5,
+                        fontSize: 19,
+                        color: Color.fromRGBO(88, 89, 91,1)
+                      ),
+                    ),
+                  ],
                 ),
-                subtitle:  Text(address,
-                style: TextStyle(
-                  color:Color.fromRGBO(88, 89, 91,1)
-                ),
+                subtitle:  Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 10,),
+                    Text('DESTINATION :',style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12
+                    ),),
+                    SizedBox(height: 5,),
+                    Text(address,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color:Color.fromRGBO(88, 89, 91,1)
+                    ),
+                    ),
+                  ],
                 ),
               ),
+              
               
               
               ButtonBar(
@@ -199,7 +212,7 @@ workCards(BuildContext context ,name,address) {
                       ),
                     ),
                     onPressed: () {
-                      workDescription(context, name, address);
+                      workDescription(context, name, address,userAuth);
                     },
                     focusElevation: 15,
                   ),
