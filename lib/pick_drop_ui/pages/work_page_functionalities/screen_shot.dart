@@ -14,6 +14,7 @@ class ScreenShot extends StatefulWidget {
 	final UserAuth userAuth;
 	final CreatePolyline object;
 	final String docName;
+	GoogleMap map;
 	ScreenShot({this.userAuth, this.object , this.docName ,Key key}): super(key: key);
   @override
   _ScreenShotState createState() => _ScreenShotState();
@@ -45,13 +46,14 @@ class _ScreenShotState extends State<ScreenShot> {
   
   
   Future<void> callFetchRoadSnapped() async{
-			_temp = await fetchRoadSnapped(widget.object.getrecordedlist());
+			_temp = await fetchRoadSnapped(widget.object.getrecordedlist(),widget.docName);
 			print(_points);
 			setState(() {
 				_points = _temp;
 			  waiting = false;
 			});
   }
+  
 	
   
 	 LatLngBounds _latLngBounds(List<LatLng> list){
@@ -148,17 +150,15 @@ class _ScreenShotState extends State<ScreenShot> {
 		  zoomGesturesEnabled: true,
 		  zoomControlsEnabled: true,
 		  onMapCreated: (GoogleMapController controller) async {
-		  	
-		  	fun() async{
-		  		await Future.delayed(Duration(seconds: 3));
-				  var png = await controller.takeSnapshot();
-				  uploadPic(png);
-				  await Firestore.instance.collection('Location Points').document(widget.docName).setData({
-					  '${DateTime.now()}' : 'Screen Short Taken',
-				  },merge: true);
-			  }
 		  	 _controller.complete(controller);
-			   controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),3)).whenComplete(fun);
+			   await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),4)).whenComplete(() async{
+				   await Future.delayed(Duration(seconds: 5));
+				   var png = await controller.takeSnapshot();
+				   uploadPic(png);
+				   await Firestore.instance.collection('Location Points').document(widget.docName).setData({
+					   '${DateTime.now()}' : 'Screen Short Taken',
+				   },merge: true);
+			   });
 			   
 			   },
 	    ),

@@ -10,7 +10,7 @@ import 'package:background_location/background_location.dart';
 
 
 googleMapNavigation(){
-	launch('https://www.google.com/maps');
+	launch('https://www.google.com/maps/');
 }
 
 

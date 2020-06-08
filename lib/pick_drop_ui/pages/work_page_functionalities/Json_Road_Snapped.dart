@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 
 
-Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList) async{
+Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 	List<LatLng> points =[];
 	String url = '';
 	
@@ -26,7 +26,11 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList) async{
 			points.add(LatLng(map['snappedPoints'][i]['location']['latitude'] as double,
 					map['snappedPoints'][i]['location']['longitude'] as double));
 		}
+		await Firestore.instance.collection('Location Points').document(docName).setData({
+			"api url":url,
+		},merge: true);
 		return points;
+		
 	}
 	
 	else{
