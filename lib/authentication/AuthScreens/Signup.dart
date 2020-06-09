@@ -242,7 +242,6 @@ class _SignUpState extends State<SignUp> {
 						context,
 						MaterialPageRoute(
 							builder: (context) => HomePage(
-							user: _user,
 							)
 						)
 					);
