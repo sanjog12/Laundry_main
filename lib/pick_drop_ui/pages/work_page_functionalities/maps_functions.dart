@@ -50,6 +50,7 @@ class CreatePolyline {
 	
 	void coordinateFilter(location) {
 		print('inside filter property');
+		
 		if(_listltlg.last.longitude.toStringAsFixed(3) != location.longitude.toStringAsFixed(3)
 				&& _listltlg.last.latitude.toStringAsFixed(3) != location.latitude.toStringAsFixed(3)){
 			
