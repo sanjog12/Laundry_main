@@ -7,6 +7,7 @@ import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
+import 'package:laundry/pick_drop_ui/pages/attendance.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
@@ -191,11 +192,36 @@ class _HomePageState extends State<HomePage> {
             crossAxisCount: 2,
             childAspectRatio: 0.88,
             children: <Widget>[
-            ListGrid(userAuth,Icons.work,"TASK"),
-              ListGrid(userAuth,Icons.directions_run,"DISTANCE"),
-              ListGrid(userAuth,Icons.access_time,"TIME"),
-              ListGrid(userAuth,Icons.assignment_turned_in,"ATTENDANCE"),
-              ListGrid(userAuth,Icons.history,"HISTORY"),
+            ListGrid(userAuth,Icons.work,"TASK",()=>(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> Work()),
+              );
+            },),
+              ListGrid(userAuth,Icons.directions_run,"DISTANCE",()=>(){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context)=> attendance()),
+                );
+              },),
+              ListGrid(userAuth,Icons.access_time,"TIME",()=>(){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context)=> attendance()),
+                );
+              },),
+              ListGrid(userAuth,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context)=> attendance()),
+                );
+              },),
+              ListGrid(userAuth,Icons.history,"HISTORY",()=>(){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context)=> attendance()),
+                );
+              },),
     ],
         ),
         decoration: BoxDecoration(
@@ -213,8 +239,8 @@ class _HomePageState extends State<HomePage> {
   final IconData icon;
   final String text;
   UserAuth userAuth;
-
-  ListGrid(this.userAuth,this.icon,this.text);
+  final Function ontap;
+  ListGrid(this.userAuth,this.icon,this.text,this.ontap);
     @override
     Widget build(BuildContext context) {
       return Padding(
@@ -257,14 +283,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       size: 23.0,
                     ),
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context)=>Work(
-                          userAuth: userAuth,
-                        )),
-                      );
-                    },
+                    onPressed: ontap()
                   ),
                 ),
               ),
