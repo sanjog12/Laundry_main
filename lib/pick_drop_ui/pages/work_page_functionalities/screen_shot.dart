@@ -1,18 +1,21 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:laundry/Classes/UserAuth.dart';
+import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 class ScreenShot extends StatefulWidget {
+	final UserAuth userAuth;
 	final CreatePolyline object;
 	final String docName;
-	ScreenShot(this.object , this.docName ,{Key key}): super(key: key);
+	GoogleMap map;
+	ScreenShot({this.userAuth, this.object , this.docName ,Key key}): super(key: key);
   @override
   _ScreenShotState createState() => _ScreenShotState();
 }
@@ -37,18 +40,20 @@ class _ScreenShotState extends State<ScreenShot> {
     print("FetchRoadSnapped function is called ");
     callFetchRoadSnapped().whenComplete(polylineIdGenerate);
     print("FetchRoadSnapped function is complited");
+    print(widget.userAuth.email);
   }
   
   
   
   Future<void> callFetchRoadSnapped() async{
-			_temp = await fetchRoadSnapped(widget.object.getrecordedlist());
+			_temp = await fetchRoadSnapped(widget.object.getrecordedlist(),widget.docName);
 			print(_points);
 			setState(() {
 				_points = _temp;
 			  waiting = false;
 			});
   }
+  
 	
   
 	 LatLngBounds _latLngBounds(List<LatLng> list){
@@ -77,6 +82,7 @@ class _ScreenShotState extends State<ScreenShot> {
 	
 	
 	Future<void> polylineIdGenerate() async{
+		distanceTimeNavigation(_points,widget.docName);
 		print("trip_details invoked ");
 		final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
 		_polylineIdCounter++;
@@ -102,7 +108,7 @@ class _ScreenShotState extends State<ScreenShot> {
 	
 	Future<void> uploadPic(png) async {
 		final StorageReference firebaseStorageRef =
-				FirebaseStorage.instance.ref().child(widget.docName);
+				FirebaseStorage.instance.ref().child(widget.userAuth.email.toString()).child(widget.docName);
 		firebaseStorageRef.putData(png);
 	}
 	
@@ -113,10 +119,29 @@ class _ScreenShotState extends State<ScreenShot> {
   	print("Map Container started");
   	print(_points);
     return waiting ?
-		    Container(child: Center(child: CircularProgressIndicator(
-    ))):
-    Container(
-	    
+		    Material(
+			    type: MaterialType.transparency,
+		      child: Container(
+			    color: Colors.grey,
+				    child: Column(
+							    mainAxisAlignment: MainAxisAlignment.center,
+				      children: <Widget>[
+				        CircularProgressIndicator(
+							    valueColor: AlwaysStoppedAnimation<Color>
+								    (Colors.white),
+				        ),
+					      SizedBox(height: 20,),
+					      Container(child: Text('Getting things Up....',style: TextStyle(
+						      color: Colors.blueGrey[100],
+						      fontSize: 20,
+						      fontWeight: FontWeight.w500,
+					      ),))
+					      
+				      ],
+				    ),
+		      ),
+		    )
+		    : Container(
 	    height: size.height-200,
 	    child: GoogleMap(
 		  polylines: Set<Polyline>.of(polyLines.values),
@@ -125,16 +150,15 @@ class _ScreenShotState extends State<ScreenShot> {
 		  zoomGesturesEnabled: true,
 		  zoomControlsEnabled: true,
 		  onMapCreated: (GoogleMapController controller) async {
-		  	
-		  	fun() async{
-				  var png = await controller.takeSnapshot();
-				  uploadPic(png);
-				  await Firestore.instance.collection('Location Points').document(widget.docName).setData({
-					  '${DateTime.now()}' : 'Screen Short Taken'
-				  },merge: true);
-			  }
 		  	 _controller.complete(controller);
-			   controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),2)).whenComplete(fun);
+			   await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),4)).whenComplete(() async{
+				   await Future.delayed(Duration(seconds: 5));
+				   var png = await controller.takeSnapshot();
+				   uploadPic(png);
+				   await Firestore.instance.collection('Location Points').document(widget.docName).setData({
+					   '${DateTime.now()}' : 'Screen Short Taken',
+				   },merge: true);
+			   });
 			   
 			   },
 	    ),

@@ -21,7 +21,11 @@ dependencies:
   background_location:
   url_launcher:
   http:
+  firebase_auth:
+  shared_preferences:
+  fluttertoast:
   cloud_firestore:
+  intl: ^ 0.16.1
   flutter:
     sdk: flutter
   connectivity: ^ 0.4.8+2
