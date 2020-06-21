@@ -34,7 +34,8 @@ dependencies:
   cupertino_icons: ^0.1.2
   google_maps_flutter: 0.5.26+2
   firebase_storage:
-
+  table_calendar:
+  flutter_calendar_carousel:
 dev_dependencies:
   flutter_test:
     sdk: flutter
