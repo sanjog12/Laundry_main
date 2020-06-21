@@ -2,7 +2,7 @@
 
 
 class UserBasic {
-	String email,password ,fullName,uid,phoneNumber,userType;
+	String email,password ,fullName,uid,phoneNumber,userType,lat,long;
 	UserBasic({
 		this.email,
 		this.uid,
@@ -10,5 +10,7 @@ class UserBasic {
 		this.fullName,
 		this.phoneNumber,
 		this.userType,
+		this.lat,
+		this.long,
 	});
 }

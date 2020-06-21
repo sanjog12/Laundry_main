@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/AuthServices.dart';
+import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/others/Style.dart';
 import 'package:laundry/others/Validator.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
@@ -237,14 +239,22 @@ class _SignUpState extends State<SignUp> {
 			});
 			if (_user != null) {
 					print(_user);
+					
 					Navigator.pop(context);
 					Navigator.push(
 						context,
 						MaterialPageRoute(
-							builder: (context) => HomePage(
-							)
+							builder: (context) => Login(),
 						)
 					);
+					Fluttertoast.showToast(
+							msg: "Now logIn using your credential",
+							toastLength: Toast.LENGTH_SHORT,
+							gravity: ToastGravity.BOTTOM,
+							timeInSecForIosWeb: 1,
+							backgroundColor: Color(0xff666666),
+							textColor: Colors.white,
+							fontSize: 16.0);
 //        Navigator.of(context).pushReplacementNamed(PersonalInfoRoute);
 			} else {
 				print("Didnt create");

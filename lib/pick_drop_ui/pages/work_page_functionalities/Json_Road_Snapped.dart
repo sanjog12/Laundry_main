@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:laundry/Services/SharedPrefs.dart';
 
 
 
@@ -10,6 +12,9 @@ import 'package:http/http.dart' as http;
 Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 	List<LatLng> points =[];
 	String url = '';
+	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+	DatabaseReference dbf;
+	
 	
 	for(var p in recordedList)
 		url = url + p.latitude.toString() + ',' +p.longitude.toString() + (recordedList.last.latitude == p.latitude? '' :'|');
@@ -43,6 +48,11 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 
 Future<void> distanceTimeNavigation(List<LatLng> temp, docName) async{
 	
+	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+	String uid;
+	uid = SharedPrefs.getStringPreference("uid");
+	print(uid);
+	
 	String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=kilometers&origins="
 			+temp.first.latitude.toString()+","+temp.first.longitude.toString() +
 			"&destinations="+temp.last.latitude.toString()+","+temp.last.longitude.toString() +"&key=AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc";
@@ -52,8 +62,23 @@ Future<void> distanceTimeNavigation(List<LatLng> temp, docName) async{
 	Map<String,dynamic> map = await json.decode(response.body);
 	print('length distance JSON: '+map['rows'][0]['elements'][0]['distance']['text'].toString());
 	print('length distance JSON: '+map['rows'][0]['elements'][0]['duration']['text'].toString());
-	await Firestore.instance.collection('Location Points').document(docName).setData({
+	await firebaseDatabase.reference().child("Employee Record Distance").child(uid).child("san00001").set({
 		'Distance' : map['rows'][0]['elements'][0]['distance']['text'].toString(),
-		'Time' : map['rows'][0]['elements'][0]['duration']['text'].toString()
-	},merge: true);
+		'Time' : map['rows'][0]['elements'][0]['duration']['text'].toString(),
+	});
+}
+
+Future<double> distanceFormStore(LatLng currentLocation, LatLng storeLocation) async {
+	String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=meter&origins="
+			+ currentLocation.latitude.toString() + "," +
+			currentLocation.longitude.toString() +
+			"&destinations=" + currentLocation.latitude.toString() + "," +
+			currentLocation.longitude.toString() +
+			"&key=AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc";
+	
+	http.Response response = await http.get(url);
+	print("response\n" + '${response.body}');
+	Map<String, dynamic> map = await json.decode(response.body);
+	
+	return double.parse(map['rows'][0]['elements'][0]['distance']['text']);
 }

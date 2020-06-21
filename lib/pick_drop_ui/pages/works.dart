@@ -2,12 +2,13 @@
 will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserAuth.dart';
-import 'package:laundry/Classes/UserDetails.dart';
+import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
 
 
@@ -25,29 +26,58 @@ class _WorkState extends State<Work> {
   
   double lat;
   double long;
-  var workData;                         ///Variable to get the snapshot of the works available in the firestore
+  var workData;
+  String uid;
+  FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+  DatabaseReference dbf;
 
-  getData() => Firestore.instance.collection('Jobs').snapshots();
+  Future<List<Job>> getData() async{
+    print("Called");
+    List<Job> jobList = [];
+    uid = await SharedPrefs.getStringPreference('uid');
+    print(uid);
+    dbf = firebaseDatabase.reference().child("Jobs").child(uid);
+    await dbf.once().then((DataSnapshot snapshot){
+      Map<dynamic,dynamic> values =snapshot.value;
+      if(values != null){
+      values.forEach((key, value) {
+        print(key);
+        Job job = Job(
+          customerName: value["Name"],
+          address: value["Address"],
+          lat: value["Lat"],
+          long: value["Long"],
+        );
+        jobList.add(job);
+      });
+      }else{
+        Job job = Job(
+          customerName: "No assigned Job",
+          address: " ",
+          lat: " ",
+          long: " ",
+        );
+        jobList.add(job);
+      }
+    });
+    print(jobList.length);
+    return jobList;
+  }
   
   
   
   @override
   void initState() {
     super.initState();
-    setState(() {
-      workData = getData();
-    });
   }
   
   
   fetchWorkDetails(){
-    if(workData == null){
-      print("getting workdata");
-    }else{
-      return StreamBuilder(
-        stream: workData,
-        builder: (context,snapshot){
-          if(snapshot.data == null){
+      return StreamBuilder<List<Job>>(
+        stream: getData().asStream(),
+        builder: (context,AsyncSnapshot<List<Job>> snapshot){
+          print(snapshot.hasData);
+          if(!snapshot.hasData){
             return Center(
               child:CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
@@ -56,15 +86,14 @@ class _WorkState extends State<Work> {
           }else{
           return ListView.builder(
             shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context,i){
-              return workCards(context,snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address'],widget.userAuth);
+            itemCount: snapshot.data.length,
+            itemBuilder: (context,int index){
+              return workCards(context,snapshot.data[index], widget.userAuth);
             },
           );
           }
         },
       );
-    }
   }
   
   
@@ -142,7 +171,10 @@ class InternetCheck extends StatelessWidget {
 
 
 
-workCards(BuildContext context ,name,address,UserAuth userAuth) {
+workCards(BuildContext context, Job job, UserAuth userAuth) {
+  print(job.customerName);
+  print(job.address);
+  print(job.lat + " " + job.long);
     return Container(
       padding: EdgeInsets.all(10),
       child: Card(
@@ -160,14 +192,14 @@ workCards(BuildContext context ,name,address,UserAuth userAuth) {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
                ListTile(
-                leading: Icon(Icons.view_module,
-                color: Colors.blueGrey[700],),
+                leading: job.address!=" "?Icon(Icons.view_module,
+                color: Colors.blueGrey[700],):Text(""),
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 2,),
                     Text(
-                      name,
+                      job.customerName,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         letterSpacing: .5,
@@ -181,12 +213,12 @@ workCards(BuildContext context ,name,address,UserAuth userAuth) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 10,),
-                    Text('DESTINATION :',style: TextStyle(
+                    job.address != " "?Text('DESTINATION :',style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 12
-                    ),),
+                    ),):Text(""),
                     SizedBox(height: 5,),
-                    Text(address,
+                    Text(job.address,
                     style: TextStyle(
                       fontSize: 12,
                       color:Color.fromRGBO(88, 89, 91,1)
@@ -200,7 +232,7 @@ workCards(BuildContext context ,name,address,UserAuth userAuth) {
               
               ButtonBar(
                 children: <Widget>[
-                  RaisedButton(
+                  job.address != " "?RaisedButton(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -212,10 +244,10 @@ workCards(BuildContext context ,name,address,UserAuth userAuth) {
                       ),
                     ),
                     onPressed: () {
-                      workDescription(context, name, address,userAuth);
+                      workDescription(context, job, userAuth);
                     },
                     focusElevation: 15,
-                  ),
+                  ):Container(),
                   SizedBox(width: 10,),
                 ],
               ),
