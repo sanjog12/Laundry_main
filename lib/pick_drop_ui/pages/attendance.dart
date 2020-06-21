@@ -5,22 +5,12 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:laundry/Classes/UserAuth.dart';
+import 'package:laundry/Services/SharedPrefs.dart';
+import 'package:laundry/others/Attendance.dart';
 
-List<DateTime> presentDates = [
-  DateTime(2020,6,2),
-  DateTime(2020,6,3),
-  DateTime(2020,6,4),
-  DateTime(2020,6,5),
-  DateTime(2020,6,6)
-];
+List<DateTime> presentDates = [];
 
-List<DateTime> absentDates = [
-  DateTime(2020,6,10),
-  DateTime(2020,6,11),
-  DateTime(2020,6,12),
-  DateTime(2020,6,13),
-  DateTime(2020,6,14)
-];
+List<DateTime> absentDates = [];
 
 class attendance extends StatefulWidget{
   final UserAuth userAuth;
@@ -32,6 +22,9 @@ class attendance extends StatefulWidget{
 }
 
 class Attendance extends State<attendance> {
+  
+
+  bool attend = true;
   CalendarCarousel _calendarCarouselNoHeader;
   static Widget aiconTag(String day)=> Container(
     decoration: BoxDecoration(
@@ -68,6 +61,24 @@ class Attendance extends State<attendance> {
   EventList<Event> datemap = new EventList<Event>(
     events: {},
   );
+  
+  gett() async{
+    await getAttendance().then((value){
+      setState(() {
+        presentDates = value;
+        attend = false;
+      });
+    });
+  }
+  
+  
+  @override
+  void initState() {
+    super.initState();
+    gett();
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
     var cheight = MediaQuery.of(context).size.height;
@@ -85,7 +96,7 @@ class Attendance extends State<attendance> {
     }
     for(int i=0;i<len1;i++){
       datemap.add(absentDates[i],
-      new Event(
+          Event(
         date: absentDates[i],
         title: 'Event 1',
         icon: aiconTag(
@@ -110,7 +121,12 @@ class Attendance extends State<attendance> {
           centerTitle: true,
           backgroundColor: Colors.blueGrey[700],
         ),
-        body: Column(
+        body: attend?Container(
+          child: Center(
+              child: CircularProgressIndicator(),
+          ),
+        )
+            :Column(
           children: <Widget>[
             _calendarCarouselNoHeader =CalendarCarousel<Event>(
                   height: cheight * 0.54,

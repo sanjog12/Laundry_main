@@ -93,9 +93,10 @@ class _HomePageState extends State<HomePage> {
               CustomListTile(Icons.question_answer,"FAQ",()=>{}),
               CustomListTile(Icons.description,"Terms & Conditions",()=>{}),
               CustomListTile(Icons.help,"Support",()=>{}),
-              CustomListTile(Icons.lock,"Logout",(){
+              CustomListTile(Icons.lock,"Logout",() async{
                 try {
-                  AuthServices().logOutUser();
+                  await AuthServices().logOutUser();
+                  Navigator.pop(context);
                   Navigator.push(context,
                   MaterialPageRoute(
                     builder: (context)=>Login()
