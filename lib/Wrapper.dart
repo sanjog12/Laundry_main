@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/authentication/FirebaseStore.dart';
@@ -39,7 +40,8 @@ class _WrapperState extends State<Wrapper> {
 	        stream: fireStoreService.getUserDetails(firebaseID),
 	        builder: (BuildContext context, snapshot){
 	    	    if(snapshot.hasData){}
-		        return HomePage();
+		        return HomePage(
+		        );
 	        },
     );
   }

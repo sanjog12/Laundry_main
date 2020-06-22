@@ -6,25 +6,33 @@ which is specified in the work card in the work section .
 import 'dart:async';
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
-
+import 'package:laundry/Classes/Job.dart';
+import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 
-Future<bool> workDescription(context,name , address){
+Future<bool> workDescription(context, Job job, UserAuth userAuth){
 
 	return showDialog(
 			context: context,
-			builder: (BuildContext context) => MapPage()
+			builder: (BuildContext context) => MapPage(
+				userAuth: userAuth,
+				job: job,
+			)
 	);
 }
 
+
 class MapPage extends StatefulWidget{
+	final UserAuth userAuth;
+	final Job job ;
+  const MapPage({Key key, this.userAuth, this.job}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _MapPageState();
@@ -34,20 +42,18 @@ class MapPage extends StatefulWidget{
 
 class _MapPageState extends State<MapPage>{
 	Completer<GoogleMapController> _controller = Completer();
-	static final CameraPosition _intial = CameraPosition(target: LatLng(28.640884,77.126071), zoom: 15);
 	 List<Marker> markers = [];
 	 
 	 @override
   void initState() {
     super.initState();
-    distanceTimeNavigation();
     markers.add(Marker(
 			markerId: MarkerId("Sanjog House"),
 			draggable: false,
 			onTap: (){
 				print("Tapped");
 			},
-			position: LatLng(28.640884,77.126071)
+			position: LatLng(double.parse(widget.job.lat),double.parse(widget.job.long)),
 		));
   }
 
@@ -76,7 +82,7 @@ class _MapPageState extends State<MapPage>{
 	      	width: 350,
 	      	child: Center(
 	      		child: GoogleMap(
-	      			initialCameraPosition: _intial,
+	      			initialCameraPosition: CameraPosition(target: LatLng(double.parse(widget.job.lat), double.parse(widget.job.long)), zoom: 15),
 	      			markers: Set.from(markers),
 	      			mapType: MapType.normal,
 	      			onMapCreated: (GoogleMapController controller){
@@ -103,10 +109,9 @@ class _MapPageState extends State<MapPage>{
 				    final String docName ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
 				    CreatePolyline object = CreatePolyline(docName);
 				    object.startRecord();
-				    googleMapNavigation();
 				    Navigator.of(context).pop();
 				    Navigator.push(context,
-						    MaterialPageRoute(builder: (context)=>DuringNavigation(object , docName))
+						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object , docName: docName,userAuth: widget.userAuth, job: widget.job,))
 				    );
 			    },
 		    ),
