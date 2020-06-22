@@ -140,27 +140,29 @@ class _ScreenShotState extends State<ScreenShot> {
 				    ),
 		      ),
 		    )
-		    : Container(
-	    height: size.height-200,
-	    child: GoogleMap(
-		  polylines: Set<Polyline>.of(polyLines.values),
-		  initialCameraPosition: CameraPosition(target: _points.first),
-		  mapType: MapType.normal,
-		  zoomGesturesEnabled: true,
-		  zoomControlsEnabled: true,
-		  onMapCreated: (GoogleMapController controller) async {
-		  	 _controller.complete(controller);
-			   await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),4)).whenComplete(() async{
-				   await Future.delayed(Duration(seconds: 5));
-				   var png = await controller.takeSnapshot();
-				   uploadPic(png);
-				   await Firestore.instance.collection('Location Points').document(widget.docName).setData({
-					   '${DateTime.now()}' : 'Screen Short Taken',
-				   },merge: true);
-			   });
-			   
-			   },
-	    ),
+		    : AbsorbPointer(
+	    
+		      child: Container(
+			      height: size.height-200,
+	          child: GoogleMap(
+		        polylines: Set<Polyline>.of(polyLines.values),
+		        initialCameraPosition: CameraPosition(target: _points.first),
+		        mapType: MapType.normal,
+		        zoomGesturesEnabled: true,
+		        zoomControlsEnabled: true,
+		        onMapCreated: (GoogleMapController controller) async {
+		        	_controller.complete(controller);
+			        await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),4)).whenComplete(() async{
+				      await Future.delayed(Duration(seconds: 5));
+				      var png = await controller.takeSnapshot();
+				      uploadPic(png);
+				      await Firestore.instance.collection('Location Points').document(widget.docName).setData({
+					      '${DateTime.now()}' : 'Screen Short Taken',
+				      },merge: true);
+			        });
+			        },
+	          ),
+		      ),
     );
   }
 }

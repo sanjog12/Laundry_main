@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/others/Style.dart';
 import 'package:laundry/others/Validator.dart';
-import 'package:laundry/pick_drop_ui/home_page.dart';
 
 
 class SignUp extends StatefulWidget {
@@ -25,6 +23,7 @@ class _SignUpState extends State<SignUp> {
 		final size = MediaQuery.of(context).size;
 		final ThemeData theme = Theme.of(context);
 		final TextEditingController _pass = TextEditingController();
+		final TextEditingController _confirmpass = TextEditingController();
 		
 		return Scaffold(
 			body: Stack(
@@ -125,56 +124,6 @@ class _SignUpState extends State<SignUp> {
 												Column(
 													crossAxisAlignment: CrossAxisAlignment.stretch,
 													children: <Widget>[
-														Text("Password" , style: TextStyle(
-														),),
-														SizedBox(
-															height: 10,
-														),
-														
-														TextFormField(
-															controller: _pass,
-															validator: (String value){
-																return validatePasswordLength(value);
-															},
-															onSaved: (value){
-																user.password=value;
-															},
-															decoration: buildCustomInput(hintText: "Password"),
-															obscureText: true,
-														
-														)
-													],
-												),
-												
-												SizedBox(height: 30,),
-												
-												Column(
-													crossAxisAlignment: CrossAxisAlignment.stretch,
-													children: <Widget>[
-														Text("Confirm Password", style: TextStyle(
-														),),
-														
-														SizedBox(
-															height: 10,
-														),
-														
-														TextFormField(
-															validator: (String v){
-																return validatePasswordMatch(v, _pass.text);
-															},
-															decoration: buildCustomInput(hintText: "Password"),
-															obscureText: true,
-														)
-													],
-												),
-												
-												SizedBox(
-													height: 30,
-												),
-												
-												Column(
-													crossAxisAlignment: CrossAxisAlignment.stretch,
-													children: <Widget>[
 														
 														Text("Mobile Number", style: TextStyle(
 														),),
@@ -194,6 +143,58 @@ class _SignUpState extends State<SignUp> {
 														),
 													],
 												),
+												
+												SizedBox(
+													height: 30,
+												),
+												
+												Column(
+													crossAxisAlignment: CrossAxisAlignment.stretch,
+													children: <Widget>[
+														Text("Password" , style: TextStyle(
+														),),
+														
+														SizedBox(
+															height: 10,
+														),
+														
+														TextFormField(
+															controller: _pass,
+															validator: (String value){
+																return validatePasswordLength(value);
+															},
+															onSaved: (value){
+																user.password=value;
+															},
+															decoration: buildCustomInput(hintText: "Password"),
+															obscureText: true,
+														)
+													],
+												),
+												
+												SizedBox(height: 30,),
+												
+												Column(
+													crossAxisAlignment: CrossAxisAlignment.stretch,
+													children: <Widget>[
+														Text("Confirm Password", style: TextStyle(
+														),),
+														
+														SizedBox(
+															height: 10,
+														),
+														
+														TextFormField(
+															controller: _confirmpass,
+															validator: (String v){
+																return validatePasswordMatch(v, _pass.text);
+															},
+															decoration: buildCustomInput(hintText: "Password"),
+															obscureText: true,
+														)
+													],
+												),
+												
 												
 												SizedBox(height: 30,),
 												
@@ -255,7 +256,6 @@ class _SignUpState extends State<SignUp> {
 							backgroundColor: Color(0xff666666),
 							textColor: Colors.white,
 							fontSize: 16.0);
-//        Navigator.of(context).pushReplacementNamed(PersonalInfoRoute);
 			} else {
 				print("Didnt create");
 			}

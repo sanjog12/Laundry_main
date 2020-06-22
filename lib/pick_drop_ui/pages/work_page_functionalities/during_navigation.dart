@@ -1,6 +1,6 @@
 
 import 'dart:async';
-
+import 'screen_shot.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +62,22 @@ class _DuringNavigationState extends State<DuringNavigation> {
     location.getLocation().then((value){
     	previousLocation = currentLocation;
     	currentLocation = LatLng(value.latitude,value.longitude);
+    }).whenComplete(() async{
+	    await getPolyline().then((value){
+		    setState(() {
+			    polyline.add(
+					    Polyline(
+						    polylineId: PolylineId('route1'),
+						    visible: true,
+						    points: value,
+						    width: 4,
+						    color: Colors.red,
+						    startCap: Cap.roundCap,
+						    endCap: Cap.buttCap,
+					    )
+			    );
+		    });
+	    });
     });
   }
   
@@ -81,7 +97,29 @@ class _DuringNavigationState extends State<DuringNavigation> {
 		  updateCamera();
 	  });
 	  
-    return Container(
+    return Stack(
+      children : <Widget>[
+      	
+      	Align(
+		      alignment: Alignment.bottomCenter,
+      	  child: Container(
+		      padding: EdgeInsets.all(10),
+		      child: FlatButton(
+			      child: Text("Reached Destination"),
+			      onPressed: () {
+				      Navigator.of(context).pop();
+			  							Navigator.push(context,
+			  									MaterialPageRoute(builder: (context) => ScreenShot(
+			  										object: widget.object,
+			  										docName: widget.docName,
+			  										userAuth: widget.userAuth,
+			  									)));
+			      }
+		      ),
+	      ),
+      	),
+      	
+      	Container(
 	    child: GoogleMap(
 		    initialCameraPosition: CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17),
 		    polylines: polyline,
@@ -93,23 +131,10 @@ class _DuringNavigationState extends State<DuringNavigation> {
 		    	_controller.complete(controller);
 		    	controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17)));
 		    	_controller1 = controller;
-			    await getPolyline().then((value){
-				    setState(() {
-					    polyline.add(
-							    Polyline(
-								    polylineId: PolylineId('route1'),
-								    visible: true,
-								    points: value,
-								    width: 4,
-								    color: Colors.red,
-								    startCap: Cap.roundCap,
-								    endCap: Cap.buttCap,
-							    )
-					    );
-				    });
-			    });
 		    },
 	    ),
+      ),
+  ],
     );
   }
 	
