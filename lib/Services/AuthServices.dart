@@ -74,11 +74,13 @@ class AuthServices{
 				values.forEach((key, value) {
 					if(key == user.user.uid) {
 						userBasic = UserBasic(
+							fullName: value["fullname"],
 							email: user.user.email,
 							uid: user.user.uid,
 							userType: value["userType"],
 							lat: value["workLat"],
 							long: value["workLong"],
+							phoneNumber: value["phone"],
 						);
 					}
 				});}

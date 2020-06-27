@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 
 
@@ -46,11 +47,11 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 
 
 
-Future<void> distanceTimeNavigation(List<LatLng> temp, docName) async{
+Future<void> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 	
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	String uid;
-	uid = SharedPrefs.getStringPreference("uid");
+	uid = await SharedPrefs.getStringPreference("uid");
 	print(uid);
 	
 	String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=kilometers&origins="
@@ -59,17 +60,17 @@ Future<void> distanceTimeNavigation(List<LatLng> temp, docName) async{
 	
 	http.Response response = await http.get(url);
 	print("response\n" + '${response.body}');
-	Map<String,dynamic> map = await json.decode(response.body);
+	Map<dynamic,dynamic> map = await json.decode(response.body);
 	print('length distance JSON: '+map['rows'][0]['elements'][0]['distance']['text'].toString());
 	print('length distance JSON: '+map['rows'][0]['elements'][0]['duration']['text'].toString());
-	await firebaseDatabase.reference().child("Employee Record Distance").child(uid).child("san00001").set({
+	await firebaseDatabase.reference().child("EmployeeRecordDistance").child(uid).child(job.id).set({
 		'Distance' : map['rows'][0]['elements'][0]['distance']['text'].toString(),
 		'Time' : map['rows'][0]['elements'][0]['duration']['text'].toString(),
 	});
 }
 
 Future<double> distanceFormStore(LatLng currentLocation, LatLng storeLocation) async {
-	String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=meter&origins="
+	String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=meters&origins="
 			+ currentLocation.latitude.toString() + "," +
 			currentLocation.longitude.toString() +
 			"&destinations=" + currentLocation.latitude.toString() + "," +

@@ -254,7 +254,7 @@ class _LoginState extends State<Login> {
         });
       
         UserBasic userBasic = await _auth.loginUser(authDetails);
-        
+        print(userBasic.phoneNumber);
         print(userBasic.email);
         if(userBasic.userType != "admin") {
           if (double.parse(userBasic.long) == 0) {
@@ -281,7 +281,9 @@ class _LoginState extends State<Login> {
           Navigator.pop(context);
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => HomePage()
+              builder: (context) => HomePage(
+                userBasic: userBasic,
+              )
             )
           );
           Fluttertoast.showToast(

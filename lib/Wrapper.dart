@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
@@ -36,12 +37,13 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     return firebaseID==null
 		    ?Login()
-		    :StreamBuilder(
-	        stream: fireStoreService.getUserDetails(firebaseID),
+		    :StreamBuilder<UserBasic>(
+	        stream: fireStoreService.getUserDetails(firebaseID).asStream(),
 	        builder: (BuildContext context, snapshot){
-	    	    if(snapshot.hasData){}
-		        return HomePage(
-		        );
+	    	    if(snapshot.hasData){
+	    	    	print(snapshot.data.phoneNumber);
+		        }
+		        return HomePage(userBasic: snapshot.data,);
 	        },
     );
   }

@@ -4,7 +4,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserAuth.dart';
+import 'package:laundry/pick_drop_ui/pages/customer_end_work/customer_end.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
@@ -13,8 +15,9 @@ class ScreenShot extends StatefulWidget {
 	final UserAuth userAuth;
 	final CreatePolyline object;
 	final String docName;
+	final Job job;
 	GoogleMap map;
-	ScreenShot({this.userAuth, this.object , this.docName ,Key key}): super(key: key);
+	ScreenShot({this.job, this.userAuth, this.object , this.docName ,Key key}): super(key: key);
   @override
   _ScreenShotState createState() => _ScreenShotState();
 }
@@ -47,10 +50,12 @@ class _ScreenShotState extends State<ScreenShot> {
   Future<void> callFetchRoadSnapped() async{
 			_temp = await fetchRoadSnapped(widget.object.getrecordedlist(),widget.docName);
 			print(_points);
-			setState(() {
-				_points = _temp;
-			  waiting = false;
-			});
+			if(this.mounted) {
+				setState(() {
+					_points = _temp;
+					waiting = false;
+				});
+			}
   }
   
 	
@@ -81,7 +86,7 @@ class _ScreenShotState extends State<ScreenShot> {
 	
 	
 	Future<void> polylineIdGenerate() async{
-		distanceTimeNavigation(_points,widget.docName);
+		distanceTimeNavigation(_points,widget.job);
 		print("trip_details invoked ");
 		final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
 		_polylineIdCounter++;
@@ -98,16 +103,18 @@ class _ScreenShotState extends State<ScreenShot> {
 			points: _points,
 			onTap: (){},
 		);
-		setState(() {
-			polyLines[polylineId]=polyline;
-		});
+		if(this.mounted) {
+			setState(() {
+				polyLines[polylineId] = polyline;
+			});
+		}
 	}
 	
 	
 	
 	Future<void> uploadPic(png) async {
 		final StorageReference firebaseStorageRef =
-				FirebaseStorage.instance.ref().child(widget.userAuth.email.toString()).child(widget.docName);
+				FirebaseStorage.instance.ref().child(widget.userAuth.email).child(widget.job.id);
 		firebaseStorageRef.putData(png);
 	}
 	
@@ -153,9 +160,15 @@ class _ScreenShotState extends State<ScreenShot> {
 		        onMapCreated: (GoogleMapController controller) async {
 		        	_controller.complete(controller);
 			        await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),4)).whenComplete(() async{
-				      await Future.delayed(Duration(seconds: 5));
+				      await Future.delayed(Duration(seconds: 8));
 				      var png = await controller.takeSnapshot();
-				      uploadPic(png);
+				      await uploadPic(png).whenComplete(() {
+				      	Navigator.push(context,
+						      MaterialPageRoute(
+							      builder: (context)=>CustomerEnd()
+						      )
+					      );
+				      });
 				      await Firestore.instance.collection('Location Points').document(widget.docName).setData({
 					      '${DateTime.now()}' : 'Screen Short Taken',
 				      },merge: true);
