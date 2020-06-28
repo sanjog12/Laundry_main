@@ -1,6 +1,6 @@
 
 import 'dart:async';
-
+import 'screen_shot.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +39,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	DatabaseReference dbf;
 	
 	Future<List<LatLng>> getPolyline() async{
+		print(widget.userAuth.email);
 		print(widget.job.lat + " " + widget.job.long);
 		print(currentLocation);
 		try{
@@ -62,6 +63,24 @@ class _DuringNavigationState extends State<DuringNavigation> {
     location.getLocation().then((value){
     	previousLocation = currentLocation;
     	currentLocation = LatLng(value.latitude,value.longitude);
+    }).whenComplete(() async{
+	    await getPolyline().then((value){
+	    	if(this.mounted) {
+			    setState(() {
+				    polyline.add(
+						    Polyline(
+							    polylineId: PolylineId('route1'),
+							    visible: true,
+							    points: value,
+							    width: 6,
+							    color: Colors.red,
+							    startCap: Cap.roundCap,
+							    endCap: Cap.buttCap,
+						    )
+				    );
+			    });
+		    }
+	    });
     });
   }
   
@@ -75,41 +94,57 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	  
 	  location.onLocationChanged.listen((event) {
 	  	print("inside");
-		  setState(() {
-			  currentLocation = LatLng(event.latitude,event.longitude);
-		  });
+	  	if(mounted) {
+			  setState(() {
+				  currentLocation = LatLng(event.latitude, event.longitude);
+			  });
+		  }
 		  updateCamera();
 	  });
 	  
-    return Container(
+    return Stack(
+	    
+      children : <Widget>[
+      	Container(
 	    child: GoogleMap(
 		    initialCameraPosition: CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17),
 		    polylines: polyline,
 		    compassEnabled: true,
-		    trafficEnabled: true,
 		    myLocationEnabled: true,
 		    mapType: MapType.normal,
 		    onMapCreated: (GoogleMapController controller) async{
 		    	_controller.complete(controller);
 		    	controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17)));
 		    	_controller1 = controller;
-			    await getPolyline().then((value){
-				    setState(() {
-					    polyline.add(
-							    Polyline(
-								    polylineId: PolylineId('route1'),
-								    visible: true,
-								    points: value,
-								    width: 4,
-								    color: Colors.red,
-								    startCap: Cap.roundCap,
-								    endCap: Cap.buttCap,
-							    )
-					    );
-				    });
-			    });
 		    },
 	    ),
+      ),
+	
+	      Align(
+		      alignment: AlignmentDirectional.bottomStart,
+	        child: Container(
+		        height: 40,
+		        width: 150,
+			      decoration: BoxDecoration(
+				      borderRadius: BorderRadius.circular(10),
+				      color: Colors.blueGrey,
+			      ),
+			      child: FlatButton(
+					      child: Text("Reached Destination"),
+					      onPressed: () {
+						      Navigator.of(context).pop();
+						      Navigator.push(context,
+								      MaterialPageRoute(builder: (context) => ScreenShot(
+									      object: widget.object,
+									      docName: widget.docName,
+									      userAuth: widget.userAuth,
+									      job: widget.job,
+								      )));
+					      }
+			      ),
+	        ),
+	      ),
+  ],
     );
   }
 	

@@ -1,27 +1,28 @@
 /* Home page of the pick and drop worker */
-import 'package:background_location/background_location.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:laundry/Classes/UserAuth.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
+import 'package:laundry/pick_drop_ui/EmpProfile.dart';
 import 'package:laundry/pick_drop_ui/pages/attendance.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
-import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
-
-
+import 'package:laundry/pick_drop_ui/EmpProfile.dart';
 class HomePage extends StatefulWidget {
+  final UserBasic userBasic;
+
+  const HomePage({Key key, this.userBasic}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  
-  int i =0;
-  FirebaseUser user ;
-  UserAuth userAuth =UserAuth();
+ 
+  int i = 0;
+  FirebaseUser user;
+  UserAuth userAuth = UserAuth();
   
   
   Future<void> userDetails() async{
@@ -31,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   }
   
   
+
   Widget buildSideMenu(){
     return Container(
         width: 260,
@@ -89,14 +91,21 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-             CustomListTile(Icons.person,"Profile",()=>{}),
+             CustomListTile(Icons.person,"Profile",()=>
+               Navigator.push(context,
+                 MaterialPageRoute(
+                     builder: (context)=> Empprofile(
+                       userBasic: widget.userBasic,
+                     )
+                 )
+               )
+             ),
               CustomListTile(Icons.question_answer,"FAQ",()=>{}),
               CustomListTile(Icons.description,"Terms & Conditions",()=>{}),
               CustomListTile(Icons.help,"Support",()=>{}),
-              CustomListTile(Icons.lock,"Logout",() async{
+              CustomListTile(Icons.lock,"Logout",(){
                 try {
-                  await AuthServices().logOutUser();
-                  Navigator.pop(context);
+                  AuthServices().logOutUser();
                   Navigator.push(context,
                   MaterialPageRoute(
                     builder: (context)=>Login()
@@ -112,47 +121,7 @@ class _HomePageState extends State<HomePage> {
       );
   }
 
-  void locationPermission() async{
-    PermissionStatus f = await BackgroundLocation.checkPermissions();
-  
-    if(f.value ==0 ){
-      await BackgroundLocation.getPermissions(onDenied:(){
-        alertPop();
-      },onGranted: (){
-      
-      });
-    }
-  }
 
-
-  alertPop() {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            title: Text("Administrator"),
-            content: Text("It is Compulsory to give location permission"),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("Ok"),
-                onPressed: (){
-                  Navigator.pop(context);
-                  locationPermission();
-                },
-              )
-            ],
-          );
-        }
-    );
-  }
-
-  
-  @override
-  void initState() {
-    super.initState();
-    locationPermission();
-    userDetails();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,31 +165,41 @@ class _HomePageState extends State<HomePage> {
             ListGrid(userAuth,Icons.work,"TASK",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> Work()),
+                MaterialPageRoute(builder: (context)=> Work(
+                  userAuth: userAuth,
+                )),
               );
             },),
               ListGrid(userAuth,Icons.directions_run,"DISTANCE",()=>(){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context)=> attendance()),
+                  MaterialPageRoute(builder: (context)=> attendance(
+                    userAuth: userAuth,
+                  )),
                 );
               },),
               ListGrid(userAuth,Icons.access_time,"TIME",()=>(){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context)=> attendance()),
+                  MaterialPageRoute(builder: (context)=> attendance(
+                    userAuth: userAuth,
+                  )),
                 );
               },),
               ListGrid(userAuth,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context)=> attendance()),
+                  MaterialPageRoute(builder: (context)=> attendance(
+                    userAuth: userAuth,
+                  )),
                 );
               },),
               ListGrid(userAuth,Icons.history,"HISTORY",()=>(){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context)=> attendance()),
+                  MaterialPageRoute(builder: (context)=> attendance(
+                    userAuth: userAuth,
+                  )),
                 );
               },),
     ],
@@ -234,14 +213,13 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 }
-}
+  }
   
-  class ListGrid extends StatelessWidget {//Class for grid display of homepage
+  class ListGrid extends StatelessWidget {               //Class for grid display of homepage
   final IconData icon;
   final String text;
-  UserAuth userAuth;
-  final Function ontap;
-  ListGrid(this.userAuth,this.icon,this.text,this.ontap);
+
+  ListGrid(this.icon,this.text);
     @override
     Widget build(BuildContext context) {
       return Padding(
@@ -270,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(bottom:3.0),
+                padding: const EdgeInsets.only(bottom:3.0),
                 child: Container(
                   height: 40,
                   width: 40,
@@ -284,7 +262,12 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       size: 23.0,
                     ),
-                    onPressed: ontap()
+                    onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context)=>Work()),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -294,7 +277,6 @@ class _HomePageState extends State<HomePage> {
       );
     }
   }
-  
 class CustomListTile extends StatelessWidget {         //Class for items to be displayed in the drawer
   final IconData icon;
   final String text;

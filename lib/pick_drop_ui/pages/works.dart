@@ -43,6 +43,7 @@ class _WorkState extends State<Work> {
       values.forEach((key, value) {
         print(key);
         Job job = Job(
+          id: key,
           customerName: value["Name"],
           address: value["Address"],
           lat: value["Lat"],
@@ -52,6 +53,7 @@ class _WorkState extends State<Work> {
       });
       }else{
         Job job = Job(
+          id: "0000",
           customerName: "No assigned Job",
           address: " ",
           lat: " ",
@@ -244,6 +246,7 @@ workCards(BuildContext context, Job job, UserAuth userAuth) {
                       ),
                     ),
                     onPressed: () {
+                      print(userAuth.email);
                       workDescription(context, job, userAuth);
                     },
                     focusElevation: 15,
