@@ -1,14 +1,19 @@
 import 'dart:ui';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:flutter/services.dart';
 import 'package:laundry/Services/AuthServices.dart';
+import 'package:location/location.dart';
 import 'package:laundry/authentication/AuthScreens/Signup.dart';
 import 'package:laundry/others/Style.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
 
 
 
@@ -16,18 +21,38 @@ class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 }
+
+
+
 class _LoginState extends State<Login> {
   
   
   String email = ' ';
   String password = ' ';
-  
+  LocationData currentLocation;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   UserAuth userAuth = UserAuth();
   AuthServices _auth = AuthServices();
+  FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+  DatabaseReference dbf;
+  
+  Location location = Location();
   
   bool buttonLoading = false;
   
+  locationPermission() async{
+    PermissionStatus s = await location.hasPermission();
+    if(s.index==0){
+      location.requestPermission();
+    }
+    currentLocation = await location.getLocation();
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    locationPermission();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -213,9 +238,14 @@ class _LoginState extends State<Login> {
     );
   }
   
+  LatLng convert(double i,double j){
+    return LatLng(i,j);
+  }
+  
   
   
   Future<void> loginUser(UserAuth authDetails) async {
+    
     try {
       if (key.currentState.validate()) {
         key.currentState.save();
@@ -245,6 +275,7 @@ class _LoginState extends State<Login> {
         String time=DateFormat("kk:mm:ss").format(DateTime.now());
         firebaseDatabase.reference().child("Attendance").child(userBasic.uid).child(year.toString()).child(month.toString()).set({
           date.toString() : time
+        });
       
         if (userBasic != null) {
           Navigator.pop(context);
@@ -276,7 +307,7 @@ class _LoginState extends State<Login> {
           fontSize: 16.0);
     } catch (e) {
       Fluttertoast.showToast(
-          msg: "Unable to login at the moment",
+          msg: e.toString(),
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
