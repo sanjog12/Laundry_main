@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/pick_drop_ui/EmpProfile.dart';

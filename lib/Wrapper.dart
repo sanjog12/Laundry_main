@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/authentication/FirebaseStore.dart';
@@ -43,7 +42,7 @@ class _WrapperState extends State<Wrapper> {
 	    	    if(snapshot.hasData){
 	    	    	print(snapshot.data.phoneNumber);
 		        }
-		        return HomePage(userBasic: snapshot.data,);
+		        return HomePage(userBasic: snapshot.data);
 	        },
     );
   }

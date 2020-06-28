@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -246,6 +245,7 @@ class _LoginState extends State<Login> {
   
   
   Future<void> loginUser(UserAuth authDetails) async {
+    
     try {
       if (key.currentState.validate()) {
         key.currentState.save();
