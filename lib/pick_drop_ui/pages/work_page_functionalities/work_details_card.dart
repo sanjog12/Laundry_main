@@ -5,24 +5,22 @@ which is specified in the work card in the work section .
 
 import 'dart:async';
 import 'dart:math';
-
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
-import 'package:laundry/Classes/UserAuth.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 
-Future<bool> workDescription(context, Job job, UserAuth userAuth){
+Future<bool> workDescription(context, Job job, UserBasic userBasic){
 
 	return showDialog(
 			context: context,
 			builder: (BuildContext context) => MapPage(
-				userAuth: userAuth,
+				userBasic: userBasic,
 				job: job,
 			)
 	);
@@ -30,9 +28,9 @@ Future<bool> workDescription(context, Job job, UserAuth userAuth){
 
 
 class MapPage extends StatefulWidget{
-	final UserAuth userAuth;
+	final UserBasic userBasic;
 	final Job job ;
-  const MapPage({Key key, this.userAuth, this.job}) : super(key: key);
+  const MapPage({Key key, this.userBasic, this.job}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _MapPageState();
@@ -53,7 +51,8 @@ class _MapPageState extends State<MapPage>{
 			onTap: (){
 				print("Tapped");
 			},
-			position: LatLng(double.parse(widget.job.lat),double.parse(widget.job.long)),
+			position: LatLng(widget.job.position.latitude, widget.job.position.longitude),
+//	    position: LatLng(28.601231, 77.082344),
 		));
   }
 
@@ -67,8 +66,9 @@ class _MapPageState extends State<MapPage>{
 			title: Column(
 				crossAxisAlignment: CrossAxisAlignment.stretch,
 				children: <Widget>[
-					Text('Pickup Location Details',style: TextStyle(
-						color: Colors.blueGrey
+					Text(widget.job.customerName,style: TextStyle(
+						color: Colors.blueGrey,
+						fontWeight: FontWeight.bold,
 					),),
 					Divider(
 						thickness: 1,
@@ -82,7 +82,7 @@ class _MapPageState extends State<MapPage>{
 	      	width: 350,
 	      	child: Center(
 	      		child: GoogleMap(
-	      			initialCameraPosition: CameraPosition(target: LatLng(double.parse(widget.job.lat), double.parse(widget.job.long)), zoom: 15),
+	      			initialCameraPosition: CameraPosition(target: LatLng(widget.job.position.latitude, widget.job.position.longitude), zoom: 15),
 	      			markers: Set.from(markers),
 	      			mapType: MapType.normal,
 	      			onMapCreated: (GoogleMapController controller){
@@ -111,7 +111,7 @@ class _MapPageState extends State<MapPage>{
 				    object.startRecord();
 				    Navigator.of(context).pop();
 				    Navigator.push(context,
-						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object , docName: docName,userAuth: widget.userAuth, job: widget.job,))
+						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object , docName: docName,userBasic: widget.userBasic, job: widget.job,))
 				    );
 			    },
 		    ),

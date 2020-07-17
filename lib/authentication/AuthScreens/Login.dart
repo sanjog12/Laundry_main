@@ -111,7 +111,7 @@ class _LoginState extends State<Login> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Text("Email Address" , style: TextStyle(
+                        Text("Registered Mobile Number" , style: TextStyle(
                         ),),
                         
                         SizedBox(
@@ -119,10 +119,9 @@ class _LoginState extends State<Login> {
                         ),
                         
                         TextFormField(
-                          decoration: buildCustomInput(hintText: 'Email Address'),
+                          decoration: buildCustomInput(hintText: 'Registered Mobile Number'),
                           onSaved: (value){
-                            email = value;
-                            userAuth.email = value;
+                            userAuth.mobileNo = value;
                           },
                         ),
                         
@@ -254,28 +253,28 @@ class _LoginState extends State<Login> {
         });
       
         UserBasic userBasic = await _auth.loginUser(authDetails);
-        print(userBasic.phoneNumber);
-        print(userBasic.email);
-        if(userBasic.userType != "admin") {
-          if (double.parse(userBasic.long) == 0) {
-            throw("Wait for the administrative actions");
-          }
-        }
+        print(userBasic.mobile);
         
-        if(userBasic.userType != "admin"){
-          double  d = await distanceFormStore( LatLng(currentLocation.latitude,currentLocation.longitude),
-              LatLng(double.parse(userBasic.lat),double.parse(userBasic.long)));
-          if(d>10){
-            throw("You are not present at your work place");
-          }
-        }
-        int month= DateTime.now().month;
-        int year = DateTime.now().year;
-        int date = DateTime.now().day;
-        String time=DateFormat("kk:mm:ss").format(DateTime.now());
-        firebaseDatabase.reference().child("Attendance").child(userBasic.uid).child(year.toString()).child(month.toString()).set({
-          date.toString() : time
-        });
+//        if(userBasic.designation != "admin") {
+//          if (double.parse(userBasic.long) == 0) {
+//            throw("Wait for the administrative actions");
+//          }
+//        }
+        
+//        if(userBasic.designation != "admin"){
+////          double  d = await distanceFormStore( LatLng(currentLocation.latitude,currentLocation.longitude),
+////              LatLng(double.parse(userBasic.lat),double.parse(userBasic.long)));
+//          if(d>10){
+//            throw("You are not present at your work place");
+//          }
+//        }
+//        int month= DateTime.now().month;
+//        int year = DateTime.now().year;
+//        int date = DateTime.now().day;
+//        String time=DateFormat("kk:mm:ss").format(DateTime.now());
+//        firebaseDatabase.reference().child("Attendance").child(userBasic.userID).child(year.toString()).child(month.toString()).set({
+//          date.toString() : time
+//        });
       
         if (userBasic != null) {
           Navigator.pop(context);
@@ -294,7 +293,16 @@ class _LoginState extends State<Login> {
               backgroundColor: Color(0xff666666),
               textColor: Colors.white,
               fontSize: 16.0);
-        } else {}
+        } else{
+          Fluttertoast.showToast(
+              msg: "Wrong Credential",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color(0xff666666),
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
       }
     } on PlatformException catch (e) {
       Fluttertoast.showToast(

@@ -28,12 +28,6 @@ class _HomePageState extends State<HomePage> {
   UserAuth userAuth = UserAuth();
   
   
-  Future<void> userDetails() async{
-    user = await FirebaseAuth.instance.currentUser();
-    userAuth.email = user.email;
-    print(userAuth.email);
-  }
-  
   
   Widget buildSideMenu(){
     return Container(
@@ -71,6 +65,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
+                    
                     Padding(
                       padding: EdgeInsets.all(15),
                       child: Text(
@@ -108,6 +103,7 @@ class _HomePageState extends State<HomePage> {
             CustomListTile(Icons.lock,"Logout",() async{
               try {
                 await AuthServices().logOutUser();
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.push(context,
                     MaterialPageRoute(
@@ -163,7 +159,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     locationPermission();
-    userDetails();
   }
   
   @override
@@ -205,15 +200,15 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 2,
           childAspectRatio: 0.88,
           children: <Widget>[
-            ListGrid(userAuth,Icons.work,"TASK",()=>(){
+            ListGrid(widget.userBasic,Icons.work,"TASK",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Work(
-                  userAuth: userAuth,
+                  userBasic: widget.userBasic,
                 )),
               );
             },),
-            ListGrid(userAuth,Icons.directions_run,"DISTANCE",()=>(){
+            ListGrid(widget.userBasic,Icons.directions_run,"DISTANCE",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> attendance(
@@ -221,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
-            ListGrid(userAuth,Icons.access_time,"TIME",()=>(){
+            ListGrid(widget.userBasic,Icons.access_time,"TIME",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> attendance(
@@ -229,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
-            ListGrid(userAuth,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
+            ListGrid(widget.userBasic,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> attendance(
@@ -237,7 +232,7 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
-            ListGrid(userAuth,Icons.history,"HISTORY",()=>(){
+            ListGrid(widget.userBasic,Icons.history,"HISTORY",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> attendance(
@@ -261,9 +256,9 @@ class _HomePageState extends State<HomePage> {
 class ListGrid extends StatelessWidget {//Class for grid display of homepage
   final IconData icon;
   final String text;
-  UserAuth userAuth;
-  final Function ontap;
-  ListGrid(this.userAuth,this.icon,this.text,this.ontap);
+  final UserBasic userBasic;
+  final Function onTap;
+  ListGrid(this.userBasic,this.icon,this.text,this.onTap);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -306,7 +301,7 @@ class ListGrid extends StatelessWidget {//Class for grid display of homepage
                       color: Colors.white,
                       size: 23.0,
                     ),
-                    onPressed: ontap()
+                    onPressed: onTap()
                 ),
               ),
             ),

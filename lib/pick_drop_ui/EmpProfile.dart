@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import'package:flutter/material.dart';
-import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
 class Empprofile extends StatelessWidget{
@@ -12,26 +11,24 @@ class Empprofile extends StatelessWidget{
 		
 		return MaterialApp(
 			debugShowCheckedModeBanner: false,
-			home: profile(userBasic: userBasic,),
+			home: Profile(userBasic: userBasic,),
 			theme: ThemeData(
 				primarySwatch: Colors.blue,
 			),
 		);
 	}
 }
-class profile extends StatefulWidget{
+class Profile extends StatefulWidget{
 	final UserBasic userBasic;
 
-  const profile({Key key, this.userBasic}) : super(key: key);
+  const Profile({Key key, this.userBasic}) : super(key: key);
 	@override
 	State<StatefulWidget> createState(){
-		// TODO: implement createState
-		return profilestate();
+		return ProfileState();
 	}
 }
-class profilestate extends State<profile>{
-	int ID=123456;
-	int mobile;
+class ProfileState extends State<Profile>{
+	
 	bool i= false;
 	bool j= false;
 	double font1 = 14.0;
@@ -40,9 +37,9 @@ class profilestate extends State<profile>{
 	@override
 	Widget build(BuildContext context)
 	{
-		Widget Details;
+		Widget details;
 		if(i){
-			Details =Column(
+			details =Column(
 				mainAxisAlignment: MainAxisAlignment.start,
 				children: <Widget>[
 					SizedBox(height: 5,),
@@ -133,7 +130,7 @@ class profilestate extends State<profile>{
 			);
 		}
 		else if(j){
-			Details = Column(
+			details = Column(
 				mainAxisAlignment: MainAxisAlignment.start,
 				children: <Widget>[
 					SizedBox(height: 5,),
@@ -220,7 +217,7 @@ class profilestate extends State<profile>{
 														crossAxisAlignment: CrossAxisAlignment.start,
 														children: <Widget>[
 															Text(
-																widget.userBasic.fullName,
+																widget.userBasic.name,
 																style: TextStyle(
 																	fontSize: 20,
 																	fontWeight: FontWeight.bold,
@@ -230,7 +227,7 @@ class profilestate extends State<profile>{
 															),
 															SizedBox(height: 3,),
 															Text(
-																"EMP ID: $ID",
+																"EMP ID: ${widget.userBasic.userID}",
 																style: TextStyle(
 																	fontSize: 15,
 																	color: Colors.blueGrey[50],
@@ -239,7 +236,7 @@ class profilestate extends State<profile>{
 															),
 															SizedBox(height: 3,),
 															Text(
-																"Mobile: ${widget.userBasic.phoneNumber}",
+																"Mobile: ${widget.userBasic.mobile}",
 																style: TextStyle(
 																	fontSize: 15,
 																	color: Colors.blueGrey[50],
@@ -282,28 +279,29 @@ class profilestate extends State<profile>{
 														),),
 													],
 												),
-												GestureDetector(
-													onTap: (){
-														Navigator.push(context,
-																MaterialPageRoute(
-																		builder: (context)=>HomePage()
-																)
-														);
-													},
-													child: Container(
-														decoration: BoxDecoration(
-															border: Border.all(color: Colors.blueGrey[50]),
-															borderRadius: BorderRadius.circular(5.0),
-														),
-														child: Padding(
-															padding: EdgeInsets.all(8.0),
-															child: Text("EDIT PROFILE", style: TextStyle(
-																color: Colors.blueGrey[50],
-																fontSize: 12,
-															),),
-														),
-													),
-												),
+
+//												GestureDetector(
+//													onTap: (){
+//														Navigator.push(context,
+//																MaterialPageRoute(
+//																		builder: (context)=>HomePage()
+//																)
+//														);
+//													},
+//													child: Container(
+//														decoration: BoxDecoration(
+//															border: Border.all(color: Colors.blueGrey[50]),
+//															borderRadius: BorderRadius.circular(5.0),
+//														),
+//														child: Padding(
+//															padding: EdgeInsets.all(8.0),
+//															child: Text("EDIT PROFILE", style: TextStyle(
+//																color: Colors.blueGrey[50],
+//																fontSize: 12,
+//															),),
+//														),
+//													),
+//												),
 												SizedBox(width: 1,),
 											],
 										)
@@ -377,7 +375,7 @@ class profilestate extends State<profile>{
 									),
 									height: 290,
 									width: MediaQuery.of(context).size.width,
-									child: Details,
+									child: details,
 								),
 							)
 						]

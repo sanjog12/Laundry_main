@@ -1,6 +1,6 @@
 
 class UserAuth{
-	String email,password;
+	String name,password,mobileNo;
 	
-	UserAuth({this.email,this.password});
+	UserAuth({this.name,this.password,this.mobileNo});
 }

@@ -5,19 +5,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
-import 'package:laundry/Classes/UserAuth.dart';
+import 'package:laundry/Classes/TripDetails.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/pick_drop_ui/pages/customer_end_work/customer_end.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 class ScreenShot extends StatefulWidget {
-	final UserAuth userAuth;
+	final UserBasic userBasic;
 	final CreatePolyline object;
 	final String docName;
 	final Job job;
 	GoogleMap map;
-	ScreenShot({this.job, this.userAuth, this.object , this.docName ,Key key}): super(key: key);
+	ScreenShot({this.job, this.userBasic, this.object , this.docName ,Key key}): super(key: key);
   @override
   _ScreenShotState createState() => _ScreenShotState();
 }
@@ -34,6 +35,8 @@ class _ScreenShotState extends State<ScreenShot> {
 	Completer<GoogleMapController> _controller = Completer();
 	int _polylineIdCounter =1;
 	Map<PolylineId,Polyline> polyLines = <PolylineId, Polyline>{};
+	TripDetails tripDetails;
+	
 	
 	@override
   void initState() {
@@ -42,10 +45,8 @@ class _ScreenShotState extends State<ScreenShot> {
     print("FetchRoadSnapped function is called ");
     callFetchRoadSnapped().whenComplete(polylineIdGenerate);
     print("FetchRoadSnapped function is complited");
-    print(widget.userAuth.email);
+    print(widget.userBasic.mobile);
   }
-  
-  
   
   Future<void> callFetchRoadSnapped() async{
 			_temp = await fetchRoadSnapped(widget.object.getrecordedlist(),widget.docName);
@@ -56,9 +57,7 @@ class _ScreenShotState extends State<ScreenShot> {
 					waiting = false;
 				});
 			}
-  }
-  
-	
+	}
   
 	 LatLngBounds _latLngBounds(List<LatLng> list){
 		print("About to check assert function in _latlongBoubds function");
@@ -83,10 +82,8 @@ class _ScreenShotState extends State<ScreenShot> {
 	}
 	
 	
-	
-	
 	Future<void> polylineIdGenerate() async{
-		distanceTimeNavigation(_points,widget.job);
+		tripDetails = await distanceTimeNavigation(_points,widget.job);
 		print("trip_details invoked ");
 		final String polylineIdVal = 'polyline_id_$_polylineIdCounter';
 		_polylineIdCounter++;
@@ -110,14 +107,12 @@ class _ScreenShotState extends State<ScreenShot> {
 		}
 	}
 	
-	
-	
 	Future<void> uploadPic(png) async {
+		String filename = widget.job.id +"k_${tripDetails.distance}" + "t_${tripDetails.time}";
 		final StorageReference firebaseStorageRef =
-				FirebaseStorage.instance.ref().child(widget.userAuth.email).child(widget.job.id);
+				FirebaseStorage.instance.ref().child(widget.userBasic.mobile).child(filename);
 		firebaseStorageRef.putData(png);
 	}
-	
 	
   @override
   Widget build(BuildContext context) {
@@ -169,7 +164,8 @@ class _ScreenShotState extends State<ScreenShot> {
 						      )
 					      );
 				      });
-				      await Firestore.instance.collection('Location Points').document(widget.docName).setData({
+				      
+				      await Firestore.instance.collection('Location Points').document().setData({
 					      '${DateTime.now()}' : 'Screen Short Taken',
 				      },merge: true);
 			        });

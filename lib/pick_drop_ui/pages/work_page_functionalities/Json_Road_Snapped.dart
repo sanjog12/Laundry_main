@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:laundry/Classes/Job.dart';
+import 'package:laundry/Classes/TripDetails.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 
 
@@ -47,7 +48,7 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 
 
 
-Future<void> distanceTimeNavigation(List<LatLng> temp, Job job) async{
+Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 	
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	String uid;
@@ -67,6 +68,11 @@ Future<void> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 		'Distance' : map['rows'][0]['elements'][0]['distance']['text'].toString(),
 		'Time' : map['rows'][0]['elements'][0]['duration']['text'].toString(),
 	});
+	TripDetails tripDetails = TripDetails(
+			distance: map['rows'][0]['elements'][0]['distance']['text'].toString(),
+			time: map['rows'][0]['elements'][0]['duration']['text'].toString()
+	);
+	return tripDetails;
 }
 
 Future<double> distanceFormStore(LatLng currentLocation, LatLng storeLocation) async {
