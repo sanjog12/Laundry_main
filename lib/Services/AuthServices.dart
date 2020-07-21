@@ -9,20 +9,27 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Classes/UserDetails.dart';
+import 'package:laundry/Services/EmployeeServices.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:http/http.dart' as http;
 import 'package:laundry/authentication/AuthenticateServices.dart';
+import 'package:laundry/others/ToastOutputs.dart';
 
 
 class AuthServices{
 	final FirebaseAuth _auth = FirebaseAuth.instance;
-	final Firestore _firestore = Firestore.instance;
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	DatabaseReference dbf;
 	
-	Future<void> logOutUser() async {
-		await SharedPrefs.setStringPreference('Password', null);
-		await SharedPrefs.setStringPreference('Mobile', null);
+	Future<void> logOutUser(UserBasic userBasic) async {
+		try {
+			await SharedPrefs.setStringPreference('Password', null);
+			await SharedPrefs.setStringPreference('Mobile', null);
+			await EmployeeServices().logoutTimeRecord(userBasic);
+		}catch(e){
+			print(e);
+		}
+		toastMessage(message: "Logout Successfully");
 	}
 	
 	
@@ -79,17 +86,28 @@ class AuthServices{
 			userBasic = UserBasic(
 				name: data['Entity']['UName'].toString(),
 				userID: data['Entity']['UserId'].toString(),
-				designation: data['Entity']['Designation'].toString(), password: data['Entity']['Password'].toString(),
+				designation: data['Entity']['Designation'].toString(),
+				password: data['Entity']['Password'].toString(),
 				isActive: data['Entity']['IsActive'].toString(),
-				isDeleted: data['Entity']['IsDeleted'].toString(), storeId: data['Entity']['StoreId'].toString(), mobile: data['Entity']['Mobile'].toString(),
+				isDeleted: data['Entity']['IsDeleted'].toString(),
+				storeId: data['Entity']['StoreId'].toString(),
+				mobile: data['Entity']['Mobile'].toString(),
 				startTime: data['Entity']['StartTime'].toString(),
 				designationID: data['Entity']['Designation'].toString(), storeName: data['Entity']['StoreName'], hours: data['Entity']['NoOfHours'].toString(),
 			);
-			
-			await Authenticate().validateUser(userBasic, authDetails);
-			await SharedPrefs.setStringPreference('Mobile', userBasic.mobile);
-			await SharedPrefs.setStringPreference('Password', userBasic.password);
-			
+			try {
+				print("1");
+				await Authenticate().validateUser(userBasic, authDetails);
+				print("2");
+				await SharedPrefs.setStringPreference('Mobile', userBasic.mobile);
+				print("3");
+				await SharedPrefs.setStringPreference('Password', userBasic.password);
+				print("4");
+				await EmployeeServices().loginTimeRecord(userBasic);
+				print("5");
+			}catch(e){
+				print(e);
+			}
 			return userBasic;
 		}catch(e){
 			Fluttertoast.showToast(

@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
               width: 200,
               child: DrawerHeader(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Container(
                       width: 118,
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage("assets/profile1.png"),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                         borderRadius: BorderRadius.circular(100.0),
                         border: Border.all(
@@ -68,18 +68,22 @@ class _HomePageState extends State<HomePage> {
                     
                     Padding(
                       padding: EdgeInsets.all(15),
-                      child: Text(
-                        "Person Name\nJob - Id",
-                        textAlign: TextAlign.center,
-                        textDirection: TextDirection.ltr,
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.blueGrey[50],
-                            fontFamily: "OpenSans",
-                            letterSpacing: 1.0
-                        ),
-                      ),
+//                      child: RichText(
+//                          textAlign: TextAlign.center,
+//                        text: TextSpan(
+//                          style: TextStyle(
+//                            fontSize: 20,
+//                            color: Colors.blueGrey,
+//                          ),
+//                          children: <TextSpan>[
+//                            TextSpan(text:widget.userBasic.name !=null? '${widget.userBasic.name}\n':" ",style: TextStyle(
+//                              fontStyle: FontStyle.italic,
+//                            )),
+//                            TextSpan(text: ' '),
+//                            TextSpan(text:widget.userBasic.userID !=null? '${widget.userBasic.userID}':"")
+//                          ],
+//                        )
+//                      ),
                     ),
                   ],
                 ),
@@ -97,12 +101,9 @@ class _HomePageState extends State<HomePage> {
                     )
                 )
             ),
-            CustomListTile(Icons.question_answer,"FAQ",()=>{}),
-            CustomListTile(Icons.description,"Terms & Conditions",()=>{}),
-            CustomListTile(Icons.help,"Support",()=>{}),
             CustomListTile(Icons.lock,"Logout",() async{
               try {
-                await AuthServices().logOutUser();
+                await AuthServices().logOutUser(widget.userBasic);
                 Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.push(context,
@@ -211,32 +212,32 @@ class _HomePageState extends State<HomePage> {
             ListGrid(widget.userBasic,Icons.directions_run,"DISTANCE",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> attendance(
-                  userAuth: userAuth,
+                MaterialPageRoute(builder: (context)=> Attendance(
+                  userBasic: widget.userBasic,
                 )),
               );
             },),
             ListGrid(widget.userBasic,Icons.access_time,"TIME",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> attendance(
-                  userAuth: userAuth,
+                MaterialPageRoute(builder: (context)=> Attendance(
+                  userBasic: widget.userBasic,
                 )),
               );
             },),
             ListGrid(widget.userBasic,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> attendance(
-                  userAuth: userAuth,
+                MaterialPageRoute(builder: (context)=> Attendance(
+                  userBasic: widget.userBasic,
                 )),
               );
             },),
             ListGrid(widget.userBasic,Icons.history,"HISTORY",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> attendance(
-                  userAuth: userAuth,
+                MaterialPageRoute(builder: (context)=> Attendance(
+                  userBasic: widget.userBasic,
                 )),
               );
             },),

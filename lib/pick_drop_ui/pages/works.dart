@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:http/http.dart' as http;
@@ -69,6 +70,10 @@ class _WorkState extends State<Work> {
   void initState() {
     super.initState();
     getData();
+    DateFormat dateFormat = DateFormat('HH:mm:ss');
+    DateTime dateTime = dateFormat.parse('8:40:23');
+    DateTime dateTime2 = dateFormat.parse(DateTime.now().toString().split(' ')[1]);
+    print("test " + dateTime2.isAfter(dateTime).toString());
   }
   
   
