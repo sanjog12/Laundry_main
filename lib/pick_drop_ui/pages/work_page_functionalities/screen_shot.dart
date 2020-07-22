@@ -143,7 +143,6 @@ class _ScreenShotState extends State<ScreenShot> {
 		      ),
 		    )
 		    : AbsorbPointer(
-	    
 		      child: Container(
 			      height: size.height-200,
 	          child: GoogleMap(
@@ -155,19 +154,18 @@ class _ScreenShotState extends State<ScreenShot> {
 		        onMapCreated: (GoogleMapController controller) async {
 		        	_controller.complete(controller);
 			        await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),4)).whenComplete(() async{
-				      await Future.delayed(Duration(seconds: 8));
-				      var png = await controller.takeSnapshot();
-				      await uploadPic(png).whenComplete(() {
-				      	Navigator.push(context,
-						      MaterialPageRoute(
-							      builder: (context)=>CustomerEnd()
-						      )
-					      );
-				      });
-				      
-				      await Firestore.instance.collection('Location Points').document().setData({
-					      '${DateTime.now()}' : 'Screen Short Taken',
-				      },merge: true);
+			        	await Future.delayed(Duration(seconds: 8));
+			        	var png = await controller.takeSnapshot();
+			        	await uploadPic(png).whenComplete(() {
+			        		Navigator.push(context,
+							        MaterialPageRoute(
+									        builder: (context)=>CustomerEnd()
+							        ),
+					        );
+			        	});
+			        	await Firestore.instance.collection('Location Points').document().setData({
+					        '${DateTime.now()}' : 'Screen Short Taken',
+				        }, merge: true);
 			        });
 			        },
 	          ),

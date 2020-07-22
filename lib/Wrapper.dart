@@ -6,10 +6,6 @@ import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/authentication/FirebaseStore.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
 
-List<DateTime> presentDates = [];
-
-List<DateTime> absentDates = [];
-
 class Wrapper extends StatefulWidget {
   @override
   _WrapperState createState() => _WrapperState();

@@ -14,9 +14,6 @@ import 'package:laundry/Services/SharedPrefs.dart';
 Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 	List<LatLng> points =[];
 	String url = '';
-	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
-	DatabaseReference dbf;
-	
 	
 	for(var p in recordedList)
 		url = url + p.latitude.toString() + ',' +p.longitude.toString() + (recordedList.last.latitude == p.latitude? '' :'|');
@@ -51,28 +48,72 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 	
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
-	String uid;
-	uid = await SharedPrefs.getStringPreference("uid");
-	print(uid);
+	DatabaseReference dbf = firebaseDatabase.reference();
+	String mobile = await SharedPrefs.getStringPreference('Mobile');
+	String distance;
+	String time ;
+	double totalDistance;
+	double totalTime;
 	
-	String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=kilometers&origins="
-			+temp.first.latitude.toString()+","+temp.first.longitude.toString() +
-			"&destinations="+temp.last.latitude.toString()+","+temp.last.longitude.toString() +"&key=AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc";
-	
-	http.Response response = await http.get(url);
-	print("response\n" + '${response.body}');
-	Map<dynamic,dynamic> map = await json.decode(response.body);
-	print('length distance JSON: '+map['rows'][0]['elements'][0]['distance']['text'].toString());
-	print('length distance JSON: '+map['rows'][0]['elements'][0]['duration']['text'].toString());
-	await firebaseDatabase.reference().child("EmployeeRecordDistance").child(uid).child(job.id).set({
-		'Distance' : map['rows'][0]['elements'][0]['distance']['text'].toString(),
-		'Time' : map['rows'][0]['elements'][0]['duration']['text'].toString(),
-	});
-	TripDetails tripDetails = TripDetails(
-			distance: map['rows'][0]['elements'][0]['distance']['text'].toString(),
-			time: map['rows'][0]['elements'][0]['duration']['text'].toString()
-	);
-	return tripDetails;
+	try {
+		
+		String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=kilometers&origins="
+				+ temp.first.latitude.toString() + "," +
+				temp.first.longitude.toString() +
+				"&destinations=" + temp.last.latitude.toString() + "," +
+				temp.last.longitude.toString() +
+				"&key=AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc";
+		
+		http.Response response = await http.get(url);
+		Map<dynamic, dynamic> map = await json.decode(response.body);
+		
+		print('length distance JSON: '+map['rows'][0]['elements'][0]['distance']['text'].toString());
+		print('length distance JSON: '+map['rows'][0]['elements'][0]['duration']['text'].toString());
+		
+		dbf = firebaseDatabase.reference()
+				.child("EmployeeRecordDistance")
+				.child(mobile.toString())
+				.child(DateTime.now().month.toString());
+		
+		dbf.once().then((DataSnapshot snapshot){
+			Map<dynamic,dynamic> map = snapshot.value;
+			map.forEach((key, value) {
+				distance = value["Total_Distance"];
+				time = value["Total_Time"];
+			});
+		});
+		
+		print("distance " +distance);
+		print("time " + time);
+		
+		if(distance != null && time != null){
+			totalDistance = double.parse(distance) + double.parse(map['rows'][0]['elements'][0]['distance']['text'].toString());
+			totalTime = double.parse(time) + double.parse(map['rows'][0]['elements'][0]['duration']['text'].toString());
+		}
+		else{
+			totalDistance = double.parse(map['rows'][0]['elements'][0]['distance']['text'].toString());
+			totalTime = double.parse(map['rows'][0]['elements'][0]['duration']['text'].toString());
+		}
+		
+		dbf = firebaseDatabase.reference();
+		dbf.child("EmployeeRecordDistance")
+				.child(mobile.toString())
+				.child(DateTime.now().month.toString())
+				.set({
+			'Distance': totalDistance,
+			'Time': totalTime,
+		});
+		
+		TripDetails tripDetails = TripDetails(
+				distance: map['rows'][0]['elements'][0]['distance']['text'].toString(),
+				time: map['rows'][0]['elements'][0]['duration']['text'].toString()
+		);
+		
+		return tripDetails;
+	}catch(e){
+		print(e);
+		return null;
+	}
 }
 
 Future<double> distanceFormStore(LatLng currentLocation, LatLng storeLocation) async {

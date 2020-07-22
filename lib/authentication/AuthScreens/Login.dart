@@ -117,8 +117,9 @@ class _LoginState extends State<Login> {
                         ),
                         
                         TextFormField(
+                          maxLength: 10,
                           decoration: buildCustomInput(hintText: 'Registered Mobile Number'),
-                          onSaved: (value){
+                          onChanged: (value){
                             userAuth.mobileNo = value;
                           },
                         ),
@@ -135,7 +136,7 @@ class _LoginState extends State<Login> {
                         
                         TextFormField(
                           decoration: buildCustomInput(hintText: "Password"),
-                          onSaved: (value){
+                          onChanged: (value){
                             password = value;
                             userAuth.password = value;
                           },
