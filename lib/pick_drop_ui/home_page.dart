@@ -8,6 +8,7 @@ import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/pick_drop_ui/EmpProfile.dart';
+import 'package:laundry/pick_drop_ui/pages/WorkHistory.dart';
 import 'package:laundry/pick_drop_ui/pages/attendance.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
@@ -209,22 +210,22 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
-            ListGrid(widget.userBasic,Icons.directions_run,"DISTANCE",()=>(){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context)=> Attendance(
-                  userBasic: widget.userBasic,
-                )),
-              );
-            },),
-            ListGrid(widget.userBasic,Icons.access_time,"TIME",()=>(){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context)=> Attendance(
-                  userBasic: widget.userBasic,
-                )),
-              );
-            },),
+//            ListGrid(widget.userBasic,Icons.directions_run,"DISTANCE",()=>(){
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context)=> Attendance(
+//                  userBasic: widget.userBasic,
+//                )),
+//              );
+//            },),
+//            ListGrid(widget.userBasic,Icons.access_time,"TIME",()=>(){
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context)=> Attendance(
+//                  userBasic: widget.userBasic,
+//                )),
+//              );
+//            },),
             ListGrid(widget.userBasic,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
               Navigator.push(
                 context,
@@ -233,10 +234,10 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
-            ListGrid(widget.userBasic,Icons.history,"HISTORY",()=>(){
+            ListGrid(widget.userBasic,Icons.history,"This Month",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> Attendance(
+                MaterialPageRoute(builder: (context)=> WorkHistory(
                   userBasic: widget.userBasic,
                 )),
               );
@@ -313,7 +314,7 @@ class ListGrid extends StatelessWidget {//Class for grid display of homepage
   }
 }
 
-class CustomListTile extends StatelessWidget {         //Class for items to be displayed in the drawer
+class CustomListTile extends StatelessWidget{        //Class for items to be displayed in the drawer
   final IconData icon;
   final String text;
   final Function onTap;

@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/others/ToastOutputs.dart';
 import 'package:location/location.dart';
-import 'package:laundry/authentication/AuthScreens/Signup.dart';
 import 'package:laundry/others/Style.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -75,8 +74,8 @@ class _LoginState extends State<Login> {
 					),
             
             Container(
-            padding: EdgeInsets.all(24),
-            child: Column(
+              padding: EdgeInsets.all(24),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   SizedBox(
@@ -101,7 +100,7 @@ class _LoginState extends State<Login> {
                   ),
                   
                   SizedBox(
-                    height: 50,
+                    height: 70,
                   ),
                   
                   Form(
@@ -148,26 +147,26 @@ class _LoginState extends State<Login> {
                         ),
                         
                         
-                        Container(
-                          alignment: Alignment.centerRight,
-                          child: InkWell(
-                            
-                            onTap: () {
-//										      enterEmailDialog();
-                            },
-                            
-                            child: Text(
-                              "Forgot Password?",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
+//                        Container(
+//                          alignment: Alignment.centerRight,
+//                          child: InkWell(
+//
+//                            onTap: () {
+////										      enterEmailDialog();
+//                            },
+//
+//                            child: Text(
+//                              "Forgot Password?",
+//                              style: TextStyle(
+//                                fontWeight: FontWeight.bold,
+//                              ),
+//                            ),
+//                          ),
+//                        ),
                         
                         
                         SizedBox(
-                          height: 100,
+                          height: 80,
                         ),
                         
                         
@@ -177,9 +176,7 @@ class _LoginState extends State<Login> {
                             color: Colors.grey
                           ),
                           height: 50,
-//                          color: Colors.grey,
                           child:FlatButton(
-//                              color: Colors.grey,
                             child: buttonLoading?
                             Container(
                               height: 30,
@@ -200,37 +197,38 @@ class _LoginState extends State<Login> {
                           height: 30,
                         ),
                         
-                        Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: <Widget>[
-                            Text("Dont have an account?",style: TextStyle(
-                            ),),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.0,
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute(builder: (context)=>SignUp()));
-                                },
-                                child: Text(
-                                  "Sign Up",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+//                        Wrap(
+//                          crossAxisAlignment: WrapCrossAlignment.center,
+//                          children: <Widget>[
+//                            Text("Dont have an account?",style: TextStyle(
+//                            ),),
+//                            Container(
+//                              padding: EdgeInsets.symmetric(
+//                                horizontal: 10.0,
+//                              ),
+//                              child: InkWell(
+//                                onTap: () {
+//                                  Navigator.of(context)
+//                                      .push(MaterialPageRoute(builder: (context)=>SignUp()));
+//                                },
+//                                child: Text(
+//                                  "Sign Up",
+//                                  style: TextStyle(
+//                                    color: Colors.black54,
+//                                    fontWeight: FontWeight.bold,
+//                                  ),
+//                                ),
+//                              ),
+//                            ),
+//                          ],
+//                        ),
                       ],
                     ),
                   ),
                 ],
+              ),
             ),
-          ),]
+          ]
         ),
       ),
     );
@@ -252,7 +250,7 @@ class _LoginState extends State<Login> {
         });
       
         UserBasic userBasic = await _auth.loginUser(authDetails);
-        print(userBasic.mobile);
+//        print(userBasic.mobile);
       
         if (userBasic != null) {
           Navigator.pop(context);

@@ -50,8 +50,8 @@ Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	DatabaseReference dbf = firebaseDatabase.reference();
 	String mobile = await SharedPrefs.getStringPreference('Mobile');
-	String distance;
-	String time ;
+	String distance = '0';
+	String time = '0';
 	double totalDistance;
 	double totalTime;
 	
@@ -69,35 +69,41 @@ Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 		
 		print('length distance JSON: '+map['rows'][0]['elements'][0]['distance']['text'].toString());
 		print('length distance JSON: '+map['rows'][0]['elements'][0]['duration']['text'].toString());
-		
+		print("1");
 		dbf = firebaseDatabase.reference()
 				.child("EmployeeRecordDistance")
 				.child(mobile.toString())
+		    .child(DateTime.now().year.toString())
 				.child(DateTime.now().month.toString());
-		
-		dbf.once().then((DataSnapshot snapshot){
-			Map<dynamic,dynamic> map = snapshot.value;
-			map.forEach((key, value) {
-				distance = value["Total_Distance"];
-				time = value["Total_Time"];
-			});
+		print("2");
+		try{
+		dbf.once().then((DataSnapshot snapshot) async{
+			Map<dynamic,dynamic> map = await snapshot.value;
+			if(map != null){
+				distance = map["Distance"].toString();
+				time = map["Time"].toString();
+			}
 		});
+		}catch(e){
+			print("error " +e.toString());
+		}
 		
 		print("distance " +distance);
 		print("time " + time);
 		
-		if(distance != null && time != null){
-			totalDistance = double.parse(distance) + double.parse(map['rows'][0]['elements'][0]['distance']['text'].toString());
-			totalTime = double.parse(time) + double.parse(map['rows'][0]['elements'][0]['duration']['text'].toString());
+		if(distance != null){
+			totalDistance = double.parse(distance) + double.parse(map['rows'][0]['elements'][0]['distance']['text'].toString().split(' ')[0]);
+			totalTime = double.parse(time) + double.parse(map['rows'][0]['elements'][0]['duration']['text'].toString().split(' ')[0]);
 		}
 		else{
-			totalDistance = double.parse(map['rows'][0]['elements'][0]['distance']['text'].toString());
-			totalTime = double.parse(map['rows'][0]['elements'][0]['duration']['text'].toString());
+			totalDistance = double.parse(map['rows'][0]['elements'][0]['distance']['text'].toString().split(' ')[0]);
+			totalTime = double.parse(map['rows'][0]['elements'][0]['duration']['text'].toString().split(' ')[0]);
 		}
 		
 		dbf = firebaseDatabase.reference();
 		dbf.child("EmployeeRecordDistance")
 				.child(mobile.toString())
+				.child(DateTime.now().year.toString())
 				.child(DateTime.now().month.toString())
 				.set({
 			'Distance': totalDistance,
@@ -111,10 +117,12 @@ Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 		
 		return tripDetails;
 	}catch(e){
+		print("error");
 		print(e);
 		return null;
 	}
 }
+
 
 Future<double> distanceFormStore(LatLng currentLocation, LatLng storeLocation) async {
 	String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=meters&origins="

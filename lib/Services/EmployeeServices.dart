@@ -1,5 +1,10 @@
+
+import 'dart:collection';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
+import 'package:laundry/Classes/JobHistory.dart';
+import 'package:laundry/Classes/MonthDetail.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 
 
@@ -93,4 +98,58 @@ class EmployeeServices{
 		
 	}
 	
+	Future<List<JobHistory>> getJobHistory(UserBasic userBasic) async{
+		List<JobHistory> jobHistory = [];
+		dbf = firebaseDatabase.reference()
+				.child('WorkHistory')
+				.child(userBasic.mobile)
+				.child(DateTime.now().year.toString())
+				.child(DateTime.now().month.toString());
+		try {
+			await dbf.once().then((DataSnapshot snapshot) async {
+				print(snapshot.value);
+				Map<dynamic, dynamic> map = await snapshot.value;
+				jobHistory.add(JobHistory(
+					id: map['id'],
+					distance: map['distance'],
+					time: map['time'],
+					url: map['url'],
+				));
+			});
+			return jobHistory;
+		}catch(e){
+			print("error in getJobHistory");
+			print(e.toString());
+		}
+		
+		return jobHistory;
+	}
+	
+	
+	Future<MonthDetails> getMonthlyDetails(UserBasic userBasic) async{
+		MonthDetails monthDetail;
+		String distance, time;
+		dbf = firebaseDatabase.reference()
+				.child("EmployeeRecordDistance")
+				.child(userBasic.mobile.toString())
+				.child(DateTime.now().year.toString())
+				.child(DateTime.now().month.toString());
+		print("2");
+		try{
+			await dbf.once().then((DataSnapshot snapshot) async {
+				Map<dynamic, dynamic> map = await snapshot.value;
+				if (map != null) {
+					distance = map['Distance'].toString();
+					time = map['Time'].toString();
+				}
+			});
+			
+			monthDetail = MonthDetails(distance: distance.toString(),time: time.toString());
+			print(monthDetail.distance);
+			return monthDetail;
+		}catch(e){
+			print("error " + e.toString());
+			return null;
+		}
+	}
 }

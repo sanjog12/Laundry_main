@@ -41,7 +41,6 @@ class _WorkState extends State<Work> {
   
   Future<List<Job>> getData() async{
     List<Job> job = [];
-    print(widget.userBasic.userID);
     print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
     var response = await http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
     

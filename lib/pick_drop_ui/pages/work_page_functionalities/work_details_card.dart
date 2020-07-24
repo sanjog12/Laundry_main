@@ -108,7 +108,7 @@ class _MapPageState extends State<MapPage>{
 			    onPressed: (){
 				    final String docName ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
 				    CreatePolyline object = CreatePolyline(docName);
-				    object.startRecord();
+				    object.startRecord(widget.job);
 				    Navigator.of(context).pop();
 				    Navigator.push(context,
 						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object , docName: docName,userBasic: widget.userBasic, job: widget.job,))

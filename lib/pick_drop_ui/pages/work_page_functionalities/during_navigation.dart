@@ -45,11 +45,11 @@ class _DuringNavigationState extends State<DuringNavigation> {
 //			destination: LatLng(28.601231, 77.082344)
 		).then((value){
 			routeCoordinates = value;
-		});}catch(e){
+		});
+		}catch(e){
+			print("error in getPolyline");
 			print(e.toString());
 		}
-		print("printing");
-		print(routeCoordinates.first);
 		return routeCoordinates;
 	}
 	
@@ -68,8 +68,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 							    polylineId: PolylineId('route1'),
 							    visible: true,
 							    points: value,
-							    width: 6,
-							    color: Colors.red,
+							    color: Colors.lightBlue,
 							    startCap: Cap.roundCap,
 							    endCap: Cap.buttCap,
 						    )
@@ -84,17 +83,22 @@ class _DuringNavigationState extends State<DuringNavigation> {
 		final GoogleMapController controller = await _controller.future;
 		controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation,zoom: 17)));
   }
+  
+  @override
+  void dispose() {
+    super.dispose();
+  }
 	
   @override
   Widget build(BuildContext context) {
 	  location.onLocationChanged.listen((event) {
-	  	print("inside");
+	  	print("inside location Changed event ");
 	  	if(mounted) {
 			  setState(() {
 				  currentLocation = LatLng(event.latitude, event.longitude);
 			  });
+			  updateCamera();
 		  }
-		  updateCamera();
 	  });
 	  
 	  
