@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel, WeekdayFormat;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
+import 'package:laundry/AdminSection/FunctionsOther/EmployeeFunctions.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/others/Attendance.dart';
 
@@ -28,11 +29,13 @@ class AttendanceSate extends State<Attendance> {
   CalendarCarousel _calendarCarouselNoHeader;
   
   static Widget absentIconTag(String day)=> Container(
+    height: 2,
     decoration: BoxDecoration(
+      shape: BoxShape.circle,
       color: Colors.redAccent,
-      borderRadius: BorderRadius.all(
-        Radius.circular(1000)
-      )
+//      borderRadius: BorderRadius.all(
+//        Radius.circular(10),
+//      )
     ),
     child: Center(
       child: Text(
@@ -162,14 +165,31 @@ class AttendanceSate extends State<Attendance> {
           ),
         )
             :Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             _calendarCarouselNoHeader =CalendarCarousel<Event>(
-                  height: cheight * 0.54,
-                  weekendTextStyle: TextStyle(
-                    color: Colors.red
-                  ),
+              height: cheight * 0.54,
+//              daysTextStyle: TextStyle(
+//                color: Colors.blueAccent
+//              ),
+              weekendTextStyle: TextStyle(
+                color: Colors.black,
+              ),
+              headerTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 32
+              ),
+//              weekDayBackgroundColor: Colors.black,
+              weekdayTextStyle: TextStyle(
+                color: Color.fromRGBO(169, 169, 169, 1),
+              ),
+              prevMonthDayBorderColor: Color.fromRGBO(190, 190, 190, 1),
+              nextMonthDayBorderColor: Color.fromRGBO(190, 190, 190, 1),
               todayButtonColor: Colors.blue[100],
               markedDatesMap: dateMap,
+              markedDateCustomShapeBorder: CircleBorder(
+              
+              ),
               markedDateShowIcon: true,
               markedDateIconMaxShown: 1,
               markedDateMoreShowTotal: null,
@@ -178,44 +198,61 @@ class AttendanceSate extends State<Attendance> {
               },
             ),
             
-            Container(
-              margin: EdgeInsets.all(30.0),
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 3.0
-                  ),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(5.0)
-                  )
-              ),
-              child: Text("NUMBER OF PRESENTS: ${presentDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
-            ),
-  
-            Container(
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 3.0
-                  ),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(5.0)
-                  )
-              ),
-              child: Text("NUMBER OF PRESENTS: ${halfDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
-            ),
+//            Container(
+//              margin: EdgeInsets.all(30.0),
+//              padding: EdgeInsets.all(10.0),
+//              decoration: BoxDecoration(
+//                  border: Border.all(
+//                      width: 3.0
+//                  ),
+//                  borderRadius: BorderRadius.all(
+//                      Radius.circular(5.0)
+//                  )
+//              ),
+//              child: Text("NUMBER OF PRESENTS: ${presentDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
+//            ),
+//
+//            Container(
+//              padding: EdgeInsets.all(10.0),
+//              decoration: BoxDecoration(
+//                  border: Border.all(
+//                      width: 3.0
+//                  ),
+//                  borderRadius: BorderRadius.all(
+//                      Radius.circular(5.0)
+//                  )
+//              ),
+//              child: Text("NUMBER OF PRESENTS: ${halfDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
+//            ),
             
             Container(
-              padding: EdgeInsets.all(10.0),
+              margin: EdgeInsets.symmetric(horizontal: 15),
+              height: 65,
+//              padding: EdgeInsets.only(left: 20,right: 10),
               decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 3.0
-                  ),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(5.0)
-                  )
+                color: Color.fromRGBO( 224, 238, 242, 1),
+                  borderRadius: BorderRadius.circular(100)
               ),
-              child: Text("NUMBER OF ABSENTS: ${absentDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                 children: <Widget>[
+                   Text("Present",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
+                   Container(
+                     margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                     height: 60,
+                     width: 60,
+                     decoration: BoxDecoration(
+                       border: Border.all(),
+                       shape: BoxShape.circle,
+                       color: Color.fromRGBO(0, 179, 50, 1),
+                     ),
+                     child: Text(
+                       '${presentDates.length}',
+                       style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
+                   )
+                 ],
+               ),
             ),
             
           ],

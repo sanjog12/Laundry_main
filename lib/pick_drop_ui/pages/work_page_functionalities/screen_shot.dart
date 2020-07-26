@@ -145,7 +145,7 @@ class _ScreenShotState extends State<ScreenShot> {
 			String url = await firebaseStorageRef.getDownloadURL();
 			print(url);
 			dbf.child('WorkHistory')
-					.child(widget.userBasic.mobile)
+					.child(widget.userBasic.mobile +"_"+ widget.userBasic.name+"_"+widget.userBasic.userID)
 					.child(DateTime.now().year.toString())
 					.child(DateTime.now().month.toString())
 					.set({
@@ -204,7 +204,7 @@ class _ScreenShotState extends State<ScreenShot> {
 		        	  _controller.complete(controller);
 			          await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),60)).whenComplete(() async{
 			        	  print("onMapCreated");
-				          tripDetails = await distanceTimeNavigation(_points,widget.job);
+				          tripDetails = await distanceTimeNavigation(_points,widget.job,widget.userBasic);
 				          print("trip Details Fetched");
 				          setState(() {
 				            tripDetails = tripDetails;

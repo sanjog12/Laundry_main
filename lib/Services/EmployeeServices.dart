@@ -31,7 +31,7 @@ class EmployeeServices{
 			DateTime now = DateTime.now();
 			dbf
 					.child("Attendance")
-					.child(userBasic.mobile)
+					.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 					.child(now.year.toString())
 					.child(now.month.toString())
 					.child(now.day.toString())
@@ -49,7 +49,7 @@ class EmployeeServices{
 		try {
 			dbf = firebaseDatabase.reference()
 					.child("Attendance")
-					.child(userBasic.mobile)
+					.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 					.child(now.year.toString())
 					.child(now.month.toString())
 					.child(now.day.toString());
@@ -86,7 +86,7 @@ class EmployeeServices{
 			
 			dbf = firebaseDatabase.reference();
 			await dbf.child("Attendance")
-					.child(userBasic.mobile)
+					.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 					.child(now.year.toString())
 					.child(now.month.toString())
 					.child(now.day.toString())
@@ -102,7 +102,7 @@ class EmployeeServices{
 		List<JobHistory> jobHistory = [];
 		dbf = firebaseDatabase.reference()
 				.child('WorkHistory')
-				.child(userBasic.mobile)
+				.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 				.child(DateTime.now().year.toString())
 				.child(DateTime.now().month.toString());
 		try {
@@ -131,7 +131,7 @@ class EmployeeServices{
 		String distance, time;
 		dbf = firebaseDatabase.reference()
 				.child("EmployeeRecordDistance")
-				.child(userBasic.mobile.toString())
+				.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 				.child(DateTime.now().year.toString())
 				.child(DateTime.now().month.toString());
 		print("2");

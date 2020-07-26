@@ -250,7 +250,6 @@ class _LoginState extends State<Login> {
         });
       
         UserBasic userBasic = await _auth.loginUser(authDetails);
-//        print(userBasic.mobile);
       
         if (userBasic != null) {
           Navigator.pop(context);

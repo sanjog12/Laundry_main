@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/TripDetails.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 
 
@@ -45,7 +46,7 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 
 
 
-Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job) async{
+Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job, UserBasic userBasic) async{
 	
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	DatabaseReference dbf = firebaseDatabase.reference();
@@ -72,7 +73,7 @@ Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 		print("1");
 		dbf = firebaseDatabase.reference()
 				.child("EmployeeRecordDistance")
-				.child(mobile.toString())
+				.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 		    .child(DateTime.now().year.toString())
 				.child(DateTime.now().month.toString());
 		print("2");
@@ -102,7 +103,7 @@ Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job) async{
 		
 		dbf = firebaseDatabase.reference();
 		dbf.child("EmployeeRecordDistance")
-				.child(mobile.toString())
+				.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 				.child(DateTime.now().year.toString())
 				.child(DateTime.now().month.toString())
 				.set({

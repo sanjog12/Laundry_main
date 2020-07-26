@@ -63,6 +63,10 @@ class CreatePolyline {
 				this.delayInJob.add(Marker(
 					icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
 					markerId: MarkerId("Delay"),
+					infoWindow: InfoWindow(
+						snippet: DateTime.now().difference(dateTime.last).inMinutes.toString(),
+						
+					),
 					position: LatLng(location.latitude,location.longitude),
 				));
 			}

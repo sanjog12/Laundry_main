@@ -3,6 +3,7 @@ import 'package:background_location/background_location.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:laundry/AdminSection/Screen/AttendanceAdmin.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/AuthServices.dart';
@@ -218,14 +219,13 @@ class _HomePageState extends State<HomePage> {
 //                )),
 //              );
 //            },),
-//            ListGrid(widget.userBasic,Icons.access_time,"TIME",()=>(){
-//              Navigator.push(
-//                context,
-//                MaterialPageRoute(builder: (context)=> Attendance(
-//                  userBasic: widget.userBasic,
-//                )),
-//              );
-//            },),
+            ListGrid(widget.userBasic,Icons.access_time,"Details",()=>(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> AttendanceAdmin(
+                )),
+              );
+            },),
             ListGrid(widget.userBasic,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
               Navigator.push(
                 context,

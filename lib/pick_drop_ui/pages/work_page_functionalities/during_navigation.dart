@@ -42,7 +42,6 @@ class _DuringNavigationState extends State<DuringNavigation> {
 				origin: currentLocation,
 				destination: LatLng(widget.job.position.latitude , widget.job.position.longitude),
 				mode: RouteMode.driving,
-//			destination: LatLng(28.601231, 77.082344)
 		).then((value){
 			routeCoordinates = value;
 		});
@@ -69,6 +68,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 							    visible: true,
 							    points: value,
 							    color: Colors.lightBlue,
+							    width: 2,
 							    startCap: Cap.roundCap,
 							    endCap: Cap.buttCap,
 						    )
@@ -79,7 +79,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
     });
   }
   
-  void updateCamera() async{
+  Future<void> updateCamera() async{
 		final GoogleMapController controller = await _controller.future;
 		controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation,zoom: 17)));
   }

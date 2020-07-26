@@ -13,7 +13,7 @@ Future<void> getAttendance(UserBasic userBasic) async {
 	uid = await SharedPrefs.getStringPreference('uid');
 	dbf = firebaseDatabase.reference()
 			.child("Attendance")
-			.child(userBasic.mobile)
+			.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 			.child("2020")
 			.child(DateTime.now().month.toString());
 	

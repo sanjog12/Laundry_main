@@ -10,14 +10,16 @@ class _CustomerEndState extends State<CustomerEnd> {
   Widget build(BuildContext context) {
     return Scaffold(
 	    appBar: AppBar(
-		    title: Text("Customer Laundry Details"),
+		    title: Text("Challan"),
 	    ),
 	    
 	    body: Container(
 		    padding: EdgeInsets.all(10),
-		    child: Center(
-			    child: Text("Customer Cloths Details input"),
-		    ),
+		    child: Column(
+			    children: <Widget>[
+			    	
+			    ],
+		    )
 	    ),
     );
   }
