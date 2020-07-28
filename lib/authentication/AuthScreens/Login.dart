@@ -2,18 +2,15 @@ import 'dart:ui';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:flutter/services.dart';
 import 'package:laundry/Services/AuthServices.dart';
+import 'package:laundry/others/ToastOutputs.dart';
 import 'package:location/location.dart';
-import 'package:laundry/authentication/AuthScreens/Signup.dart';
 import 'package:laundry/others/Style.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
 
 
 
@@ -77,8 +74,8 @@ class _LoginState extends State<Login> {
 					),
             
             Container(
-            padding: EdgeInsets.all(24),
-            child: Column(
+              padding: EdgeInsets.all(24),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   SizedBox(
@@ -103,7 +100,7 @@ class _LoginState extends State<Login> {
                   ),
                   
                   SizedBox(
-                    height: 50,
+                    height: 70,
                   ),
                   
                   Form(
@@ -111,7 +108,7 @@ class _LoginState extends State<Login> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Text("Email Address" , style: TextStyle(
+                        Text("Registered Mobile Number" , style: TextStyle(
                         ),),
                         
                         SizedBox(
@@ -119,10 +116,10 @@ class _LoginState extends State<Login> {
                         ),
                         
                         TextFormField(
-                          decoration: buildCustomInput(hintText: 'Email Address'),
-                          onSaved: (value){
-                            email = value;
-                            userAuth.email = value;
+                          maxLength: 10,
+                          decoration: buildCustomInput(hintText: 'Registered Mobile Number'),
+                          onChanged: (value){
+                            userAuth.mobileNo = value;
                           },
                         ),
                         
@@ -138,7 +135,7 @@ class _LoginState extends State<Login> {
                         
                         TextFormField(
                           decoration: buildCustomInput(hintText: "Password"),
-                          onSaved: (value){
+                          onChanged: (value){
                             password = value;
                             userAuth.password = value;
                           },
@@ -150,26 +147,26 @@ class _LoginState extends State<Login> {
                         ),
                         
                         
-                        Container(
-                          alignment: Alignment.centerRight,
-                          child: InkWell(
-                            
-                            onTap: () {
-//										      enterEmailDialog();
-                            },
-                            
-                            child: Text(
-                              "Forgot Password?",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
+//                        Container(
+//                          alignment: Alignment.centerRight,
+//                          child: InkWell(
+//
+//                            onTap: () {
+////										      enterEmailDialog();
+//                            },
+//
+//                            child: Text(
+//                              "Forgot Password?",
+//                              style: TextStyle(
+//                                fontWeight: FontWeight.bold,
+//                              ),
+//                            ),
+//                          ),
+//                        ),
                         
                         
                         SizedBox(
-                          height: 100,
+                          height: 80,
                         ),
                         
                         
@@ -179,9 +176,7 @@ class _LoginState extends State<Login> {
                             color: Colors.grey
                           ),
                           height: 50,
-//                          color: Colors.grey,
                           child:FlatButton(
-//                              color: Colors.grey,
                             child: buttonLoading?
                             Container(
                               height: 30,
@@ -202,37 +197,38 @@ class _LoginState extends State<Login> {
                           height: 30,
                         ),
                         
-                        Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: <Widget>[
-                            Text("Dont have an account?",style: TextStyle(
-                            ),),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.0,
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute(builder: (context)=>SignUp()));
-                                },
-                                child: Text(
-                                  "Sign Up",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+//                        Wrap(
+//                          crossAxisAlignment: WrapCrossAlignment.center,
+//                          children: <Widget>[
+//                            Text("Dont have an account?",style: TextStyle(
+//                            ),),
+//                            Container(
+//                              padding: EdgeInsets.symmetric(
+//                                horizontal: 10.0,
+//                              ),
+//                              child: InkWell(
+//                                onTap: () {
+//                                  Navigator.of(context)
+//                                      .push(MaterialPageRoute(builder: (context)=>SignUp()));
+//                                },
+//                                child: Text(
+//                                  "Sign Up",
+//                                  style: TextStyle(
+//                                    color: Colors.black54,
+//                                    fontWeight: FontWeight.bold,
+//                                  ),
+//                                ),
+//                              ),
+//                            ),
+//                          ],
+//                        ),
                       ],
                     ),
                   ),
                 ],
+              ),
             ),
-          ),]
+          ]
         ),
       ),
     );
@@ -254,28 +250,6 @@ class _LoginState extends State<Login> {
         });
       
         UserBasic userBasic = await _auth.loginUser(authDetails);
-        print(userBasic.phoneNumber);
-        print(userBasic.email);
-        if(userBasic.userType != "admin") {
-          if (double.parse(userBasic.long) == 0) {
-            throw("Wait for the administrative actions");
-          }
-        }
-        
-        if(userBasic.userType != "admin"){
-          double  d = await distanceFormStore( LatLng(currentLocation.latitude,currentLocation.longitude),
-              LatLng(double.parse(userBasic.lat),double.parse(userBasic.long)));
-          if(d>10){
-            throw("You are not present at your work place");
-          }
-        }
-        int month= DateTime.now().month;
-        int year = DateTime.now().year;
-        int date = DateTime.now().day;
-        String time=DateFormat("kk:mm:ss").format(DateTime.now());
-        firebaseDatabase.reference().child("Attendance").child(userBasic.uid).child(year.toString()).child(month.toString()).set({
-          date.toString() : time
-        });
       
         if (userBasic != null) {
           Navigator.pop(context);
@@ -286,34 +260,16 @@ class _LoginState extends State<Login> {
               )
             )
           );
-          Fluttertoast.showToast(
-              msg: "Login Successful",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xff666666),
-              textColor: Colors.white,
-              fontSize: 16.0);
-        } else {}
+          toastMessage(message: "Login Successfully");
+        } else{
+          toastMessage(message: "Wrong Credential");
+        }
       }
     } on PlatformException catch (e) {
-      Fluttertoast.showToast(
-          msg: e.message,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff666666),
-          textColor: Colors.white,
-          fontSize: 16.0);
+      toastMessage(message: e.message.toString());
     } catch (e) {
-      Fluttertoast.showToast(
-          msg: e.toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff666666),
-          textColor: Colors.white,
-          fontSize: 16.0);
+      print(e);
+      toastMessage(message: "Something Went Wrong");
     } finally {
       this.setState(() {
         buttonLoading = false;

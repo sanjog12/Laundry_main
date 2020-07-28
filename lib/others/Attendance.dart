@@ -1,9 +1,7 @@
-
-
-import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:intl/intl.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
+import 'package:laundry/pick_drop_ui/pages/attendance.dart';
 
 
 
@@ -11,22 +9,26 @@ FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 DatabaseReference dbf;
 String uid;
 
-Future<List<DateTime>> getAttendance() async{
-	List<DateTime> presentDates = [];
-	List<DateTime> absentDates = [];
+Future<void> getAttendance(UserBasic userBasic) async {
 	uid = await SharedPrefs.getStringPreference('uid');
 	dbf = firebaseDatabase.reference()
 			.child("Attendance")
-			.child(uid)
-	    .child("2020")
+			.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
+			.child("2020")
 			.child(DateTime.now().month.toString());
-	await dbf.once().then((DataSnapshot snapshot) async{
-		Map<dynamic,dynamic> map = await snapshot.value;
-		map.forEach((key, value) async{
-			print(key);
-			presentDates.add(DateTime(2020,DateTime.now().month,int.parse(key)));
-		});
+	
+	await dbf.once().then((DataSnapshot snapshot) async {
+		Map<dynamic, dynamic> map = await snapshot.value;
+		for (var v in map.entries) {
+			if(v.value.toString() == "half" || v.value.toString() =="half_late"){
+				halfDates.add(DateTime(DateTime.now().year,DateTime.now().month,int.parse(v.key.toString())));
+			}
+			else if(v.value.toString() == "full" || v.value.toString() =="full_late"){
+				presentDates.add(DateTime(DateTime.now().year ,DateTime.now().month,int.parse(v.key.toString())));
+			}
+			else if(v.value.toString() == "absent" || v.value.toString() =="absent_late"){
+				absentDates.add(DateTime(DateTime.now().year ,DateTime.now().month,int.parse(v.key.toString())));
+			}
+		}
 	});
-	print(presentDates.length);
-	return presentDates;
 }

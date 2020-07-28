@@ -3,11 +3,13 @@ import 'package:background_location/background_location.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:laundry/AdminSection/Screen/AttendanceAdmin.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/pick_drop_ui/EmpProfile.dart';
+import 'package:laundry/pick_drop_ui/pages/WorkHistory.dart';
 import 'package:laundry/pick_drop_ui/pages/attendance.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
@@ -27,12 +29,6 @@ class _HomePageState extends State<HomePage> {
   FirebaseUser user;
   UserAuth userAuth = UserAuth();
   
-  
-  Future<void> userDetails() async{
-    user = await FirebaseAuth.instance.currentUser();
-    userAuth.email = user.email;
-    print(userAuth.email);
-  }
   
   
   Widget buildSideMenu(){
@@ -54,7 +50,7 @@ class _HomePageState extends State<HomePage> {
               width: 200,
               child: DrawerHeader(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Container(
                       width: 118,
@@ -62,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage("assets/profile1.png"),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                         borderRadius: BorderRadius.circular(100.0),
                         border: Border.all(
@@ -71,20 +67,25 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
+                    
                     Padding(
                       padding: EdgeInsets.all(15),
-                      child: Text(
-                        "Person Name\nJob - Id",
-                        textAlign: TextAlign.center,
-                        textDirection: TextDirection.ltr,
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.blueGrey[50],
-                            fontFamily: "OpenSans",
-                            letterSpacing: 1.0
-                        ),
-                      ),
+//                      child: RichText(
+//                          textAlign: TextAlign.center,
+//                        text: TextSpan(
+//                          style: TextStyle(
+//                            fontSize: 20,
+//                            color: Colors.blueGrey,
+//                          ),
+//                          children: <TextSpan>[
+//                            TextSpan(text:widget.userBasic.name !=null? '${widget.userBasic.name}\n':" ",style: TextStyle(
+//                              fontStyle: FontStyle.italic,
+//                            )),
+//                            TextSpan(text: ' '),
+//                            TextSpan(text:widget.userBasic.userID !=null? '${widget.userBasic.userID}':"")
+//                          ],
+//                        )
+//                      ),
                     ),
                   ],
                 ),
@@ -102,12 +103,10 @@ class _HomePageState extends State<HomePage> {
                     )
                 )
             ),
-            CustomListTile(Icons.question_answer,"FAQ",()=>{}),
-            CustomListTile(Icons.description,"Terms & Conditions",()=>{}),
-            CustomListTile(Icons.help,"Support",()=>{}),
             CustomListTile(Icons.lock,"Logout",() async{
               try {
-                await AuthServices().logOutUser();
+                await AuthServices().logOutUser(widget.userBasic);
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.push(context,
                     MaterialPageRoute(
@@ -163,7 +162,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     locationPermission();
-    userDetails();
   }
   
   @override
@@ -205,43 +203,42 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 2,
           childAspectRatio: 0.88,
           children: <Widget>[
-            ListGrid(userAuth,Icons.work,"TASK",()=>(){
+            ListGrid(widget.userBasic,Icons.work,"TASK",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Work(
-                  userAuth: userAuth,
+                  userBasic: widget.userBasic,
                 )),
               );
             },),
-            ListGrid(userAuth,Icons.directions_run,"DISTANCE",()=>(){
+//            ListGrid(widget.userBasic,Icons.directions_run,"DISTANCE",()=>(){
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context)=> Attendance(
+//                  userBasic: widget.userBasic,
+//                )),
+//              );
+//            },),
+            ListGrid(widget.userBasic,Icons.access_time,"Details",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> attendance(
-                  userAuth: userAuth,
+                MaterialPageRoute(builder: (context)=> AttendanceAdmin(
                 )),
               );
             },),
-            ListGrid(userAuth,Icons.access_time,"TIME",()=>(){
+            ListGrid(widget.userBasic,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> attendance(
-                  userAuth: userAuth,
+                MaterialPageRoute(builder: (context)=> Attendance(
+                  userBasic: widget.userBasic,
                 )),
               );
             },),
-            ListGrid(userAuth,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
+            ListGrid(widget.userBasic,Icons.history,"This Month",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> attendance(
-                  userAuth: userAuth,
-                )),
-              );
-            },),
-            ListGrid(userAuth,Icons.history,"HISTORY",()=>(){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context)=> attendance(
-                  userAuth: userAuth,
+                MaterialPageRoute(builder: (context)=> WorkHistory(
+                  userBasic: widget.userBasic,
                 )),
               );
             },),
@@ -261,9 +258,9 @@ class _HomePageState extends State<HomePage> {
 class ListGrid extends StatelessWidget {//Class for grid display of homepage
   final IconData icon;
   final String text;
-  UserAuth userAuth;
-  final Function ontap;
-  ListGrid(this.userAuth,this.icon,this.text,this.ontap);
+  final UserBasic userBasic;
+  final Function onTap;
+  ListGrid(this.userBasic,this.icon,this.text,this.onTap);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -306,7 +303,7 @@ class ListGrid extends StatelessWidget {//Class for grid display of homepage
                       color: Colors.white,
                       size: 23.0,
                     ),
-                    onPressed: ontap()
+                    onPressed: onTap()
                 ),
               ),
             ),
@@ -317,7 +314,7 @@ class ListGrid extends StatelessWidget {//Class for grid display of homepage
   }
 }
 
-class CustomListTile extends StatelessWidget {         //Class for items to be displayed in the drawer
+class CustomListTile extends StatelessWidget{        //Class for items to be displayed in the drawer
   final IconData icon;
   final String text;
   final Function onTap;
