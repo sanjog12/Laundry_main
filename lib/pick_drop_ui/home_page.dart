@@ -3,117 +3,129 @@ import 'package:background_location/background_location.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:laundry/AdminSection/Screen/AttendanceAdmin.dart';
 import 'package:laundry/Classes/UserAuth.dart';
-import 'package:laundry/Classes/UserDetails.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
+import 'package:laundry/pick_drop_ui/EmpProfile.dart';
+import 'package:laundry/pick_drop_ui/pages/WorkHistory.dart';
 import 'package:laundry/pick_drop_ui/pages/attendance.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 
 class HomePage extends StatefulWidget {
+  final UserBasic userBasic;
+  
+  const HomePage({Key key, this.userBasic}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   
-  int i =0;
-  FirebaseUser user ;
-  UserAuth userAuth =UserAuth();
+  int i = 0;
+  FirebaseUser user;
+  UserAuth userAuth = UserAuth();
   
-  
-  Future<void> userDetails() async{
-    user = await FirebaseAuth.instance.currentUser();
-    userAuth.email = user.email;
-    print(userAuth.email);
-  }
   
   
   Widget buildSideMenu(){
     return Container(
-        width: 260,
-        decoration: BoxDecoration(
-          image: DecorationImage(
+      width: 260,
+      decoration: BoxDecoration(
+        image: DecorationImage(
             image: AssetImage("images/12.jpg"),
             fit: BoxFit.cover
-          ),
         ),
-        child: Drawer(
-          elevation: 0,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              Container(
-                height: 280,
-                width: 200,
-                child: DrawerHeader(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: 118,
-                        height:118,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/profile1.png"),
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.circular(100.0),
-                          border: Border.all(
-                            color: Colors.blueGrey[50],
-                            width: 6.0,
-                          ),
+      ),
+      child: Drawer(
+        elevation: 0,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Container(
+              height: 280,
+              width: 200,
+              child: DrawerHeader(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      width: 118,
+                      height:118,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/profile1.png"),
+                          fit: BoxFit.contain,
+                        ),
+                        borderRadius: BorderRadius.circular(100.0),
+                        border: Border.all(
+                          color: Colors.blueGrey[50],
+                          width: 6.0,
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Text(
-                          "Person Name\nJob - Id",
-                          textAlign: TextAlign.center,
-                          textDirection: TextDirection.ltr,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.blueGrey[50],
-                              fontFamily: "OpenSans",
-                              letterSpacing: 1.0
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey[700],
-                  ),
+                    ),
+                    
+                    Padding(
+                      padding: EdgeInsets.all(15),
+//                      child: RichText(
+//                          textAlign: TextAlign.center,
+//                        text: TextSpan(
+//                          style: TextStyle(
+//                            fontSize: 20,
+//                            color: Colors.blueGrey,
+//                          ),
+//                          children: <TextSpan>[
+//                            TextSpan(text:widget.userBasic.name !=null? '${widget.userBasic.name}\n':" ",style: TextStyle(
+//                              fontStyle: FontStyle.italic,
+//                            )),
+//                            TextSpan(text: ' '),
+//                            TextSpan(text:widget.userBasic.userID !=null? '${widget.userBasic.userID}':"")
+//                          ],
+//                        )
+//                      ),
+                    ),
+                  ],
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey[700],
                 ),
               ),
-             CustomListTile(Icons.person,"Profile",()=>{}),
-              CustomListTile(Icons.question_answer,"FAQ",()=>{}),
-              CustomListTile(Icons.description,"Terms & Conditions",()=>{}),
-              CustomListTile(Icons.help,"Support",()=>{}),
-              CustomListTile(Icons.lock,"Logout",(){
-                try {
-                  AuthServices().logOutUser();
-                  Navigator.push(context,
-                  MaterialPageRoute(
-                    builder: (context)=>Login()
-                  )
-                  );
-                }catch(e){
-                
-                }
-              }),
-            ],
-          ),
+            ),
+            CustomListTile(Icons.person,"Profile",()=>
+                Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context)=> Empprofile(
+                          userBasic: widget.userBasic,
+                        )
+                    )
+                )
+            ),
+            CustomListTile(Icons.lock,"Logout",() async{
+              try {
+                await AuthServices().logOutUser(widget.userBasic);
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context)=>Login()
+                    )
+                );
+              }catch(e){
+              
+              }
+            }),
+          ],
         ),
-      );
+      ),
+    );
   }
-
+  
   void locationPermission() async{
     PermissionStatus f = await BackgroundLocation.checkPermissions();
-  
+    
     if(f.value ==0 ){
       await BackgroundLocation.getPermissions(onDenied:(){
         alertPop();
@@ -122,8 +134,8 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
-
-
+  
+  
   alertPop() {
     return showDialog(
         context: context,
@@ -144,15 +156,14 @@ class _HomePageState extends State<HomePage> {
         }
     );
   }
-
+  
   
   @override
   void initState() {
     super.initState();
     locationPermission();
-    userDetails();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     
@@ -165,12 +176,12 @@ class _HomePageState extends State<HomePage> {
         ),
         title: Text(
           "HOME",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: "OpenSans",
-                  letterSpacing: 1.0,
-                color:Colors.blue[100],
-              ),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: "OpenSans",
+            letterSpacing: 1.0,
+            color:Colors.blue[100],
+          ),
         ),
         centerTitle: true,
         actions: <Widget>[
@@ -188,41 +199,50 @@ class _HomePageState extends State<HomePage> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: GridView.count(
-            mainAxisSpacing: 5,
-            crossAxisCount: 2,
-            childAspectRatio: 0.88,
-            children: <Widget>[
-            ListGrid(userAuth,Icons.work,"TASK",()=>(){
+          mainAxisSpacing: 5,
+          crossAxisCount: 2,
+          childAspectRatio: 0.88,
+          children: <Widget>[
+            ListGrid(widget.userBasic,Icons.work,"TASK",()=>(){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context)=> Work()),
+                MaterialPageRoute(builder: (context)=> Work(
+                  userBasic: widget.userBasic,
+                )),
               );
             },),
-              ListGrid(userAuth,Icons.directions_run,"DISTANCE",()=>(){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context)=> attendance()),
-                );
-              },),
-              ListGrid(userAuth,Icons.access_time,"TIME",()=>(){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context)=> attendance()),
-                );
-              },),
-              ListGrid(userAuth,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context)=> attendance()),
-                );
-              },),
-              ListGrid(userAuth,Icons.history,"HISTORY",()=>(){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context)=> attendance()),
-                );
-              },),
-    ],
+//            ListGrid(widget.userBasic,Icons.directions_run,"DISTANCE",()=>(){
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context)=> Attendance(
+//                  userBasic: widget.userBasic,
+//                )),
+//              );
+//            },),
+            ListGrid(widget.userBasic,Icons.access_time,"Details",()=>(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> AttendanceAdmin(
+                )),
+              );
+            },),
+            ListGrid(widget.userBasic,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> Attendance(
+                  userBasic: widget.userBasic,
+                )),
+              );
+            },),
+            ListGrid(widget.userBasic,Icons.history,"This Month",()=>(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> WorkHistory(
+                  userBasic: widget.userBasic,
+                )),
+              );
+            },),
+          ],
         ),
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -232,69 +252,69 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
 }
-}
-  
-  class ListGrid extends StatelessWidget {//Class for grid display of homepage
+
+class ListGrid extends StatelessWidget {//Class for grid display of homepage
   final IconData icon;
   final String text;
-  UserAuth userAuth;
-  final Function ontap;
-  ListGrid(this.userAuth,this.icon,this.text,this.ontap);
-    @override
-    Widget build(BuildContext context) {
-      return Padding(
-        padding:EdgeInsets.all(15.0),
-        child: Container(
-          padding:  EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("images/laundry.png"),
-              fit: BoxFit.fill,
-            ),
-          ) ,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  text,
-                  style: TextStyle(
-                      color: Color.fromRGBO(88,89,91,1),
-                      fontFamily: "OpenSans",
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                  ),
+  final UserBasic userBasic;
+  final Function onTap;
+  ListGrid(this.userBasic,this.icon,this.text,this.onTap);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:EdgeInsets.all(15.0),
+      child: Container(
+        padding:  EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/laundry.png"),
+            fit: BoxFit.fill,
+          ),
+        ) ,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: Color.fromRGBO(88,89,91,1),
+                  fontFamily: "OpenSans",
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(bottom:3.0),
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(88,89,91,1),
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
-                  child: IconButton(
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom:3.0),
+              child: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(88,89,91,1),
+                  borderRadius: BorderRadius.circular(18.0),
+                ),
+                child: IconButton(
                     icon: Icon(
                       icon,
                       color: Colors.white,
                       size: 23.0,
                     ),
-                    onPressed: ontap()
-                  ),
+                    onPressed: onTap()
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
-  
-class CustomListTile extends StatelessWidget {         //Class for items to be displayed in the drawer
+}
+
+class CustomListTile extends StatelessWidget{        //Class for items to be displayed in the drawer
   final IconData icon;
   final String text;
   final Function onTap;
@@ -329,16 +349,16 @@ class CustomListTile extends StatelessWidget {         //Class for items to be d
                       child: Text(
                         text,
                         style: TextStyle(
-                          fontSize: 16.0,
-                          color: Color.fromRGBO(88,89,91,1),
-                          fontWeight: FontWeight.w600
+                            fontSize: 16.0,
+                            color: Color.fromRGBO(88,89,91,1),
+                            fontWeight: FontWeight.w600
                         ),
                       ),
                     ),
                   ],
                 ),
                 Icon(Icons.arrow_right,
-                color: Color.fromRGBO(88,89,91,1),
+                  color: Color.fromRGBO(88,89,91,1),
                 )
               ],
             ),

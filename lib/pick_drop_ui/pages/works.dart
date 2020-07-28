@@ -2,19 +2,21 @@
 will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:laundry/Classes/UserAuth.dart';
-import 'package:laundry/Classes/UserDetails.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
+import 'package:laundry/Classes/Job.dart';
+import 'package:laundry/Classes/UserBasic.dart';
+import 'package:http/http.dart' as http;
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
 
 
-class Work extends StatefulWidget {
-  final UserAuth userAuth;
-
-  const Work({Key key, this.userAuth}) : super(key: key);
+class Work extends StatefulWidget{
+  final UserBasic userBasic;
+  const Work({Key key, this.userBasic}) : super(key: key);
   @override
   _WorkState createState() => _WorkState();
 }
@@ -25,29 +27,61 @@ class _WorkState extends State<Work> {
   
   double lat;
   double long;
-  var workData;                         ///Variable to get the snapshot of the works available in the firestore
-
-  getData() => Firestore.instance.collection('Jobs').snapshots();
+  var workData;
+  String uid;
+  
+  Future<Position> getPosition(String address) async{
+    List<Placemark> placeMark = [];
+    
+    placeMark =
+    await Geolocator().placemarkFromAddress(address);
+    return placeMark.first.position;
+}
+  
+  
+  Future<List<Job>> getData() async{
+    List<Job> job = [];
+    print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
+    var response = await http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
+    
+    var ra = jsonDecode(response.body);
+    print(ra);
+    
+    for(var value in ra['Entity']){
+      job.add(Job(
+        customerName: value['CustomerName'].toString(), id: value['Id'].toString(), customerId: value['CustomerId'].toString(), storeId: value['StoreId'].toString(),
+        jobId: value['JobId'].toString(), jobName: value['JobName'].toString(), userId: value['UserId'].toString(),
+        isCompleted: value['IsCompleted'].toString(), isPending: value['IsPending'].toString(),
+        createdBy: value['CreatedBy'].toString(), modifiedBy: value['ModifiedBy'].toString(), createdDate: value['CreatedDate'].toString(),
+        modifiedDate: value['ModifiedDate'].toString(),
+        isDeleted: value['IsDeleted'].toString(), store: value['Store'].toString(),
+        customerAddress: value['CustomerAddress'].toString(), customerMobile: value['CustomerMobile'].toString(),
+        userName: value['UserName'].toString(), completed: value['Completed'].toString(), pending: value['Pending'].toString(),
+        position: await getPosition(await value['CustomerAddress'])
+      ));
+    }
+    return job;
+  }
   
   
   
   @override
   void initState() {
     super.initState();
-    setState(() {
-      workData = getData();
-    });
+    getData();
+    DateFormat dateFormat = DateFormat('HH:mm:ss');
+    DateTime dateTime = dateFormat.parse('8:40:23');
+    DateTime dateTime2 = dateFormat.parse(DateTime.now().toString().split(' ')[1]);
+    print("test " + dateTime2.isAfter(dateTime).toString());
   }
   
   
   fetchWorkDetails(){
-    if(workData == null){
-      print("getting workdata");
-    }else{
-      return StreamBuilder(
-        stream: workData,
-        builder: (context,snapshot){
-          if(snapshot.data == null){
+      return StreamBuilder<List<Job>>(
+        stream: getData().asStream(),
+        builder: (context,AsyncSnapshot<List<Job>> snapshot){
+          print(snapshot.hasData);
+          if(!snapshot.hasData){
             return Center(
               child:CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
@@ -56,17 +90,15 @@ class _WorkState extends State<Work> {
           }else{
           return ListView.builder(
             shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context,i){
-              return workCards(context,snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address'],widget.userAuth);
+            itemCount: snapshot.data.length,
+            itemBuilder: (context,int index){
+              return workCards(context,snapshot.data[index], widget.userBasic);
             },
           );
           }
         },
       );
-    }
   }
-  
   
   @override
   Widget build(BuildContext context) {
@@ -90,12 +122,17 @@ class _WorkState extends State<Work> {
       
       body:  Container(
         padding: EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("images/12.jpg"),
+              fit: BoxFit.fill
+          ),
+        ),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: StreamBuilder(
             stream: Connectivity().onConnectivityChanged,
-            builder:(BuildContext context,
-                AsyncSnapshot<ConnectivityResult> snapShot){
+            builder:(BuildContext context, AsyncSnapshot<ConnectivityResult> snapShot){
               if (!snapShot.hasData) return Center(child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>
                   (Colors.blueGrey),
@@ -110,19 +147,11 @@ class _WorkState extends State<Work> {
                 default:
                   return Container(padding: EdgeInsets.all(10),child: InternetCheck());
               }
-            } ),
-    decoration: BoxDecoration(
-    image: DecorationImage(
-    image: AssetImage("images/12.jpg"),
-    fit: BoxFit.fill,
-    ),
+            }),
       ),
-    ),
     );
   }
 }
-
-
 
 class InternetCheck extends StatelessWidget {
   @override
@@ -132,7 +161,7 @@ class InternetCheck extends StatelessWidget {
 	      height : 200,
         width: 200,
         decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage('images/network.gif'),fit: BoxFit.contain),
+            image: DecorationImage(image: AssetImage('images/network.gif'), fit: BoxFit.contain),
             borderRadius:BorderRadius.circular(10.0)
         ),
       ),
@@ -140,9 +169,9 @@ class InternetCheck extends StatelessWidget {
   }
 }
 
-
-
-workCards(BuildContext context ,name,address,UserAuth userAuth) {
+workCards(BuildContext context, Job job, UserBasic userBasic){
+  print(job.customerName);
+  print(job.customerAddress);
     return Container(
       padding: EdgeInsets.all(10),
       child: Card(
@@ -160,14 +189,14 @@ workCards(BuildContext context ,name,address,UserAuth userAuth) {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
                ListTile(
-                leading: Icon(Icons.view_module,
-                color: Colors.blueGrey[700],),
+                leading: job.customerAddress!=" "?Icon(Icons.view_module,
+                color: Colors.blueGrey[700],):Text(""),
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 2,),
                     Text(
-                      name,
+                      job.customerName,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         letterSpacing: .5,
@@ -175,32 +204,53 @@ workCards(BuildContext context ,name,address,UserAuth userAuth) {
                         color: Color.fromRGBO(88, 89, 91,1)
                       ),
                     ),
+                    Divider(thickness: 1.5,)
                   ],
                 ),
                 subtitle:  Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 10,),
-                    Text('DESTINATION :',style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12
-                    ),),
-                    SizedBox(height: 5,),
-                    Text(address,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color:Color.fromRGBO(88, 89, 91,1)
-                    ),
+//                    SizedBox(height: 5,),
+                    job.customerAddress != " "?RichText(
+                      text:TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(text: 'Direction: ',style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromRGBO(88, 89, 91,1),
+                              fontSize: 12)),
+                          TextSpan(text: job.customerAddress,style: TextStyle(
+                              fontSize: 12,
+                              color:Color.fromRGBO(88, 89, 91,1)
+                          )),
+                        ]
+                      ),
+                      overflow: TextOverflow.clip,
+                    ):Text(""),
+                    
+                    SizedBox(height: 10,),
+                    Row(
+                      children: <Widget>[
+                        Text('Mobile: ',style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12
+                        ),),
+                        Text(job.customerMobile,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color:Color.fromRGBO(88, 89, 91,1)
+                          ),
+                        )
+                      ],
                     ),
                   ],
                 ),
               ),
               
-              
-              
               ButtonBar(
                 children: <Widget>[
-                  RaisedButton(
+                  job.customerAddress != " "?RaisedButton(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -212,10 +262,11 @@ workCards(BuildContext context ,name,address,UserAuth userAuth) {
                       ),
                     ),
                     onPressed: () {
-                      workDescription(context, name, address,userAuth);
+                      print(userBasic.mobile);
+                      workDescription(context, job, userBasic);
                     },
                     focusElevation: 15,
-                  ),
+                  ):Container(),
                   SizedBox(width: 10,),
                 ],
               ),
@@ -225,5 +276,3 @@ workCards(BuildContext context ,name,address,UserAuth userAuth) {
       ),
     );
   }
-
-
