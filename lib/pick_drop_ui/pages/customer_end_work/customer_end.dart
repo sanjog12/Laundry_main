@@ -1,7 +1,7 @@
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -96,156 +96,193 @@ class _CustomerEndState extends State<CustomerEnd> {
 	  
     return Scaffold(
 	    appBar: AppBar(
-		    title: Text("Challan"),
+		    iconTheme: IconThemeData(
+				    color: Colors.blue[100]
+		    ),
+		    title: Text("Challan",style: TextStyle(
+				    fontFamily: "OpenSans",
+				    fontWeight: FontWeight.bold,
+				    letterSpacing: 1.0,
+				    color: Colors.blue[100]),),
+		    centerTitle: true,
+		    backgroundColor: Colors.blueGrey[700],
 	    ),
 	    
 	    body: SingleChildScrollView(
 	      child: Container(
-			      padding: EdgeInsets.all(20),
-			      child: Column(
-				      crossAxisAlignment: CrossAxisAlignment.stretch,
-				      children: <Widget>[
-				      	Text("Search for Garment"),
-					      TextFormField(
-						      controller: _controller,
-						      autofocus: false,
-					      ),
+		      decoration: BoxDecoration(
+			      image: DecorationImage(
+					      image: AssetImage("images/12.jpg"),
+					      fit: BoxFit.fill
+			      ),
+		      ),
+		      height: MediaQuery.of(context).size.height*0.90,
+		      padding: EdgeInsets.all(20),
+		      child: Column(
+			      crossAxisAlignment: CrossAxisAlignment.stretch,
+			      children: <Widget>[
+			      	Text("Search for Garment"),
+				      TextFormField(
+					      controller: _controller,
+					      autofocus: false,
+				      ),
 					      
-					      listShow ?
-					      Container(
-						      height: 150,
-						      child: FutureBuilder<List<GarmentObject>>(
-							      future: getGarmentDetails(),
-							      builder: (BuildContext context, AsyncSnapshot<List<GarmentObject>> snapshot) {
-							      	if (snapshot.hasData) {
-							      		print(snapshot.data.length);
-							      		return Container(
-										      color: Colors.white70,
-										      alignment: Alignment.center,
-										      child: ListView.builder(
-											      itemCount: snapshot.data.length,
-											      itemBuilder: (BuildContext context, int index) {
-											      	return GestureDetector(
-													      onTap: () {
-													      	setState(() {
-													      		listShow = false;
-													      		_searchText = snapshot.data[index].garmentName;
-													      		garmentObject =
-																	      GarmentObject(
-																			      garmentName: snapshot.data[index].garmentName,
-																		        garmentPcs: snapshot.data[index].garmentPcs,
-																		        subGarment: snapshot.data[index].subGarment,
-																		        garmentId: snapshot.data[index].garmentId
-																	      );
-													      	});
-													      	FocusScope.of(context).requestFocus(FocusNode());
-													      	},
-													      child: Container(
+				      listShow ?
+				      Container(
+					      height: 150,
+					      child: FutureBuilder<List<GarmentObject>>(
+						      future: getGarmentDetails(),
+						      builder: (BuildContext context, AsyncSnapshot<List<GarmentObject>> snapshot) {
+						      	if (snapshot.hasData) {
+						      		print(snapshot.data.length);
+						      		return Container(
+									      color: Colors.white70,
+									      alignment: Alignment.center,
+									      child: ListView.builder(
+										      itemCount: snapshot.data.length,
+										      itemBuilder: (BuildContext context, int index) {
+										      	return GestureDetector(
+												      onTap: () {
+												      	setState(() {
+												      		listShow = false;
+												      		_searchText = snapshot.data[index].garmentName;
+												      		garmentObject =
+																      GarmentObject(
+																		      garmentName: snapshot.data[index].garmentName,
+																		      garmentPcs: snapshot.data[index].garmentPcs,
+																		      subGarment: snapshot.data[index].subGarment,
+																		      garmentId: snapshot.data[index].garmentId
+																      );
+												      	});
+												      	FocusScope.of(context).requestFocus(FocusNode());
+												      	},
+												      child: Container(
 													      color: Colors.white70,
-													      margin: EdgeInsets.all(2),
+													      margin: EdgeInsets.all(5),
 													      child: Text(
 														      snapshot.data[index].garmentName,
 														      style: TextStyle(color: Colors.black),
 													      ),
-													      ),
-												      );
-											      	},
+												      ),
+											      );
+										      	},
+									      ),
+								      );
+						      	} else
+						      		return SizedBox();
+						      	},
+					      ),
+				      )
+						      : SizedBox(),
+				      SizedBox(
+					      height: 30.0,
+				      ),
+				      garmentObject != null?
+				      Column(
+					      crossAxisAlignment: CrossAxisAlignment.stretch,
+					      children: <Widget>[
+						      Container(
+							      padding: EdgeInsets.all(10),
+							      decoration: BoxDecoration(
+								      border: Border.all(
+									      width: 2,
+									      color: Colors.grey
+								      )
+							      ),
+						        child: Column(
+							      crossAxisAlignment: CrossAxisAlignment.stretch,
+							      children: <Widget>[
+								      Text("Selected Garment"),
+								      SizedBox(height: 5,),
+								      Text(_searchText),
+								      SizedBox(height: 25,),
+							      	Text("Enter No. Pieces"),
+								      SizedBox(height: 2,),
+								      TextFormField(
+									      onChanged: (value){
+									      	numberOfPieces = int.parse(value);
+									      	},
+									      keyboardType: TextInputType.number,
+									      inputFormatters: <TextInputFormatter>[
+									      	WhitelistingTextInputFormatter.digitsOnly
+									      ],
+								      ),
+								      SizedBox(height: 20,),
+								      Container(
+									      padding: EdgeInsets.symmetric(horizontal: 30),
+									      child: FlatButton(
+										      shape: RoundedRectangleBorder(
+											      borderRadius: BorderRadius.circular(15),
 										      ),
-									      );
-							      	} else
-							      		return SizedBox();
-							      	},
+										      color:Colors.blueGrey[700],
+										      child: Text("Add to Challan",style: TextStyle(
+											      color: Colors.blue[100],
+										      ),),
+										      onPressed: (){
+											      print(numberOfPieces);
+											      if(numberOfPieces != 0 ){
+												      hashMap.add(GarmentInBasket(
+													      quantity: numberOfPieces,
+													      garmentObject: garmentObject,
+												      ));
+											      }
+											      setState(() {
+												      numberOfPieces = 0;
+												      _searchText ="";
+												      garmentObject = null;
+												      _controller.clear();
+											      });},
+									      ),
+								      ),
+							       ],
+						        ),
 						      ),
-					      )
-							      : SizedBox(),
-				
-					      SizedBox(
-						      height: 30.0,
-					      ),
-					      
-					      garmentObject != null?
-					      Column(
-						      crossAxisAlignment: CrossAxisAlignment.stretch,
-							    children: <Widget>[
-							    	Column(
-									    crossAxisAlignment: CrossAxisAlignment.stretch,
-							    	  children: <Widget>[
-							    	    Text("Selected Garment"),
-									      SizedBox(height: 5,),
-									      Text(_searchText),
-							    	  ],
-							    	),
-								    SizedBox(height: 25,),
-								    Column(
-									    crossAxisAlignment: CrossAxisAlignment.stretch,
-									    children: <Widget>[
-									    	Text("Select No. Pieces"),
-										    SizedBox(height: 2,),
-										    TextFormField(
-											    onChanged: (value){
-											    	numberOfPieces = int.parse(value);
-											    },
-											    keyboardType: TextInputType.number,
-											    inputFormatters: <TextInputFormatter>[
-												    WhitelistingTextInputFormatter.digitsOnly
-											    ],
-										    ),
-									    ],
-								    ),
-								    
-								    FlatButton(
-									    child: Text("Add to Challan"),
-									    onPressed: (){
-									    	print(numberOfPieces);
-									    	if(numberOfPieces != 0 ){
-									    		hashMap.add(GarmentInBasket(
-												    quantity: numberOfPieces,
-												    garmentObject: garmentObject,
-											    ));
-										    }
-									    	setState(() {
-											    numberOfPieces = 0;
-											    _searchText ="";
-											    garmentObject = null;
-											    _controller.clear();
-									    	});
-									    },
-								    ),
-								    
-							    ],
-						    ):Container(),
-					
-					      FlatButton(
-						      child: Text("See added Cloths"),
-						      onPressed: (){
-						      	getAddedClothsList(context);
-						      },
-					      ),
-					
-					      SizedBox(height: 10,),
-					      
-					      FlatButton(
-						      child: Text("Final Challan"),
-						      onPressed: () async{
-							      writeInPdf(hashMap);
-							      await savePdf();
-							      Directory documentDirectory = await getApplicationDocumentsDirectory();
-							
-							      String documentPath = documentDirectory.path;
-							      String filePath = "$documentPath/example.pdf";
-							
-							
-							      Navigator.push(context,
-									      MaterialPageRoute(
-											      builder: (context) => PdfProviderScreen(
-												      path: filePath,
-											      )
-									      )
-							      );
-						      },
-					      )
-				      ],
-			      ),
+					      ],
+				      ):Container(),
+				      
+				      Container(
+					      padding: EdgeInsets.symmetric(horizontal: 20),
+				        child: Column(
+				          children: <Widget>[
+				          	SizedBox(height: 40,),
+				            FlatButton(
+					            shape: RoundedRectangleBorder(
+						            borderRadius: BorderRadius.circular(15),
+					            ),
+					            color:Colors.blueGrey[700],
+					            child: Text("See added Cloths",style: TextStyle(
+						            color: Colors.blue[100],
+					            ),),
+					            onPressed: (){
+					            	getAddedClothsList(context);},
+				            ),
+					          SizedBox(height: 30,),
+					          
+					          FlatButton(
+						          shape: RoundedRectangleBorder(
+							          borderRadius: BorderRadius.circular(15),
+						          ),
+						          color:Colors.blueGrey[700],
+						          child: Text("Final Challan", style: TextStyle(
+							          color: Colors.blue[100],
+						          ),),
+						          onPressed: () async{
+						          	writeInPdf(hashMap);
+						          	await savePdf();
+						          	Directory documentDirectory = await getApplicationDocumentsDirectory();
+						          	String documentPath = documentDirectory.path;
+						          	String filePath = "$documentPath/example.pdf";
+						          	Navigator.push(context,
+									          MaterialPageRoute(
+											          builder: (context) => PdfProviderScreen(
+												          path: filePath,))
+							          );},
+					          ),
+				          ],
+				        ),
+				      ),
+			      ],
+		      ),
 	      ),
 	    ),
     );
@@ -259,54 +296,54 @@ class _CustomerEndState extends State<CustomerEnd> {
 						shape: RoundedRectangleBorder(
 								borderRadius: BorderRadiusDirectional.circular(10)
 						),
-						
 						title: Text("Added Items"),
-						content: SingleChildScrollView(
-						  child: Column(
-						  	children: <Widget>[
-						  		Divider(thickness: 1),
-						  		SizedBox(height: 20),
-						  		Container(
-						  			height: 500,
-						  		  width: 300,
-						  		  child: ListView.builder(
-						  		  	shrinkWrap: true,
-						  		  	itemCount: hashMap.length,
-						  		  	itemBuilder:(BuildContext context, index){
-						  		  		if(hashMap.length !=0) {
-						  		  			return Container(
-						  		  				child: ListTile(
-						  		  					title: Text(hashMap[index].garmentObject.garmentName),
-						  		  					leading: Text('${hashMap[index].quantity}'),
-													    onTap: () async{
-						  		  						bool t = await removeAddedItem(context);
-						  		  						if(t) {
-						  		  							setState(() {
-																    hashMap.remove(hashMap[index]);
-																    Navigator.pop(context);
-																    getAddedClothsList(context);
-						  		  							});
-						  		  							
-														    }
-													    },
-						  		  				),
-						  		  			);
-						  		  		}
-						  		  		else{
-						  		  			return Container(
-						  		  				child: Text("No Item Added"),
-						  		  			);
-						  		  		}
-						  		  	}
-						  		  ),
-						  		),
-						  	],
-						  ),
-						),
+						content: Column(
+							children: <Widget>[
+								Divider(thickness: 1),
+								SizedBox(height: 20),
+								SingleChildScrollView(
+								  child: Container(
+								  	height: 500,
+								    width: 300,
+								    child: ListView.builder(
+								    	shrinkWrap: true,
+								    	itemCount: hashMap.length,
+								    	itemBuilder:(BuildContext context, index){
+								    		if(hashMap.length !=0) {
+								    			return Container(
+								    				child: ListTile(
+								    					title: Text(hashMap[index].garmentObject.garmentName),
+								    					leading: Text('${hashMap[index].quantity}'),
+								  					    onTap: () async{
+								    						bool t = await removeAddedItem(context);
+								    						if(t) {
+								    							setState(() {
+								  								    hashMap.remove(hashMap[index]);
+								  								    Navigator.pop(context);
+								  								    getAddedClothsList(context);
+								    							});
+								  						    }
+								  					    },
+								    				),
+								    			);
+								    		}
+								    		else{
+								    			return Container(
+								    				child: Text("No Item Added"),
+								    			);
+								    		}
+								    	}
+								    ),
+								  ),
+								),
+								Align(
+									alignment: Alignment.bottomCenter,
+									child: Text("Tap to Remove item",style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12)),
+								)
+							],),
 					);
-			}
-		);
-  }
+				});
+	}
   
   removeAddedItem(BuildContext context) async{
 		bool r ;
