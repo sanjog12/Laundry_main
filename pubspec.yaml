@@ -17,9 +17,8 @@ environment:
   sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
-
+  share_extend: ^1.1.9
   background_location:
-  url_launcher:
   http:
   firebase_database:
   firebase_auth:
@@ -40,6 +39,10 @@ dependencies:
   firebase_storage:
   table_calendar:
   flutter_calendar_carousel:
+  pdf:
+  path_provider:
+  flutter_pdfview:
+  sms: ^0.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
