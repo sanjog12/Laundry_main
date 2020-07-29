@@ -39,13 +39,29 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
 	    appBar: AppBar(
-		    title: Text("Attendance of Employees"),
+				backgroundColor: Colors.blueGrey[700],
+				elevation: 8,
+				iconTheme: IconThemeData(
+					color:Colors.blue[100],
+				),
+		    title: Text(
+					"EMPLOYEE ATTENDANCE",
+					style: TextStyle(
+						fontWeight: FontWeight.bold,
+						fontFamily: "OpenSans",
+						letterSpacing: 1.0,
+						color:Colors.blue[100],
+					),
+				),
+				centerTitle: true,
 	    ),
 	    
 	    body: Container(
+				height: MediaQuery.of(context).size.height,
+				width: MediaQuery.of(context).size.width,
 		    padding: EdgeInsets.all(20),
 		    child: Column(
-			    crossAxisAlignment: CrossAxisAlignment.stretch,
+			    crossAxisAlignment: CrossAxisAlignment.center,
 			    children: <Widget>[
 			    	waiting ?Expanded(
 			    	  child: ListView.builder(
@@ -53,19 +69,59 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
 						  itemBuilder: (BuildContext context , index){
 					    	if(employeeList.length != 0) {
 							    return Container(
+										height: 120,
 								    margin: EdgeInsets.symmetric(horizontal: 10),
-								    decoration: BoxDecoration(
-									    border: Border.all(
-										    width: 1
-									    )
-								    ),
-								    child: ListTile(
-									    title: Text(employeeList[index].id),
+								    child: Card(
+											elevation: 3,
+											shape: RoundedRectangleBorder(
+												borderRadius: BorderRadius.circular(15),
+											),
+											color: Colors.blueGrey[50],
+								      child: ListTile(
+											leading: Icon(
+												Icons.view_module,
+												color: Colors.blueGrey[700],
+											),
+									    title: Padding(
+									      padding: EdgeInsets.only(top:10.0),
+									      child: Text(
+													employeeList[index].id,
+								style: TextStyle(
+								fontWeight: FontWeight.w800,
+								fontFamily: "OpenSans",
+								letterSpacing: .5,
+								fontSize: 20,
+								color: Color.fromRGBO(88, 89, 91,1)
+											),
+											),
+									    ),
 									    subtitle: Column(
 										    crossAxisAlignment: CrossAxisAlignment.start,
 									      children: <Widget>[
-								          Text(employeeList[index].name),
-									        Text(employeeList[index].phone),
+													Divider(thickness: 1.5,),
+								            Text(
+															employeeList[index].name,
+														style: TextStyle(
+																fontWeight: FontWeight.w800,
+																fontFamily: "OpenSans",
+																letterSpacing: .5,
+																fontSize: 14,
+																color: Color.fromRGBO(88, 89, 91,1)
+														),
+													),
+									        SizedBox(
+														height: 5,
+													),
+									        Text(
+															employeeList[index].phone,
+														style: TextStyle(
+																fontWeight: FontWeight.w800,
+																fontFamily: "OpenSans",
+																letterSpacing: .5,
+																fontSize: 12,
+																color: Color.fromRGBO(88, 89, 91,1)
+														),
+													),
 									      ],
 									    ),
 									    onTap: () async{
@@ -76,6 +132,7 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
 									    	Navigator.pop(context);
 									    	detailedWindow(context, employeeData, employeeList[index]);
 									    },
+								      ),
 								    ),
 							    );
 						    }
@@ -87,14 +144,22 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
 						  }
 				    ),
 			    	):
-						    Container(
+						    Center(
+						      child: Container(
 							    child: CircularProgressIndicator(
-								    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+								    valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey[700]),
 							    ),
+						      ),
 						    ),
 			    ],
 		    ),
+		decoration: BoxDecoration(
+		image: DecorationImage(
+		image: AssetImage("images/12.jpg"),
+		fit: BoxFit.fill,
 	    ),
+		),
+			),
     );
   }
   
@@ -103,50 +168,161 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
 			context: context,
 			builder:(BuildContext context){
 			return AlertDialog(
+				backgroundColor: Colors.blueGrey[50],
 				shape: RoundedRectangleBorder(
-					borderRadius: BorderRadiusDirectional.circular(10)
+					borderRadius: BorderRadius.circular(15),
+					side: BorderSide(
+						color: Colors.lightBlue[400],
+						width: 3
+					)
 				),
-				title: Text(employeeList.name),
-				content: Column(
-					crossAxisAlignment: CrossAxisAlignment.stretch,
-					children: <Widget>[
-						Divider(thickness: 1.5),
-						Row(
-							children: <Widget>[
-								Text("Present :"),
-								Text(employeeData.present),
-							],
-						),
-						SizedBox(height: 5,),
-						Row(
-							children: <Widget>[
-								Text("Absent :"),
-								Text(employeeData.absent),
-							],
-						),
-						SizedBox(height: 5,),
-						Row(
-							children: <Widget>[
-								Text("Half Days :"),
-								Text(employeeData.half)
-							],
-						),
-						
-						SizedBox(height: 15),
-						Row(
-							children: <Widget>[
-								Text("Total Distance :"),
-								Text(employeeData.totalDistance),
-							],
-						),
-						SizedBox(height: 10,),
-						Row(
-							children: <Widget>[
-								Text("Total Time :"),
-								Text(employeeData.totalTime),
-							],
-						),
-					],
+				title: Text(
+						employeeList.name,
+					style: TextStyle(
+							fontWeight: FontWeight.w800,
+							fontFamily: "OpenSans",
+							letterSpacing: .5,
+							fontSize: 20,
+							color: Color.fromRGBO(88, 89, 91,1)
+					),
+				),
+				content: Container(
+					height: 200,
+				  child: Column(
+				  	crossAxisAlignment: CrossAxisAlignment.start,
+				  	children: <Widget>[
+				  		Divider(thickness: 1.5),
+				  		Row(
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+				  			children: <Widget>[
+				  				Text(
+											"Present :",
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  				Text(
+											employeeData.present,
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  			],
+				  		),
+				  		SizedBox(height: 5,),
+				  		Row(
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+				  			children: <Widget>[
+				  				Text(
+											"Absent :",
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  				Text(
+											employeeData.absent,
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  			],
+				  		),
+				  		SizedBox(height: 5,),
+				  		Row(
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+				  			children: <Widget>[
+				  				Text(
+											"Half Days :",
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  				Text(
+											employeeData.half,
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									)
+				  			],
+				  		),
+				  		SizedBox(height: 5),
+				  		Row(
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+				  			children: <Widget>[
+				  				Text(
+											"Total Distance :",
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  				Text(
+											employeeData.totalDistance,
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  			],
+				  		),
+				  		SizedBox(height: 5,),
+				  		Row(
+				mainAxisAlignment: MainAxisAlignment.spaceBetween,
+				  			children: <Widget>[
+				  				Text(
+											"Total Time :",
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  				Text(
+											employeeData.totalTime,
+										style: TextStyle(
+												fontWeight: FontWeight.w800,
+												fontFamily: "OpenSans",
+												letterSpacing: .5,
+												fontSize: 16,
+												color: Color.fromRGBO(88, 89, 91,1)
+										),
+									),
+				  			],
+				  		),
+				  	],
+				  ),
 				),
 			);
 			}
@@ -163,7 +339,9 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
 						),
 						content: Container(
 							padding: EdgeInsets.all(10),
-							child: Center(child: CircularProgressIndicator()),
+							child: Center(child: CircularProgressIndicator(
+								valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey[700]),
+							)),
 						),
 					);
 				}

@@ -84,7 +84,7 @@ class _WorkState extends State<Work> {
           if(!snapshot.hasData){
             return Center(
               child:CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey[700]),
               ),
             );
           }else{
@@ -135,7 +135,7 @@ class _WorkState extends State<Work> {
             builder:(BuildContext context, AsyncSnapshot<ConnectivityResult> snapShot){
               if (!snapShot.hasData) return Center(child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>
-                  (Colors.blueGrey),
+                  (Colors.blueGrey[700]),
               ));
               var result = snapShot.data;
               switch (result){
@@ -199,6 +199,7 @@ workCards(BuildContext context, Job job, UserBasic userBasic){
                       job.customerName,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
+                        fontFamily: "OpenSans",
                         letterSpacing: .5,
                         fontSize: 19,
                         color: Color.fromRGBO(88, 89, 91,1)
@@ -218,10 +219,12 @@ workCards(BuildContext context, Job job, UserBasic userBasic){
                         children: <TextSpan>[
                           TextSpan(text: 'Direction: ',style: TextStyle(
                               fontWeight: FontWeight.bold,
+                              fontFamily: "OpenSans",
                               color: Color.fromRGBO(88, 89, 91,1),
                               fontSize: 12)),
                           TextSpan(text: job.customerAddress,style: TextStyle(
                               fontSize: 12,
+                              fontFamily: "OpenSans",
                               color:Color.fromRGBO(88, 89, 91,1)
                           )),
                         ]
@@ -234,11 +237,13 @@ workCards(BuildContext context, Job job, UserBasic userBasic){
                       children: <Widget>[
                         Text('Mobile: ',style: TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontFamily: "OpenSans",
                             fontSize: 12
                         ),),
                         Text(job.customerMobile,
                           style: TextStyle(
                               fontSize: 12,
+                              fontFamily: "OpenSans",
                               color:Color.fromRGBO(88, 89, 91,1)
                           ),
                         )

@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 2,
           childAspectRatio: 0.88,
           children: <Widget>[
-            ListGrid(widget.userBasic,Icons.work,"TASK",()=>(){
+            ListGrid(widget.userBasic,Icons.work,"Task",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Work(
@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
-            ListGrid(widget.userBasic,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
+            ListGrid(widget.userBasic,Icons.assignment_turned_in,"Attendance",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Attendance(
