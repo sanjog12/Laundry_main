@@ -1,37 +1,41 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
-    show CalendarCarousel;
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel, WeekdayFormat;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
-import 'package:laundry/Classes/UserAuth.dart';
-import 'package:laundry/Services/SharedPrefs.dart';
+import 'package:laundry/AdminSection/FunctionsOther/EmployeeFunctions.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/others/Attendance.dart';
 
 List<DateTime> presentDates = [];
 
 List<DateTime> absentDates = [];
 
-class attendance extends StatefulWidget{
-  final UserAuth userAuth;
+List<DateTime> halfDates = [];
 
-  const attendance({Key key, this.userAuth}) : super(key: key);
+class Attendance extends StatefulWidget{
+  final UserBasic userBasic;
+
+  const Attendance({Key key, this.userBasic}) : super(key: key);
 @override
-  State<StatefulWidget> createState() => Attendance();
+  State<StatefulWidget> createState() => AttendanceSate();
 
 }
 
-class Attendance extends State<attendance> {
+class AttendanceSate extends State<Attendance> {
   
 
   bool attend = true;
   CalendarCarousel _calendarCarouselNoHeader;
-  static Widget aiconTag(String day)=> Container(
+  
+  static Widget absentIconTag(String day)=> Container(
+    height: 2,
     decoration: BoxDecoration(
+      shape: BoxShape.circle,
       color: Colors.redAccent,
-      borderRadius: BorderRadius.all(
-        Radius.circular(1000)
-      )
+//      borderRadius: BorderRadius.all(
+//        Radius.circular(10),
+//      )
     ),
     child: Center(
       child: Text(
@@ -42,7 +46,8 @@ class Attendance extends State<attendance> {
       ),
     ),
   );
-  static Widget piconTag(String day)=> Container(
+  
+  static Widget presentIconTag(String day)=> Container(
     decoration: BoxDecoration(
         color: Colors.greenAccent,
         borderRadius: BorderRadius.all(
@@ -58,24 +63,42 @@ class Attendance extends State<attendance> {
       ),
     ),
   );
-  EventList<Event> datemap = new EventList<Event>(
+  EventList<Event> dateMap = new EventList<Event>(
     events: {},
   );
+
+  static Widget halfIconTag(String day)=> Container(
+    decoration: BoxDecoration(
+        color: Colors.yellow,
+        borderRadius: BorderRadius.all(
+            Radius.circular(1000)
+        )
+    ),
+    child: Center(
+      child: Text(
+        day,
+        style: TextStyle(
+          color: Colors.black,
+        ),
+      ),
+    ),
+  );
   
-  gett() async{
-    await getAttendance().then((value){
+  getData() async{
+    await getAttendance(widget.userBasic).then((value){
       setState(() {
-        presentDates = value;
         attend = false;
       });
     });
   }
   
-  
   @override
   void initState() {
     super.initState();
-    gett();
+    presentDates = [];
+    absentDates = [];
+    halfDates = [];
+    getData();
   }
   
   
@@ -83,27 +106,42 @@ class Attendance extends State<attendance> {
   Widget build(BuildContext context) {
     var cheight = MediaQuery.of(context).size.height;
     var len = presentDates.length;
-    var len1= absentDates.length;
+    var len1 = absentDates.length;
+    var len2 = halfDates.length;
+    
     for(int i=0;i< len ; i++){
-      datemap.add(presentDates[i],
+      dateMap.add(presentDates[i],
       new Event(
         date: presentDates[i],
         title: 'Event 1',
-        icon: piconTag(
+        icon: presentIconTag(
           presentDates[i].day.toString()
         )
       ));
     }
+    
     for(int i=0;i<len1;i++){
-      datemap.add(absentDates[i],
+      dateMap.add(absentDates[i],
           Event(
         date: absentDates[i],
         title: 'Event 1',
-        icon: aiconTag(
+        icon: absentIconTag(
           absentDates[i].day.toString()
         )
       ));
     }
+
+    for(int i=0;i<len2;i++){
+      dateMap.add(halfDates[i],
+          Event(
+              date: halfDates[i],
+              title: 'Event 1',
+              icon: halfIconTag(
+                  halfDates[i].day.toString()
+              )
+          ));
+    }
+    
       return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
@@ -127,49 +165,96 @@ class Attendance extends State<attendance> {
           ),
         )
             :Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             _calendarCarouselNoHeader =CalendarCarousel<Event>(
-                  height: cheight * 0.54,
-                  weekendTextStyle: TextStyle(
-                    color: Colors.red
-                  ),
+              height: cheight * 0.54,
+//              daysTextStyle: TextStyle(
+//                color: Colors.blueAccent
+//              ),
+              weekendTextStyle: TextStyle(
+                color: Colors.black,
+              ),
+              headerTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 32
+              ),
+//              weekDayBackgroundColor: Colors.black,
+              weekdayTextStyle: TextStyle(
+                color: Color.fromRGBO(169, 169, 169, 1),
+              ),
+              prevMonthDayBorderColor: Color.fromRGBO(190, 190, 190, 1),
+              nextMonthDayBorderColor: Color.fromRGBO(190, 190, 190, 1),
               todayButtonColor: Colors.blue[100],
-              markedDatesMap: datemap,
+              markedDatesMap: dateMap,
+              markedDateCustomShapeBorder: CircleBorder(
+              
+              ),
               markedDateShowIcon: true,
               markedDateIconMaxShown: 1,
               markedDateMoreShowTotal: null,
               markedDateIconBuilder: (event){
                     return event.icon;
               },
-    ),
-            Container(
-
-              margin: EdgeInsets.all(30.0),
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 3.0
-                  ),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(5.0)
-                  )
-              ),
-              child: new Text("NUMBER OF PRESENTS: ${presentDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
             ),
+            
+//            Container(
+//              margin: EdgeInsets.all(30.0),
+//              padding: EdgeInsets.all(10.0),
+//              decoration: BoxDecoration(
+//                  border: Border.all(
+//                      width: 3.0
+//                  ),
+//                  borderRadius: BorderRadius.all(
+//                      Radius.circular(5.0)
+//                  )
+//              ),
+//              child: Text("NUMBER OF PRESENTS: ${presentDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
+//            ),
+//
+//            Container(
+//              padding: EdgeInsets.all(10.0),
+//              decoration: BoxDecoration(
+//                  border: Border.all(
+//                      width: 3.0
+//                  ),
+//                  borderRadius: BorderRadius.all(
+//                      Radius.circular(5.0)
+//                  )
+//              ),
+//              child: Text("NUMBER OF PRESENTS: ${halfDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
+//            ),
+            
             Container(
-
-              margin: EdgeInsets.all(30.0),
-              padding: EdgeInsets.all(10.0),
+              margin: EdgeInsets.symmetric(horizontal: 15),
+              height: 65,
+//              padding: EdgeInsets.only(left: 20,right: 10),
               decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 3.0
-                  ),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(5.0)
-                  )
+                color: Color.fromRGBO( 224, 238, 242, 1),
+                  borderRadius: BorderRadius.circular(100)
               ),
-              child: new Text("NUMBER OF ABSENTS: ${absentDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                 children: <Widget>[
+                   Text("Present",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
+                   Container(
+                     margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                     height: 60,
+                     width: 60,
+                     decoration: BoxDecoration(
+                       border: Border.all(),
+                       shape: BoxShape.circle,
+                       color: Color.fromRGBO(0, 179, 50, 1),
+                     ),
+                     child: Text(
+                       '${presentDates.length}',
+                       style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
+                   )
+                 ],
+               ),
             ),
+            
           ],
         )
       );

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry/Classes/UserDetails.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/authentication/FirebaseStore.dart';
@@ -13,9 +13,10 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
 	
-	final FireStoreService fireStoreService = FireStoreService();
-	String firebaseID;
+	String mobile;
+	String password;
 	
+	UserService userService = UserService();
 	
 	@override
   void initState() {
@@ -24,24 +25,26 @@ class _WrapperState extends State<Wrapper> {
   }
   
   Future<String> getUserFirebaseId() async{
-		String _firebaseUserID = await SharedPrefs.getStringPreference('uid');
-		print(_firebaseUserID);
+		String m = await SharedPrefs.getStringPreference('Mobile');
+		String p = await SharedPrefs.getStringPreference('Password');
 		this.setState((){
-		firebaseID =_firebaseUserID;
+			mobile = m;
+			password = p;
 		});
-		return _firebaseUserID;
+		return m;
   }
 	
   @override
   Widget build(BuildContext context) {
-    return firebaseID==null
+    return mobile==null
 		    ?Login()
-		    :StreamBuilder(
-	        stream: fireStoreService.getUserDetails(firebaseID),
+		    :StreamBuilder<UserBasic>(
+	        stream: userService.getUserDetails(mobile, password).asStream(),
 	        builder: (BuildContext context, snapshot){
-	    	    if(snapshot.hasData){}
-		        return HomePage(
-		        );
+	    	    if(snapshot.hasData){
+	    	    	print(snapshot.data.mobile);
+		        }
+		        return HomePage(userBasic: snapshot.data);
 	        },
     );
   }

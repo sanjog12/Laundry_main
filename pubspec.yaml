@@ -17,21 +17,20 @@ environment:
   sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
-
+  share_extend: ^1.1.9
   background_location:
-  url_launcher:
   http:
   firebase_database:
   firebase_auth:
   shared_preferences:
   fluttertoast:
   location:
-  flutter_polyline_points:
+  geolocator:
   cloud_firestore:
-  intl: ^ 0.16.1
+  intl: ^0.16.1
   flutter:
     sdk: flutter
-  connectivity: ^ 0.4.8+2
+  connectivity: ^0.4.8+2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -40,6 +39,10 @@ dependencies:
   firebase_storage:
   table_calendar:
   flutter_calendar_carousel:
+  pdf:
+  path_provider:
+  flutter_pdfview:
+  sms: ^0.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -79,6 +82,16 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: Myriad
+      fonts:
+        - asset: assets/fonts/Myriad_Pro_Regular.ttf
+    - family: Myriad_Bold
+      fonts:
+        - asset: assets/fonts/Myriad_Pro_Bold.ttf
+
+    - family: Seguisb
+      fonts:
+        - asset: assets/fonts/seguisb.ttf
     - family: OpenSans
       fonts:
         - asset: assets/fonts/OpenSans-SemiBold.ttf
