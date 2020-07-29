@@ -68,7 +68,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 							    visible: true,
 							    points: value,
 							    color: Colors.lightBlue,
-							    width: 2,
+							    width: 3,
 							    startCap: Cap.roundCap,
 							    endCap: Cap.buttCap,
 						    )
@@ -105,6 +105,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
     return Stack(
       children : <Widget>[
       	Container(
+					height: MediaQuery.of(context).size.height - 40,
 	    child: GoogleMap(
 		    initialCameraPosition: CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17),
 		    polylines: polyline,
@@ -119,16 +120,24 @@ class _DuringNavigationState extends State<DuringNavigation> {
       ),
 	
 	      Align(
-		      alignment: AlignmentDirectional.bottomStart,
+		      alignment: AlignmentDirectional.bottomCenter,
 	        child: Container(
+						height: 50,
+	          width: MediaQuery.of(context).size.width,
+	          decoration: BoxDecoration(
+							color: Color.fromRGBO(224,238,242, 1)
+						),
+	          child: Padding(
+	            padding: const EdgeInsets.only(left: 110.0, right: 110.0,bottom: 8.0,top: 8.0),
+	            child: Container(
 		        height: 40,
-		        width: 150,
+		        width: 80,
 			      decoration: BoxDecoration(
-				      borderRadius: BorderRadius.circular(10),
-				      color: Colors.blueGrey,
+				      borderRadius: BorderRadius.circular(8),
+				      color: Color.fromRGBO(2, 124, 149, 1),
 			      ),
 			      child: FlatButton(
-					      child: Text("Reached Location"),
+					      child: Text("End Ride",style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1),fontFamily: "Seguisb",fontSize: 20),),
 					      onPressed: () {
 						      Navigator.of(context).pop();
 						      Navigator.push(context,
@@ -140,6 +149,8 @@ class _DuringNavigationState extends State<DuringNavigation> {
 								      )));
 					      }
 			      ),
+	            ),
+	          ),
 	        ),
 	      ),
       ],
