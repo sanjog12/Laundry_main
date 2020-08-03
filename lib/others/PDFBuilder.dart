@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:laundry/Classes/GarmentInBasket.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pf;
@@ -10,84 +11,66 @@ writeInPdf(List<GarmentInBasket> temp){
 	int totalGarment = 0;
 	int i =1;
 	
-	print("l");
 	var temp2 = [];
 	temp2.addAll(temp);
-	print(temp.length);
-	temp2.removeWhere((element){
-		return element.workAvailable.nameOfWork != 'Laundry';});
-	print(temp2.length);
-	var tempLaundry = temp2;
-	print("1 "+tempLaundry.length.toString());
+	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Laundry';});
+	var tempLaundry = [];
+	tempLaundry.addAll(temp);
 	
-	temp2 = temp;
-	temp2.removeWhere((element){
-		print(element.workAvailable.nameOfWork);
-		print(element.workAvailable.nameOfWork != 'Laundry Mix');
-		return element.workAvailable.nameOfWork != 'Laundry Mix';});
-	var tempLaundryMix = temp2;
-	print("1 "+tempLaundryMix.length.toString());
-	print(temp.length);
+	temp2.addAll(temp);
+	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Laundry Mix';});
+	var tempLaundryMix = [];
+	tempLaundryMix.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Charak';});
-	var tempCharak = temp2;
-	print("2 "+tempCharak.length.toString());
-	print(temp.length);
+	var tempCharak = [];
+	tempCharak.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Dry Clean';});
-	var tempDryClean = temp2;
-	print("3 "+tempDryClean.length.toString());
-	print(temp.length);
+	var tempDryClean = [];
+	tempDryClean.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Dye';});
-	var tempDye = temp2;
-	print("4 "+tempDye.length.toString());
-	print(temp.length);
+	var tempDye = [];
+	tempDye.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Express';});
-	var tempExpress = temp2;
-	print("5 "+tempExpress.length.toString());
-	print(temp.length);
+	var tempExpress = [];
+	tempExpress.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Mend';});
-	var tempMend = temp2;
-	print("6 "+tempMend.length.toString());
-	print(temp.length);
+	var tempMend = [];
+	tempMend.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Reprocess';});
-	var tempReprocess = temp2;
-	print("7 "+tempReprocess.length.toString());
-	print(temp.length);
+	var tempReprocess = [];
+	tempReprocess.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Steam Press';});
-	var tempStreamPress = temp2;
-	print("8 "+tempStreamPress.length.toString());
-	print(temp.length);
+	var tempStreamPress = [];
+	tempStreamPress.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Stiching';});
-	var tempStiching = temp2;
-	print("9 "+tempStiching.length.toString());
-	print(temp.length);
+	var tempStiching = [];
+	tempStiching.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'STARCH';});
-	var tempStarch = temp2;
-	print(tempStarch.length);
-	print(temp.length);
+	var tempStarch = [];
+	tempStarch.addAll(temp2);
 	
-	temp2 = temp;
+	temp2.addAll(temp);
 	temp2.removeWhere((element){return element.workAvailable.nameOfWork != 'Commercial Wash';});
-	var tempCommercialWash = temp2;
-	print("10 " +tempCommercialWash.length.toString());
-	print(temp.length);
+	var tempCommercialWash = [];
+	tempCommercialWash.addAll(temp2);
 	print("L");
 	
 	for(var v in temp)
@@ -127,61 +110,121 @@ writeInPdf(List<GarmentInBasket> temp){
 					pf.SizedBox(height: 40),
 					
 					
-					temp.any((element){
-						return element.workAvailable.nameOfWork == 'Laundry';
-					})?pf.Header(
-						text: "Cloths Received",
-					):pf.Container(),
-					temp.any((element){
-						return element.workAvailable.nameOfWork == 'Laundry';
-					})?pf.Container(
-						padding: pf.EdgeInsets.symmetric(horizontal: 20),
-						child: pf.Table.fromTextArray(
-							headerStyle: pf.TextStyle(
-								color: PdfColors.white,
-								fontStyle: pf.FontStyle.normal,
+					pf.Header(
+						text: "Laundry Work",
+					),
+					
+					pf.Column(
+						children: <pf.Widget>[
+							pf.Container(
+								padding: pf.EdgeInsets.symmetric(horizontal: 20),
+								child: pf.Table.fromTextArray(
+									headerStyle: pf.TextStyle(
+										color: PdfColors.white,
+										fontStyle: pf.FontStyle.normal,
+									),
+									
+									headerDecoration: pf.BoxDecoration(
+											color: PdfColors.black
+									),
+									
+									columnWidths: {
+										1:pf.FlexColumnWidth()
+									},
+									
+									headers: ['S.No.','Name Of Garment', 'Quantity'],
+									
+									border: pf.TableBorder(
+										width: 1.5,
+									),
+									
+									data: <List<String>>[
+										if(tempLaundry.length != 0)["","Laundry",""],
+										if(tempLaundry.length != 0)
+											for(var v in tempLaundry)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempLaundryMix.length != 0)["","Laundry Mix",""],
+										if(tempLaundryMix.length != 0)
+											for(var v in tempLaundryMix)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempStreamPress.length != 0)["","Stream Press",""],
+										if(tempStreamPress.length != 0)
+											for(var v in tempStreamPress)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempStiching.length != 0)["","Stiching",""],
+										if(tempStiching.length != 0)
+											for(var v in tempStiching)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempReprocess.length != 0)["","Reprocess",""],
+										if(tempReprocess.length != 0)
+											for(var v in tempReprocess)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempMend.length != 0)["","Mend",""],
+										if(tempMend.length != 0)
+											for(var v in tempMend)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempExpress.length != 0)["","Express",""],
+										if(tempExpress.length != 0)
+											for(var v in tempExpress)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempDye.length != 0)["","Dye",""],
+										if(tempDye.length != 0)
+											for(var v in tempDye)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempDryClean.length != 0)["","Dry Express",""],
+										if(tempDryClean.length != 0)
+											for(var v in tempDryClean)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempCharak.length != 0)["","Charak",""],
+										if(tempCharak.length != 0)
+											for(var v in tempCharak)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										
+										if(tempCommercialWash.length != 0)["","Commercial Wash",""],
+										if(tempCommercialWash.length != 0)
+											for(var v in tempCommercialWash)
+												['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
+										
+										if(tempStarch.length != 0)["","Starch",""],
+										if(tempStarch.length != 0)
+											for(var v in tempStarch)
+												['${i++}', v.garmentObject.garmentName.toString(), v.quantity.toString()],
+										[" ","             Total Garment", totalGarment.toString()],
+									],
+								),
 							),
-							
-							headerDecoration: pf.BoxDecoration(
-									color: PdfColors.black
-							),
-							
-							columnWidths: {
-								1:pf.FlexColumnWidth()
-							},
-							
-							headers: ['S.No.','Name Of Garment', 'Quantity'],
-							
-							border: pf.TableBorder(
-								width: 1.5,
-							),
-							
-							data: <List<String>>[
-								for(var v in tempLaundry)
-									['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
-								[" ","             Total Garment", totalGarment.toString()],
-							],
-						),
-					):pf.Container(),
+						]
+					),
+					
 					pf.SizedBox(height: 20),
 					
-					pf.Align(
-						alignment: pf.Alignment.bottomLeft,
-						child: pf.Row(
-							mainAxisAlignment: pf.MainAxisAlignment.spaceBetween,
-							children: <pf.Widget>[
-								pf.Column(
-										children: <pf.Widget>[
-											pf.Text("Terms & Condition:",style: pf.TextStyle(fontWeight: pf.FontWeight.bold)),
-											pf.Text("- term 1"),
-											pf.Text("- term 2"),
-										]
-								),
-								
-								pf.Text("Other Information"),
-							]
-						)
-					)
+//					pf.Align(
+//						alignment: pf.Alignment.bottomLeft,
+//						child: pf.Row(
+//							mainAxisAlignment: pf.MainAxisAlignment.spaceBetween,
+//							children: <pf.Widget>[
+//								pf.Column(
+//										children: <pf.Widget>[
+//											pf.Text("Terms & Condition:",style: pf.TextStyle(fontWeight: pf.FontWeight.bold)),
+//											pf.Text("- term 1"),
+//											pf.Text("- term 2"),
+//										]
+//								),
+//
+//								pf.Text("Other Information"),
+//							]
+//						)
+//					)
 				];
 			}
 		)
