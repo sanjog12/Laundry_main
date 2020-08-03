@@ -19,7 +19,7 @@ class Start extends StatelessWidget {
           canvasColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white
       ),
-      home: Login(),
+      home: CustomerEnd(),
     );
   }
 }

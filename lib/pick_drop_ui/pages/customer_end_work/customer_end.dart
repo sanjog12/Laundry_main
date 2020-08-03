@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:laundry/Classes/Garment.dart';
 import 'package:laundry/Classes/GarmentInBasket.dart';
+import 'package:laundry/Classes/WorkAvailable.dart';
 import 'package:laundry/others/PDFBuilder.dart';
 import 'package:laundry/others/PDFViewer.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,9 +30,37 @@ class _CustomerEndState extends State<CustomerEnd> {
 	var response;
 	var jsonResult ;
 	int numberOfPieces=0;
+	String workToBeDone = '';
+	List<String> workAvailable = [];
+	WorkAvailable workAvailable1 = WorkAvailable();
+	List<WorkAvailable> works =[];
+	String selectedWork = 'Dye';
 	
 	
 	
+	Future<List<String>> workAvailableListFetch() async{
+		try{
+			List<String> temp ;
+			http.Response response = await http.get("http://208.109.15.34:8081/api/GarmentJob/v1/GetAllGarmentJobs");
+			jsonResult = jsonDecode(response.body);
+			print(jsonResult);
+			for(var v in jsonResult){
+				works.add(WorkAvailable(nameOfWork: v['JobType'], codeOfWork: v['JobTypeID']));
+				workAvailable.add(await v["JobType"]);
+				print(v["JobType"]);
+			}
+			workAvailable1 =  works.firstWhere((element){
+				return 'Dye' == element.nameOfWork;
+			});
+			print(workAvailable.length);
+			print(jsonResult);
+			return temp;
+		}catch(e){
+			print("error");
+			print(e.toString());
+			return null;
+		}
+	}
 	
 	
 	
@@ -39,6 +68,7 @@ class _CustomerEndState extends State<CustomerEnd> {
   void initState() {
     super.initState();
     hashMap.clear();
+    workAvailableListFetch();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
 	    response =  await http.get("http://208.109.15.34:8081/api/Garment/v1/GetGarments");
 	    jsonResult = await jsonDecode(response.body);
@@ -48,7 +78,7 @@ class _CustomerEndState extends State<CustomerEnd> {
   }
   
   Future<List<GarmentObject>> getGarmentDetails() async{
-		print(jsonResult);
+//		print(jsonResult);
 		List<GarmentObject> garmentList = [];
 		
 		for(var v in jsonResult){
@@ -108,8 +138,9 @@ class _CustomerEndState extends State<CustomerEnd> {
 		    backgroundColor: Colors.blueGrey[700],
 	    ),
 	    
-	    body: SingleChildScrollView(
-	      child: Container(
+	    body: ListView(
+		    shrinkWrap: true,
+	      children:<Widget>[Container(
 		      decoration: BoxDecoration(
 			      image: DecorationImage(
 					      image: AssetImage("images/12.jpg"),
@@ -139,6 +170,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 									      color: Colors.white70,
 									      alignment: Alignment.center,
 									      child: ListView.builder(
+										      shrinkWrap: true,
 										      itemCount: snapshot.data.length,
 										      itemBuilder: (BuildContext context, int index) {
 										      	return GestureDetector(
@@ -177,6 +209,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 				      SizedBox(
 					      height: 30.0,
 				      ),
+				      
 				      garmentObject != null?
 				      Column(
 					      crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -195,9 +228,9 @@ class _CustomerEndState extends State<CustomerEnd> {
 								      Text("Selected Garment"),
 								      SizedBox(height: 5,),
 								      Text(_searchText),
-								      SizedBox(height: 25,),
+								      SizedBox(height: 25),
 							      	Text("Enter No. Pieces"),
-								      SizedBox(height: 2,),
+								      SizedBox(height: 2),
 								      TextFormField(
 									      onChanged: (value){
 									      	numberOfPieces = int.parse(value);
@@ -207,7 +240,36 @@ class _CustomerEndState extends State<CustomerEnd> {
 									      	WhitelistingTextInputFormatter.digitsOnly
 									      ],
 								      ),
-								      SizedBox(height: 20,),
+								      
+								      SizedBox(height: 20),
+								
+								      Container(
+									      padding: EdgeInsets.symmetric(horizontal: 20),
+								        child: DropdownButton<String>(
+									        items:workAvailable.map((String value){
+									        	return DropdownMenuItem<String>(
+											        value: value,
+											        child: Text(value),
+										        );
+									        }).toList(),
+									        value: selectedWork,
+									        dropdownColor: Colors.white,
+									        onChanged: (v){
+									        	workAvailable1 = works.firstWhere((element){
+									        		return v == element.nameOfWork;
+										        });
+									        	print(workAvailable1.nameOfWork);
+									        	setState((){
+											        selectedWork = v;
+											        workToBeDone = v;
+									        	});
+									        },
+									        hint: Text("Applied work"),
+								        ),
+								      ),
+								      
+								      SizedBox(height: 20),
+								      
 								      Container(
 									      padding: EdgeInsets.symmetric(horizontal: 30),
 									      child: FlatButton(
@@ -224,6 +286,8 @@ class _CustomerEndState extends State<CustomerEnd> {
 												      hashMap.add(GarmentInBasket(
 													      quantity: numberOfPieces,
 													      garmentObject: garmentObject,
+													      workToBeDone: workToBeDone,
+													      workAvailable: workAvailable1
 												      ));
 											      }
 											      setState(() {
@@ -234,6 +298,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 											      });},
 									      ),
 								      ),
+								      
 							       ],
 						        ),
 						      ),
@@ -283,7 +348,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 				      ),
 			      ],
 		      ),
-	      ),
+	      ),],
 	    ),
     );
   }
@@ -312,8 +377,9 @@ class _CustomerEndState extends State<CustomerEnd> {
 								    		if(hashMap.length !=0) {
 								    			return Container(
 								    				child: ListTile(
-								    					title: Text(hashMap[index].garmentObject.garmentName),
-								    					leading: Text('${hashMap[index].quantity}'),
+								    					trailing: Text(hashMap[index].quantity.toString()),
+								    					subtitle: Text(hashMap[index].workAvailable.nameOfWork),
+								    					title: Text('${hashMap[index].garmentObject.garmentName}'),
 								  					    onTap: () async{
 								    						bool t = await removeAddedItem(context);
 								    						if(t) {
