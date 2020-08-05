@@ -4,13 +4,13 @@ import 'package:laundry/Classes/WorkAvailable.dart';
 class GarmentInBasket{
 	GarmentObject garmentObject;
 	int quantity;
-	String workToBeDone;
-	WorkAvailable workAvailable;
+	List<WorkAvailable> workAvailable;
+	String nameOfWork;
 	
 	GarmentInBasket({
 		this.garmentObject,
 		this.quantity,
-		this.workToBeDone,
 		this.workAvailable,
+		this.nameOfWork,
 	});
 }

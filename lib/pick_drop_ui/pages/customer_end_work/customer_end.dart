@@ -26,15 +26,15 @@ class _CustomerEndState extends State<CustomerEnd> {
 	
 	bool listener = true;
 	TextEditingController _controller = TextEditingController();
-	GarmentObject garmentObject;
+	GarmentObject garmentObject ;
 	var response;
 	var jsonResult ;
 	int numberOfPieces=0;
-	String workToBeDone = '';
-	List<String> workAvailable = [];
-	WorkAvailable workAvailable1 = WorkAvailable();
+	List<WorkAvailable> workSelected = [];
 	List<WorkAvailable> works =[];
-	String selectedWork = 'Dye';
+	bool laundry = false,laundryMix= false,mend=false,charak = false,dryClean = false;
+	bool dye = false, express = false, reprocess = false, starch = false,stiching = false;
+	bool streamPress = false, commercialWash = false;
 	
 	
 	
@@ -46,13 +46,8 @@ class _CustomerEndState extends State<CustomerEnd> {
 			print(jsonResult);
 			for(var v in jsonResult){
 				works.add(WorkAvailable(nameOfWork: v['JobType'], codeOfWork: v['JobTypeID']));
-				workAvailable.add(await v["JobType"]);
 				print(v["JobType"]);
 			}
-			workAvailable1 =  works.firstWhere((element){
-				return 'Dye' == element.nameOfWork;
-			});
-			print(workAvailable.length);
 			print(jsonResult);
 			return temp;
 		}catch(e){
@@ -78,7 +73,6 @@ class _CustomerEndState extends State<CustomerEnd> {
   }
   
   Future<List<GarmentObject>> getGarmentDetails() async{
-//		print(jsonResult);
 		List<GarmentObject> garmentList = [];
 		
 		for(var v in jsonResult){
@@ -115,6 +109,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 	
   @override
   Widget build(BuildContext context) {
+		
 		
 	  if(listener){
 		  _controller.addListener(onChange);}
@@ -200,12 +195,13 @@ class _CustomerEndState extends State<CustomerEnd> {
 										      	},
 									      ),
 								      );
-						      	} else
+						      	}
+						      	else
 						      		return SizedBox();
 						      	},
 					      ),
-				      )
-						      : SizedBox(),
+				      ) : SizedBox(),
+				      
 				      SizedBox(
 					      height: 30.0,
 				      ),
@@ -240,33 +236,238 @@ class _CustomerEndState extends State<CustomerEnd> {
 									      	WhitelistingTextInputFormatter.digitsOnly
 									      ],
 								      ),
-								      
 								      SizedBox(height: 20),
-								
-								      Container(
-									      padding: EdgeInsets.symmetric(horizontal: 20),
-								        child: DropdownButton<String>(
-									        items:workAvailable.map((String value){
-									        	return DropdownMenuItem<String>(
-											        value: value,
-											        child: Text(value),
-										        );
-									        }).toList(),
-									        value: selectedWork,
-									        dropdownColor: Colors.white,
-									        onChanged: (v){
-									        	workAvailable1 = works.firstWhere((element){
-									        		return v == element.nameOfWork;
-										        });
-									        	print(workAvailable1.nameOfWork);
-									        	setState((){
-											        selectedWork = v;
-											        workToBeDone = v;
-									        	});
-									        },
-									        hint: Text("Applied work"),
-								        ),
-								      ),
+                      Wrap(
+	                     children: <Widget>[
+	                     	Wrap(
+		                      crossAxisAlignment: WrapCrossAlignment.center,
+		                      children: <Widget>[
+		                      	Checkbox(
+				                     value: laundry,
+				                     onChanged: (bool value){
+				                     	setState(() {
+				                     	  laundry = value;
+				                     	});
+				                     	if(laundry)
+				                     		workSelected.add(works.singleWhere((element) => element.nameOfWork == "Laundry"));
+				                     	else
+				                     		workSelected.removeWhere((element) => element.nameOfWork == "Laundry");
+				                     },
+			                      ),
+			                      Text("Laundry"),
+		                      ],
+	                      ),
+		                     
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: laundryMix,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     laundryMix = value;
+						                     });
+						                     if(laundryMix)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Laundry Mix"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Laundry Mix");
+					                     },
+				                     ),
+				                     Text("Laundry Mix"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: charak,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     charak = value;
+						                     });
+						                     if(charak)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Charak"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Charak");
+					                     },
+				                     ),
+				                     Text("Charak"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: dryClean,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     dryClean = value;
+						                     });
+						                     if(dryClean)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Dry Clean"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Dry Clean");
+					                     },
+				                     ),
+				                     Text("Dry Clean"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: dye,
+					                     onChanged: (bool value){
+						                     setState(() {
+						                     	  dye = value;
+						                     });
+						                     if(dye)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Dye"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Dye");
+					                     },
+				                     ),
+				                     Text("Dye"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: express,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     express = value;
+						                     });
+						                     if(express)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Express"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Express");
+					                     },
+				                     ),
+				                     Text("Express"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: mend,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     mend = value;
+						                     });
+						                     if(mend)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Mend"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Mend");
+					                     },
+				                     ),
+				                     Text("Reprocess"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: reprocess,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     reprocess = value;
+						                     });
+						                     if(reprocess)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Reprocess"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Reprocess");
+					                     },
+				                     ),
+				                     Text("Reprocess"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: starch,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     starch = value;
+						                     });
+						                     if(starch)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "STARCH"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "STARCH");
+					                     },
+				                     ),
+				                     Text("STARCH"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: stiching,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     stiching = value;
+						                     });
+						                     if(stiching)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Stiching"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Stiching");
+					                     },
+				                     ),
+				                     Text("Stiching"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: streamPress,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     streamPress = value;
+						                     });
+						                     if(streamPress)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Stream Press"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Stream Press");
+					                     },
+				                     ),
+				                     Text("Stream Press"),
+			                     ],
+		                     ),
+		
+		                     Wrap(
+			                     crossAxisAlignment: WrapCrossAlignment.center,
+			                     children: <Widget>[
+				                     Checkbox(
+					                     value: commercialWash,
+					                     onChanged: (bool value){
+						                     setState(() {
+							                     commercialWash= value;
+						                     });
+						                     if(commercialWash)
+							                     workSelected.add(works.singleWhere((element) => element.nameOfWork == "Commercial Wash"));
+						                     else
+							                     workSelected.removeWhere((element) => element.nameOfWork == "Commercial Wash");
+					                     },
+				                     ),
+				                     Text("Commercial Wash"),
+			                     ],
+		                     ),
+	                     ],
+                      ),
 								      
 								      SizedBox(height: 20),
 								      
@@ -281,24 +482,31 @@ class _CustomerEndState extends State<CustomerEnd> {
 											      color: Colors.blue[100],
 										      ),),
 										      onPressed: (){
-											      print(numberOfPieces);
+										      	String temp = "";
+											      for(var v in workSelected)
+											      	temp = temp + v.nameOfWork +", ";
 											      if(numberOfPieces != 0 ){
 												      hashMap.add(GarmentInBasket(
 													      quantity: numberOfPieces,
 													      garmentObject: garmentObject,
-													      workToBeDone: workToBeDone,
-													      workAvailable: workAvailable1
+													      workAvailable: workSelected,
+													      nameOfWork: temp,
 												      ));
 											      }
 											      setState(() {
+											      	laundry = false;laundryMix= false;
+											      	mend=false;charak = false;dryClean = false;
+												      dye = false; express = false;
+												      reprocess = false; starch = false;stiching = false;
+												      streamPress = false; commercialWash = false;
+											      	workSelected = [];
 												      numberOfPieces = 0;
-												      _searchText ="";
+												      _searchText = "";
 												      garmentObject = null;
 												      _controller.clear();
 											      });},
 									      ),
 								      ),
-								      
 							       ],
 						        ),
 						      ),
@@ -321,6 +529,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 					            onPressed: (){
 					            	getAddedClothsList(context);},
 				            ),
+					          
 					          SizedBox(height: 30,),
 					          
 					          FlatButton(
@@ -374,11 +583,16 @@ class _CustomerEndState extends State<CustomerEnd> {
 								    	shrinkWrap: true,
 								    	itemCount: hashMap.length,
 								    	itemBuilder:(BuildContext context, index){
+								    		print("Check number " + hashMap[index].workAvailable.length.toString());
 								    		if(hashMap.length !=0) {
+								    			String temp = "";
+								    			for(int v =0 ; v<hashMap[index].workAvailable.length ; v++){
+								    				temp = temp + hashMap[index].workAvailable[v].nameOfWork + " |";
+											    }
 								    			return Container(
 								    				child: ListTile(
 								    					trailing: Text(hashMap[index].quantity.toString()),
-								    					subtitle: Text(hashMap[index].workAvailable.nameOfWork),
+								    					subtitle: Text(temp),
 								    					title: Text('${hashMap[index].garmentObject.garmentName}'),
 								  					    onTap: () async{
 								    						bool t = await removeAddedItem(context);
