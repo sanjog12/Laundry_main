@@ -24,6 +24,7 @@ class CustomerEnd extends StatefulWidget {
 
 class _CustomerEndState extends State<CustomerEnd> {
 	
+	String challanNumber;
 	bool listener = true;
 	TextEditingController _controller = TextEditingController();
 	GarmentObject garmentObject ;
@@ -37,6 +38,33 @@ class _CustomerEndState extends State<CustomerEnd> {
 	bool streamPress = false, commercialWash = false;
 	
 	
+	Future<void> sendDataToWeb(List<GarmentInBasket> list) async{
+		try{
+			Map<String,dynamic> json ={
+				"PickDropJobId" : 2,
+				"CreatedBy":2,
+				"LstMobileDetailChallanModel" : [
+					for(var v in list){
+							"GarmentId": int.parse(v.garmentObject.garmentId),
+							"GarmentJobId": v.jobIdJson,
+					}
+				]
+			};
+			Map<String, String> header = {
+				'Content-type': 'application/json',
+				'Accept': 'application/json'
+			};
+			print(json);
+			var v = jsonEncode(json);
+			print(v);
+			var response = await http.post("http://208.109.15.34:8081/api/Challan/v1/AddChallan",body: v, headers: header);
+			var jsonResult = await jsonDecode(response.body);
+			challanNumber = jsonResult["Entity"]["ChallanNo"];
+			print(jsonResult["Entity"]["ChallanNo"]);
+		}catch(e){
+			print("error " +e.toString());
+		}
+	}
 	
 	Future<List<String>> workAvailableListFetch() async{
 		try{
@@ -46,7 +74,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 			print(jsonResult);
 			for(var v in jsonResult){
 				works.add(WorkAvailable(nameOfWork: v['JobType'], codeOfWork: v['JobTypeID']));
-				print(v["JobType"]);
+				print(v["JobTypeID"]);
 			}
 			print(jsonResult);
 			return temp;
@@ -482,15 +510,18 @@ class _CustomerEndState extends State<CustomerEnd> {
 											      color: Colors.blue[100],
 										      ),),
 										      onPressed: (){
-										      	String temp = "";
-											      for(var v in workSelected)
-											      	temp = temp + v.nameOfWork +", ";
+										      	String temp = "",temp2 ="";
+											      for(int v =0 ;v < workSelected.length ;v++){
+												      temp = temp + workSelected[v].nameOfWork + ", ";
+												      temp2 = temp2 + workSelected[v].codeOfWork.toString() + (v!=workSelected.length -1 ?",":"");
+											      }
 											      if(numberOfPieces != 0 ){
 												      hashMap.add(GarmentInBasket(
 													      quantity: numberOfPieces,
 													      garmentObject: garmentObject,
 													      workAvailable: workSelected,
 													      nameOfWork: temp,
+													      jobIdJson: temp2,
 												      ));
 											      }
 											      setState(() {
@@ -540,12 +571,15 @@ class _CustomerEndState extends State<CustomerEnd> {
 						          child: Text("Final Challan", style: TextStyle(
 							          color: Colors.blue[100],
 						          ),),
-						          onPressed: () async{
-						          	writeInPdf(hashMap);
+						          onPressed: () async {
+							          loadingWidget(context);
+							          sendDataToWeb(hashMap);
+						          	writeInPdf(hashMap,challanNumber);
 						          	await savePdf();
 						          	Directory documentDirectory = await getApplicationDocumentsDirectory();
 						          	String documentPath = documentDirectory.path;
 						          	String filePath = "$documentPath/example.pdf";
+						          	Navigator.pop(context);
 						          	Navigator.push(context,
 									          MaterialPageRoute(
 											          builder: (context) => PdfProviderScreen(
@@ -660,4 +694,17 @@ class _CustomerEndState extends State<CustomerEnd> {
 		}
   }
   
+  loadingWidget(BuildContext context){
+		return showDialog(
+			context: context,
+			builder: (BuildContext context){
+				return AlertDialog(
+					shape: RoundedRectangleBorder(),
+					content: CircularProgressIndicator(
+						valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+					),
+				);
+			}
+		);
+  }
 }

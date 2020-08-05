@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 final pdf = pf.Document();
 
-writeInPdf(List<GarmentInBasket> temp){
+writeInPdf(List<GarmentInBasket> temp, String string){
 	int totalGarment = 0;
 	int i =1;
 	print(temp.length);
@@ -40,7 +40,7 @@ writeInPdf(List<GarmentInBasket> temp){
 					),
 					
 					pf.SizedBox(height: 10),
-					pf.Text("Job Id: 1234567899",textAlign: pf.TextAlign.right),
+					pf.Text("Challan Number: $string",textAlign: pf.TextAlign.right),
 					pf.SizedBox(height: 20),
 					
 					pf.Text("H.no,\nGali No.,\nTown,\nCity,\nPinCode",),
