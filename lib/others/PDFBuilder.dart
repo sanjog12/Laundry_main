@@ -107,10 +107,10 @@ writeInPdf(List<GarmentInBasket> temp, String string){
 }
 
 
-savePdf() async{
+savePdf(String name) async{
 	Directory documentDirectory = await getApplicationDocumentsDirectory();
 	
 	String documentPath = documentDirectory.path;
-	File file = File("$documentPath/example.pdf");
+	File file = File("$documentPath/$name.pdf");
 	file.writeAsBytesSync(pdf.save());
 }

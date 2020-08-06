@@ -7,6 +7,7 @@ import 'package:share_extend/share_extend.dart';
 
 class PdfProviderScreen extends StatelessWidget {
 	
+	
 	final String path;
 
   const PdfProviderScreen({Key key, this.path}) : super(key: key);

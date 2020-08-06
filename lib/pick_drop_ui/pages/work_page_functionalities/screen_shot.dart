@@ -219,9 +219,9 @@ class _ScreenShotState extends State<ScreenShot> {
 			        		  Navigator.pop(context);
 			        		  Navigator.push(context,
 							          MaterialPageRoute(
-									          builder: (context)=>CustomerEnd()
-							          ),
-					          );
+									          builder: (context)=>CustomerEnd(
+										          userBasic: widget.userBasic,
+										          job: widget.job,)));
 			        	  });
 			        	  await Firestore.instance.collection('Location Points').document().setData({
 					          '${DateTime.now()}' : 'Screen Short Taken',

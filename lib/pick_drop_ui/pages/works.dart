@@ -31,17 +31,18 @@ class _WorkState extends State<Work> {
   String uid;
   
   Future<Position> getPosition(String address) async{
-    List<Placemark> placeMark = [];
     
-    placeMark =
-    await Geolocator().placemarkFromAddress(address);
+    List<Placemark> placeMark = [];
+    print(address);
+    placeMark = await Geolocator().placemarkFromAddress(address);
+    
     return placeMark.first.position;
 }
   
   
   Future<List<Job>> getData() async{
     List<Job> job = [];
-    print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
+    print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/${widget.userBasic.userID}");
     http.Response response = await  http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
     
     var ra = jsonDecode(response.body);
