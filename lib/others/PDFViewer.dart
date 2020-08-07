@@ -7,6 +7,7 @@ import 'package:share_extend/share_extend.dart';
 
 class PdfProviderScreen extends StatelessWidget {
 	
+	
 	final String path;
 
   const PdfProviderScreen({Key key, this.path}) : super(key: key);
@@ -50,6 +51,32 @@ class PdfProviderScreen extends StatelessWidget {
 				        filePath: path,
 			        ),
 		      	),
+			
+			      Align(
+				      alignment: AlignmentDirectional.bottomCenter,
+				      child: Container(
+					      padding: EdgeInsets.symmetric(horizontal: 120,vertical: 5),
+					      height: 50,
+					      width: MediaQuery.of(context).size.width,
+					      decoration: BoxDecoration(
+							      color: Color.fromRGBO(224,238,242, 1)
+					      ),
+					      child: Container(
+						      height: 40,
+						      width: 80,
+						      decoration: BoxDecoration(
+							      borderRadius: BorderRadius.circular(8),
+							      color: Color.fromRGBO(2, 124, 149, 1),
+						      ),
+						      child: FlatButton(
+								      child: Text("Completed",style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1),fontFamily: "Seguisb",fontSize: 20),),
+								      onPressed: () {
+									      Navigator.of(context).pop();
+								      }
+						      ),
+					      ),
+				      ),
+			      ),
 		      ]),
 	    ),
 	  );

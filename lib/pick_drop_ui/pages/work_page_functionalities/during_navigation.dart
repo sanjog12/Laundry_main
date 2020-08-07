@@ -52,8 +52,29 @@ class _DuringNavigationState extends State<DuringNavigation> {
 		return routeCoordinates;
 	}
 	
+	
+	Future<bool> popUpFunction() async{
+		return showDialog(
+			context: context,
+			builder: (context){
+				return AlertDialog(
+					title: Text("Tracking"),
+					content: Text("You are being tracked , You can't go back from this page"),
+					actions: <Widget>[
+						FlatButton(
+							child: Text("Ok"),
+							onPressed: () => Navigator.of(context).pop(false)
+						)
+					],
+				);
+			}
+		)??false;
+	}
+	
+	
 	@override
   void initState() {
+		
     super.initState();
     location.getLocation().then((value){
     	previousLocation = currentLocation;
@@ -102,58 +123,59 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	  });
 	  
 	  
-    return Stack(
-      children : <Widget>[
-      	Container(
-					height: MediaQuery.of(context).size.height - 40,
-	    child: GoogleMap(
-		    initialCameraPosition: CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17),
-		    polylines: polyline,
-		    compassEnabled: true,
-		    myLocationEnabled: true,
-		    mapType: MapType.normal,
-		    onMapCreated: (GoogleMapController controller) async{
-		    	_controller.complete(controller);
-		    	controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17)));
-		    },
-	    ),
-      ),
-	
-	      Align(
-		      alignment: AlignmentDirectional.bottomCenter,
-	        child: Container(
-						height: 50,
-	          width: MediaQuery.of(context).size.width,
-	          decoration: BoxDecoration(
-							color: Color.fromRGBO(224,238,242, 1)
-						),
-	          child: Padding(
-	            padding: const EdgeInsets.only(left: 110.0, right: 110.0,bottom: 8.0,top: 8.0),
-	            child: Container(
-		        height: 40,
-		        width: 80,
-			      decoration: BoxDecoration(
-				      borderRadius: BorderRadius.circular(8),
-				      color: Color.fromRGBO(2, 124, 149, 1),
-			      ),
-			      child: FlatButton(
-					      child: Text("End Ride",style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1),fontFamily: "Seguisb",fontSize: 20),),
-					      onPressed: () {
-						      Navigator.of(context).pop();
-						      Navigator.push(context,
-								      MaterialPageRoute(builder: (context) => ScreenShot(
-									      object: widget.object,
-									      docName: widget.docName,
-									      userBasic: widget.userBasic,
-									      job: widget.job,
-								      )));
-					      }
-			      ),
-	            ),
-	          ),
+    return WillPopScope(
+	    onWillPop: popUpFunction,
+      child: Stack(
+        children : <Widget>[
+        	Container(
+		        height: MediaQuery.of(context).size.height - 40,
+		        child: GoogleMap(
+			        initialCameraPosition: CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17),
+			        polylines: polyline,
+			        compassEnabled: true,
+			        myLocationEnabled: true,
+			        mapType: MapType.normal,
+			        onMapCreated: (GoogleMapController controller) async{
+			        	_controller.complete(controller);
+			        	controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17)));
+			        	},
+		        ),
 	        ),
-	      ),
-      ],
+	        
+	        Align(
+		        alignment: AlignmentDirectional.bottomCenter,
+		        child: Container(
+			        padding: EdgeInsets.symmetric(horizontal: 120,vertical: 5),
+			        height: 50,
+			        width: MediaQuery.of(context).size.width,
+			        decoration: BoxDecoration(
+					        color: Color.fromRGBO(224,238,242, 1)
+			        ),
+			        child: Container(
+				        height: 40,
+				        width: 80,
+				        decoration: BoxDecoration(
+					        borderRadius: BorderRadius.circular(8),
+					        color: Color.fromRGBO(2, 124, 149, 1),
+				        ),
+				        child: FlatButton(
+						        child: Text("End Ride",style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1),fontFamily: "Seguisb",fontSize: 20),),
+						        onPressed: () {
+						        	Navigator.of(context).pop();
+						        	Navigator.push(context,
+									        MaterialPageRoute(builder: (context) => ScreenShot(
+										        object: widget.object,
+										        docName: widget.docName,
+										        userBasic: widget.userBasic,
+										        job: widget.job,
+									        )));
+						        }
+						        ),
+			        ),
+		        ),
+	        ),
+        ],
+      ),
     );
   }
 }
