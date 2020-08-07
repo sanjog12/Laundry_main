@@ -166,7 +166,6 @@ class _HomePageState extends State<HomePage> {
   
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey[700],
@@ -277,7 +276,7 @@ class ListGrid extends StatelessWidget {//Class for grid display of homepage
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: EdgeInsets.only(bottom: 8),
               child: Text(
                 text,
                 style: TextStyle(

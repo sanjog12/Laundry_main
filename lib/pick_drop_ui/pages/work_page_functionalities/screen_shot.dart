@@ -148,6 +148,7 @@ class _ScreenShotState extends State<ScreenShot> {
 					.child(widget.userBasic.mobile +"_"+ widget.userBasic.name+"_"+widget.userBasic.userID)
 					.child(DateTime.now().year.toString())
 					.child(DateTime.now().month.toString())
+			    .push()
 					.set({
 				"url": url,
 				"id" : widget.job.id,
@@ -173,11 +174,10 @@ class _ScreenShotState extends State<ScreenShot> {
 		      child: Container(
 			    color: Colors.grey,
 				    child: Column(
-							    mainAxisAlignment: MainAxisAlignment.center,
-				      children: <Widget>[
-				        CircularProgressIndicator(
-							    valueColor: AlwaysStoppedAnimation<Color>
-								    (Colors.white),
+					    mainAxisAlignment: MainAxisAlignment.center,
+					    children: <Widget>[
+					    	CircularProgressIndicator(
+							    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
 				        ),
 					      SizedBox(height: 20,),
 					      Container(child: Text('Getting things Up....',style: TextStyle(
@@ -219,9 +219,9 @@ class _ScreenShotState extends State<ScreenShot> {
 			        		  Navigator.pop(context);
 			        		  Navigator.push(context,
 							          MaterialPageRoute(
-									          builder: (context)=>CustomerEnd()
-							          ),
-					          );
+									          builder: (context)=>CustomerEnd(
+										          userBasic: widget.userBasic,
+										          job: widget.job,)));
 			        	  });
 			        	  await Firestore.instance.collection('Location Points').document().setData({
 					          '${DateTime.now()}' : 'Screen Short Taken',
