@@ -32,7 +32,7 @@ class AttendanceSate extends State<Attendance> {
     height: 2,
     decoration: BoxDecoration(
       shape: BoxShape.circle,
-      color: Colors.redAccent,
+      color: Color.fromRGBO(244, 41, 65, 1),
 //      borderRadius: BorderRadius.all(
 //        Radius.circular(10),
 //      )
@@ -49,10 +49,8 @@ class AttendanceSate extends State<Attendance> {
   
   static Widget presentIconTag(String day)=> Container(
     decoration: BoxDecoration(
-        color: Colors.greenAccent,
-        borderRadius: BorderRadius.all(
-            Radius.circular(1000)
-        )
+        color: Color.fromRGBO(0, 179, 50, 1),
+       shape: BoxShape.circle
     ),
     child: Center(
       child: Text(
@@ -69,7 +67,7 @@ class AttendanceSate extends State<Attendance> {
 
   static Widget halfIconTag(String day)=> Container(
     decoration: BoxDecoration(
-        color: Colors.yellow,
+        color: Color.fromRGBO(252, 226, 5, 1),
         borderRadius: BorderRadius.all(
             Radius.circular(1000)
         )
@@ -168,7 +166,7 @@ class AttendanceSate extends State<Attendance> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             _calendarCarouselNoHeader =CalendarCarousel<Event>(
-              height: cheight * 0.54,
+              height: cheight * 0.5,
 //              daysTextStyle: TextStyle(
 //                color: Colors.blueAccent
 //              ),
@@ -177,7 +175,7 @@ class AttendanceSate extends State<Attendance> {
               ),
               headerTextStyle: TextStyle(
                 color: Colors.black,
-                fontSize: 32
+                fontSize: 25
               ),
 //              weekDayBackgroundColor: Colors.black,
               weekdayTextStyle: TextStyle(
@@ -225,36 +223,117 @@ class AttendanceSate extends State<Attendance> {
 //              child: Text("NUMBER OF PRESENTS: ${halfDates.length}",style: TextStyle(fontSize: 15.0,color: Colors.black,fontWeight: FontWeight.w800),textAlign: TextAlign.center,),
 //            ),
             
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              height: 65,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                height: 65,
 //              padding: EdgeInsets.only(left: 20,right: 10),
-              decoration: BoxDecoration(
-                color: Color.fromRGBO( 224, 238, 242, 1),
-                  borderRadius: BorderRadius.circular(100)
-              ),
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO( 224, 238, 242, 1),
+                    borderRadius: BorderRadius.circular(100)
+                ),
+                 child: Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                 children: <Widget>[
-                   Text("Present",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
-                   Container(
-                     margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                     height: 60,
-                     width: 60,
-                     decoration: BoxDecoration(
-                       border: Border.all(),
-                       shape: BoxShape.circle,
-                       color: Color.fromRGBO(0, 179, 50, 1),
+                   children: <Widget>[
+                     Padding(
+                       padding: const EdgeInsets.only(left: 35.0),
+                       child: Text("Present",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
                      ),
-                     child: Text(
-                       '${presentDates.length}',
-                       style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
-                   )
-                 ],
-               ),
+                     Container(
+                       margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                       height: 45,
+                       width: 60,
+                       decoration: BoxDecoration(
+                         border: Border.all(),
+                         shape: BoxShape.circle,
+                         color: Color.fromRGBO(0, 179, 50, 1),
+                       ),
+                       child: Center(
+                         child: Text(
+                           '${presentDates.length}',
+                           style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
+                       ),
+                     )
+                   ],
+                 ),
+              ),
             ),
-            
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                height: 65,
+//              padding: EdgeInsets.only(left: 20,right: 10),
+                decoration: BoxDecoration(
+                    color: Color.fromRGBO( 224, 238, 242, 1),
+                    borderRadius: BorderRadius.circular(100)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 35.0),
+                      child: Text("Absent",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        shape: BoxShape.circle,
+                        color: Color.fromRGBO(244, 41, 65, 1),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${absentDates.length}',
+                          style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                height: 65,
+//              padding: EdgeInsets.only(left: 20,right: 10),
+                decoration: BoxDecoration(
+                    color: Color.fromRGBO( 224, 238, 242, 1),
+                    borderRadius: BorderRadius.circular(100)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 35.0),
+                      child: Text("Half Days",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        shape: BoxShape.circle,
+                        color: Color.fromRGBO(252, 226, 5, 1),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${halfDates.length}',
+                          style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         )
       );

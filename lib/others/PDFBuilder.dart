@@ -6,12 +6,14 @@ import 'package:path_provider/path_provider.dart';
 
 final pdf = pf.Document();
 
-writeInPdf(List<GarmentInBasket> temp){
+writeInPdf(List<GarmentInBasket> temp, String string){
 	int totalGarment = 0;
 	int i =1;
-	
+	print(temp.length);
+	String s = '';
 	for(var v in temp)
 		totalGarment = totalGarment + v.quantity;
+	
 	print(temp.length);
 	pdf.addPage(
 		pf.MultiPage(
@@ -38,64 +40,66 @@ writeInPdf(List<GarmentInBasket> temp){
 					),
 					
 					pf.SizedBox(height: 10),
-					pf.Text("Job Id: 1234567899",textAlign: pf.TextAlign.right),
+					pf.Text("Challan Number: $string",textAlign: pf.TextAlign.right),
 					pf.SizedBox(height: 20),
 					
 					pf.Text("H.no,\nGali No.,\nTown,\nCity,\nPinCode",),
 					
 					pf.SizedBox(height: 40),
 					
+					
 					pf.Header(
-						text: "Cloths Received",
+						text: "Laundry Work",
 					),
-					pf.Container(
-						padding: pf.EdgeInsets.symmetric(horizontal: 20),
-						child: pf.Table.fromTextArray(
-							headerStyle: pf.TextStyle(
-								color: PdfColors.white,
-								fontStyle: pf.FontStyle.normal,
+					
+					pf.Column(
+						children: <pf.Widget>[
+							pf.Container(
+								padding: pf.EdgeInsets.symmetric(horizontal: 20),
+								child: pf.Table.fromTextArray(
+									headerStyle: pf.TextStyle(
+										color: PdfColors.white,
+										fontStyle: pf.FontStyle.normal,
+									),
+									headerDecoration: pf.BoxDecoration(
+											color: PdfColors.black
+									),
+									columnWidths: {
+										1:pf.FlexColumnWidth()
+									},
+				          headers: ['S.No.','Name Of Garment','Work','Quantity'],
+									border: pf.TableBorder(
+										width: 1.5,
+									),
+									data: <List<String>>[
+										for(var v in temp)
+											['${i++}', v.garmentObject.garmentName.toString() , v.nameOfWork ,v.quantity.toString()],
+										[" ","             Total Garment"," ", totalGarment.toString()],
+									],
+								),
 							),
-							
-							headerDecoration: pf.BoxDecoration(
-									color: PdfColors.black
-							),
-							
-							columnWidths: {
-								1:pf.FlexColumnWidth()
-							},
-							
-							headers: ['S.No.','Name Of Garment', 'Quantity'],
-							
-							border: pf.TableBorder(
-								width: 1.5,
-							),
-							
-							data: <List<String>>[
-								for(var v in temp)
-									['${i++}',v.garmentObject.garmentName.toString(),v.quantity.toString()],
-								[" ","             Total Garment", totalGarment.toString()],
-							],
-						),
+						]
 					),
+					
 					pf.SizedBox(height: 20),
 					
-					pf.Align(
-						alignment: pf.Alignment.bottomLeft,
-						child: pf.Row(
-							mainAxisAlignment: pf.MainAxisAlignment.spaceBetween,
-							children: <pf.Widget>[
-								pf.Column(
-										children: <pf.Widget>[
-											pf.Text("Terms & Condition:",style: pf.TextStyle(fontWeight: pf.FontWeight.bold)),
-											pf.Text("- term 1"),
-											pf.Text("- term 2"),
-										]
-								),
-								
-								pf.Text("Other Information"),
-							]
-						)
-					)
+//					pf.Align(
+//						alignment: pf.Alignment.bottomLeft,
+//						child: pf.Row(
+//							mainAxisAlignment: pf.MainAxisAlignment.spaceBetween,
+//							children: <pf.Widget>[
+//								pf.Column(
+//										children: <pf.Widget>[
+//											pf.Text("Terms & Condition:",style: pf.TextStyle(fontWeight: pf.FontWeight.bold)),
+//											pf.Text("- term 1"),
+//											pf.Text("- term 2"),
+//										]
+//								),
+//
+//								pf.Text("Other Information"),
+//							]
+//						)
+//					)
 				];
 			}
 		)

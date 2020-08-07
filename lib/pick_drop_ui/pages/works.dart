@@ -42,7 +42,7 @@ class _WorkState extends State<Work> {
   Future<List<Job>> getData() async{
     List<Job> job = [];
     print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
-    var response = await http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
+    http.Response response = await  http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
     
     var ra = jsonDecode(response.body);
     print(ra);
@@ -84,7 +84,7 @@ class _WorkState extends State<Work> {
           if(!snapshot.hasData){
             return Center(
               child:CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey[700]),
               ),
             );
           }else{
@@ -135,7 +135,7 @@ class _WorkState extends State<Work> {
             builder:(BuildContext context, AsyncSnapshot<ConnectivityResult> snapShot){
               if (!snapShot.hasData) return Center(child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>
-                  (Colors.blueGrey),
+                  (Colors.blueGrey[700]),
               ));
               var result = snapShot.data;
               switch (result){
@@ -169,9 +169,7 @@ class InternetCheck extends StatelessWidget {
   }
 }
 
-workCards(BuildContext context, Job job, UserBasic userBasic){
-  print(job.customerName);
-  print(job.customerAddress);
+Widget workCards(BuildContext context, Job job, UserBasic userBasic){
     return Container(
       padding: EdgeInsets.all(10),
       child: Card(
@@ -199,6 +197,7 @@ workCards(BuildContext context, Job job, UserBasic userBasic){
                       job.customerName,
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
+                        fontFamily: "OpenSans",
                         letterSpacing: .5,
                         fontSize: 19,
                         color: Color.fromRGBO(88, 89, 91,1)
@@ -218,10 +217,12 @@ workCards(BuildContext context, Job job, UserBasic userBasic){
                         children: <TextSpan>[
                           TextSpan(text: 'Direction: ',style: TextStyle(
                               fontWeight: FontWeight.bold,
+                              fontFamily: "OpenSans",
                               color: Color.fromRGBO(88, 89, 91,1),
                               fontSize: 12)),
                           TextSpan(text: job.customerAddress,style: TextStyle(
                               fontSize: 12,
+                              fontFamily: "OpenSans",
                               color:Color.fromRGBO(88, 89, 91,1)
                           )),
                         ]
@@ -234,11 +235,13 @@ workCards(BuildContext context, Job job, UserBasic userBasic){
                       children: <Widget>[
                         Text('Mobile: ',style: TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontFamily: "OpenSans",
                             fontSize: 12
                         ),),
                         Text(job.customerMobile,
                           style: TextStyle(
                               fontSize: 12,
+                              fontFamily: "OpenSans",
                               color:Color.fromRGBO(88, 89, 91,1)
                           ),
                         )
