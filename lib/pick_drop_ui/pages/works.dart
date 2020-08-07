@@ -42,7 +42,7 @@ class _WorkState extends State<Work> {
   Future<List<Job>> getData() async{
     List<Job> job = [];
     print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
-    var response = await http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
+    http.Response response = await  http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
     
     var ra = jsonDecode(response.body);
     print(ra);
@@ -169,9 +169,7 @@ class InternetCheck extends StatelessWidget {
   }
 }
 
-workCards(BuildContext context, Job job, UserBasic userBasic){
-  print(job.customerName);
-  print(job.customerAddress);
+Widget workCards(BuildContext context, Job job, UserBasic userBasic){
     return Container(
       padding: EdgeInsets.all(10),
       child: Card(
