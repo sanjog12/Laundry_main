@@ -14,7 +14,6 @@ import 'package:laundry/pick_drop_ui/pages/attendance.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
-
 class HomePage extends StatefulWidget {
   final UserBasic userBasic;
   
@@ -46,19 +45,19 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             Container(
-              height: 280,
+              height: 250,
               width: 200,
               child: DrawerHeader(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+//                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Container(
-                      width: 118,
+                      width: 120,
                       height:118,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/profile1.png"),
-                          fit: BoxFit.contain,
+                          image: AssetImage("images/profileimg.png"),
+                          fit: BoxFit.fill,
                         ),
                         borderRadius: BorderRadius.circular(100.0),
                         border: Border.all(
@@ -70,22 +69,22 @@ class _HomePageState extends State<HomePage> {
                     
                     Padding(
                       padding: EdgeInsets.all(15),
-//                      child: RichText(
-//                          textAlign: TextAlign.center,
-//                        text: TextSpan(
-//                          style: TextStyle(
-//                            fontSize: 20,
-//                            color: Colors.blueGrey,
-//                          ),
-//                          children: <TextSpan>[
-//                            TextSpan(text:widget.userBasic.name !=null? '${widget.userBasic.name}\n':" ",style: TextStyle(
-//                              fontStyle: FontStyle.italic,
-//                            )),
-//                            TextSpan(text: ' '),
-//                            TextSpan(text:widget.userBasic.userID !=null? '${widget.userBasic.userID}':"")
-//                          ],
-//                        )
-//                      ),
+                      child: RichText(
+                          textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(text:widget.userBasic.name !=null? '${widget.userBasic.name}\n':" ",style: TextStyle(
+                              fontStyle: FontStyle.italic,color: Colors.white
+                            )),
+                            TextSpan(text: ' '),
+                            TextSpan(text:widget.userBasic.userID !=null? '${widget.userBasic.userID}':"")
+                          ],
+                        )
+                      ),
                     ),
                   ],
                 ),
@@ -166,7 +165,6 @@ class _HomePageState extends State<HomePage> {
   
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey[700],
@@ -203,7 +201,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 2,
           childAspectRatio: 0.88,
           children: <Widget>[
-            ListGrid(widget.userBasic,Icons.work,"TASK",()=>(){
+            ListGrid(widget.userBasic,Icons.work,"Task",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Work(
@@ -226,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
-            ListGrid(widget.userBasic,Icons.assignment_turned_in,"ATTENDANCE",()=>(){
+            ListGrid(widget.userBasic,Icons.assignment_turned_in,"Attendance",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Attendance(
@@ -277,7 +275,7 @@ class ListGrid extends StatelessWidget {//Class for grid display of homepage
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: EdgeInsets.only(bottom: 8),
               child: Text(
                 text,
                 style: TextStyle(

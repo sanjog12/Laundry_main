@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel, WeekdayFormat;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
-import 'package:laundry/AdminSection/FunctionsOther/EmployeeFunctions.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/others/Attendance.dart';
 
