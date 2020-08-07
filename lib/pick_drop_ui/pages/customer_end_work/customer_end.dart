@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:laundry/Classes/Garment.dart';
 import 'package:laundry/Classes/GarmentInBasket.dart';
+import 'package:laundry/Classes/Job.dart';
+import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Classes/WorkAvailable.dart';
 import 'package:laundry/others/PDFBuilder.dart';
 import 'package:laundry/others/PDFViewer.dart';
@@ -18,6 +20,13 @@ String _searchText = '';
 List<GarmentInBasket> hashMap = [];
 
 class CustomerEnd extends StatefulWidget {
+	
+	final Job job;
+	final UserBasic userBasic;
+
+  const CustomerEnd({Key key, this.job, this.userBasic}) : super(key: key);
+	
+	
   @override
   _CustomerEndState createState() => _CustomerEndState();
 }
@@ -41,7 +50,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 	Future<void> sendDataToWeb(List<GarmentInBasket> list) async{
 		try{
 			Map<String,dynamic> json ={
-				"PickDropJobId" : 2,
+				"PickDropJobId" : int.parse(widget.job.jobId),
 				"CreatedBy":2,
 				"LstMobileDetailChallanModel" : [
 					for(var v in list){
@@ -161,25 +170,24 @@ class _CustomerEndState extends State<CustomerEnd> {
 		    backgroundColor: Colors.blueGrey[700],
 	    ),
 	    
-	    body: ListView(
-		    shrinkWrap: true,
-	      children:<Widget>[Container(
-		      decoration: BoxDecoration(
-			      image: DecorationImage(
-					      image: AssetImage("images/12.jpg"),
-					      fit: BoxFit.fill
-			      ),
-		      ),
-		      height: MediaQuery.of(context).size.height*0.90,
-		      padding: EdgeInsets.all(20),
-		      child: Column(
-			      crossAxisAlignment: CrossAxisAlignment.stretch,
-			      children: <Widget>[
-			      	Text("Search for Garment"),
-				      TextFormField(
-					      controller: _controller,
-					      autofocus: false,
+	    body: Container(
+			      decoration: BoxDecoration(
+				      image: DecorationImage(
+						      image: AssetImage("images/12.jpg"),
+						      fit: BoxFit.fill
 				      ),
+			      ),
+			      height: MediaQuery.of(context).size.height*0.90,
+			      padding: EdgeInsets.all(20),
+			      child: ListView(
+				      shrinkWrap: true,
+//				      crossAxisAlignment: CrossAxisAlignment.stretch,
+				      children: <Widget>[
+				      	Text("Select garment name"),
+					      TextFormField(
+						      controller: _controller,
+						      autofocus: false,
+					      ),
 					      
 				      listShow ?
 				      Container(
@@ -242,20 +250,24 @@ class _CustomerEndState extends State<CustomerEnd> {
 							      padding: EdgeInsets.all(10),
 							      decoration: BoxDecoration(
 								      border: Border.all(
-									      width: 2,
+									      width: 4,
 									      color: Colors.grey
 								      )
 							      ),
 						        child: Column(
 							      crossAxisAlignment: CrossAxisAlignment.stretch,
 							      children: <Widget>[
-								      Text("Selected Garment"),
+								      Text("Selected Garment :",style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
 								      SizedBox(height: 5,),
-								      Text(_searchText),
+								      Text(_searchText,textAlign: TextAlign.center),
+								      Divider(thickness: 4,color: Colors.grey,),
 								      SizedBox(height: 25),
 							      	Text("Enter No. Pieces"),
 								      SizedBox(height: 2),
 								      TextFormField(
+									      decoration: InputDecoration(
+										     
+									      ),
 									      onChanged: (value){
 									      	numberOfPieces = int.parse(value);
 									      	},
@@ -265,6 +277,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 									      ],
 								      ),
 								      SizedBox(height: 20),
+                      
                       Wrap(
 	                     children: <Widget>[
 	                     	Wrap(
@@ -497,7 +510,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 	                     ],
                       ),
 								      
-								      SizedBox(height: 20),
+								      SizedBox(height: 25),
 								      
 								      Container(
 									      padding: EdgeInsets.symmetric(horizontal: 30),
@@ -573,12 +586,18 @@ class _CustomerEndState extends State<CustomerEnd> {
 						          ),),
 						          onPressed: () async {
 							          loadingWidget(context);
-							          sendDataToWeb(hashMap);
-						          	writeInPdf(hashMap,challanNumber);
-						          	await savePdf();
+							          print("1");
+							          await sendDataToWeb(hashMap);
+							          print("2");
+						          	await writeInPdf(hashMap,challanNumber);
+							          print("3");
+						          	await savePdf(challanNumber);
+							          print("4");
 						          	Directory documentDirectory = await getApplicationDocumentsDirectory();
 						          	String documentPath = documentDirectory.path;
 						          	String filePath = "$documentPath/example.pdf";
+							          print("5");
+						          	Navigator.pop(context);
 						          	Navigator.pop(context);
 						          	Navigator.push(context,
 									          MaterialPageRoute(
@@ -591,8 +610,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 				      ),
 			      ],
 		      ),
-	      ),],
-	    ),
+	      ),
     );
   }
   
@@ -700,8 +718,10 @@ class _CustomerEndState extends State<CustomerEnd> {
 			builder: (BuildContext context){
 				return AlertDialog(
 					shape: RoundedRectangleBorder(),
-					content: CircularProgressIndicator(
-						valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+					content: Center(
+					  child: CircularProgressIndicator(
+					  	valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+					  ),
 					),
 				);
 			}
