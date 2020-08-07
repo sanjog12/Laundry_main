@@ -585,13 +585,18 @@ class _CustomerEndState extends State<CustomerEnd> {
 							          color: Colors.blue[100],
 						          ),),
 						          onPressed: () async {
-							          await loadingWidget(context);
+							          loadingWidget(context);
+							          print("1");
 							          await sendDataToWeb(hashMap);
+							          print("2");
 						          	await writeInPdf(hashMap,challanNumber);
+							          print("3");
 						          	await savePdf(challanNumber);
+							          print("4");
 						          	Directory documentDirectory = await getApplicationDocumentsDirectory();
 						          	String documentPath = documentDirectory.path;
-						          	String filePath = "$documentPath/$challanNumber.pdf";
+						          	String filePath = "$documentPath/example.pdf";
+							          print("5");
 						          	Navigator.pop(context);
 						          	Navigator.pop(context);
 						          	Navigator.push(context,
@@ -713,8 +718,10 @@ class _CustomerEndState extends State<CustomerEnd> {
 			builder: (BuildContext context){
 				return AlertDialog(
 					shape: RoundedRectangleBorder(),
-					content: CircularProgressIndicator(
-						valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+					content: Center(
+					  child: CircularProgressIndicator(
+					  	valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+					  ),
 					),
 				);
 			}

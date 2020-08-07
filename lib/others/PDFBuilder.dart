@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:laundry/Classes/GarmentInBasket.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pf;
@@ -109,8 +110,8 @@ writeInPdf(List<GarmentInBasket> temp, String string){
 
 savePdf(String name) async{
 	Directory documentDirectory = await getApplicationDocumentsDirectory();
-	
 	String documentPath = documentDirectory.path;
-	File file = File("$documentPath/$name.pdf");
+//	print('$documentPath/$name.pdf');
+	File file = File("$documentPath/example.pdf");
 	file.writeAsBytesSync(pdf.save());
 }
