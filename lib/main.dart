@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:laundry/Wrapper.dart';
+import 'package:laundry/pick_drop_ui/Delivery.dart';
 //import 'package:laundry/authentication/AuthScreens/Login.dart';
 //import 'package:laundry/pick_drop_ui/home_page.dart';
 //import 'package:laundry/pick_drop_ui/pages/customer_end_work/customer_end.dart';
@@ -19,7 +20,7 @@ class Start extends StatelessWidget {
           canvasColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white
       ),
-      home: Wrapper(),
+      home: check(),
     );
   }
 }
