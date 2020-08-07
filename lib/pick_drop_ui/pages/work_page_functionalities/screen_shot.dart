@@ -12,7 +12,6 @@ import 'package:laundry/pick_drop_ui/pages/customer_end_work/customer_end.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
 import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
-
 class ScreenShot extends StatefulWidget {
 	final UserBasic userBasic;
 	final CreatePolyline object;
@@ -22,10 +21,6 @@ class ScreenShot extends StatefulWidget {
   @override
   _ScreenShotState createState() => _ScreenShotState();
 }
-
-
-
-
 class _ScreenShotState extends State<ScreenShot> {
 	
 	List<LatLng> _points = [];

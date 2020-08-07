@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   connectivity: ^0.4.8+2
+  flare_flutter: ^2.0.5
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -70,6 +71,8 @@ flutter:
     - images/loading.gif
     - images/12.jpg
     - images/laundry.png
+    - images/image1.jpg
+    - images/success.flr
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
@@ -95,6 +98,12 @@ flutter:
     - family: OpenSans
       fonts:
         - asset: assets/fonts/OpenSans-SemiBold.ttf
+    - family: Franklin
+      fonts:
+        - asset: assets/fonts/Franklin Gothic Demi Regular.ttf
+    - family: phagspa
+      fonts:
+        - asset: assets/fonts/phagspa.ttf
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
