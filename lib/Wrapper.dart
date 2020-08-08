@@ -27,6 +27,7 @@ class _WrapperState extends State<Wrapper> {
   Future<String> getUserFirebaseId() async{
 		String m = await SharedPrefs.getStringPreference('Mobile');
 		String p = await SharedPrefs.getStringPreference('Password');
+		print(m);
 		this.setState((){
 			mobile = m;
 			password = p;
@@ -43,8 +44,11 @@ class _WrapperState extends State<Wrapper> {
 	        builder: (BuildContext context, snapshot){
 	    	    if(snapshot.hasData){
 	    	    	print(snapshot.data.mobile);
+			        return HomePage(userBasic: snapshot.data);
 		        }
-		        return HomePage(userBasic: snapshot.data);
+	    	    else{
+	    	    	return Login();
+		        }
 	        },
     );
   }

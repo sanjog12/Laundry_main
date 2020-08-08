@@ -51,7 +51,6 @@ class CreatePolyline {
 	
 	void coordinateFilter(location,Job job) {
 		print('inside filter property');
-		
 		if(_listltlg.last.longitude.toStringAsFixed(3) != location.longitude.toStringAsFixed(3)
 				&& _listltlg.last.latitude.toStringAsFixed(3) != location.latitude.toStringAsFixed(3)){
 			print('Condition for not recording same points ');
@@ -61,11 +60,12 @@ class CreatePolyline {
 			if(DateTime.now().difference(dateTime.last).inMinutes >= 5){
 				print("delay");
 				this.delayInJob.add(Marker(
+					
 					icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
 					markerId: MarkerId("Delay"),
+					consumeTapEvents: true,
 					infoWindow: InfoWindow(
 						snippet: DateTime.now().difference(dateTime.last).inMinutes.toString(),
-						
 					),
 					position: LatLng(location.latitude,location.longitude),
 				));

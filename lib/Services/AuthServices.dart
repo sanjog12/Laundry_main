@@ -100,11 +100,12 @@ class AuthServices{
 				print("2");
 				await SharedPrefs.setStringPreference('Mobile', userBasic.mobile);
 				print("3");
-				await SharedPrefs.setStringPreference('Password', userBasic.password);
+				await SharedPrefs.setStringPreference('Password', authDetails.password);
 				print("4");
 				await EmployeeServices().loginTimeRecord(userBasic);
 				print("5");
 			}catch(e){
+				print("error");
 				print(e);
 			}
 			return userBasic;

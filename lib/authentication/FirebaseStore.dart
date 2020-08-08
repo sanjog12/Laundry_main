@@ -8,27 +8,30 @@ class UserService{
 	
 	Future<UserBasic> getUserDetails(String mobile, String password) async {
 		UserBasic userBasic;
+		
 		try {
+			print("1");
 			var user = {
 				"Password": password,
 				"MobileNo": mobile,
 			};
-			
+			print("2");
 			var userJson = jsonEncode(user);
-			
+			print("3");
+			print(userJson);
 			Map<String, String> header = {
 				'Content-type': 'application/json',
 				'Accept': 'application/json'
 			};
-			
-			final response = await http.post(
-					"http://208.109.15.34:8081/api/Employee/v1/LoginEmployee",
-					body: userJson, headers: header);
+			print("4");
+			final response = await http.post("http://208.109.15.34:8081/api/Employee/v1/LoginEmployee", body: userJson, headers: header);
+			print("5");
 			var data = await jsonDecode(response.body);
+			print("6");
 			print(data);
 			if (data['Entity'] == null)
 				throw('Wrong Credential');
-			
+			print("7");
 			userBasic = UserBasic(
 				name: data['Entity']['UName'].toString(),
 				userID: data['Entity']['UserId'].toString(),
@@ -43,8 +46,10 @@ class UserService{
 				storeName: data['Entity']['StoreName'],
 				hours: data['Entity']['NoOfHours'].toString(),
 			);
+			print("return");
 			return userBasic;
 		} catch (e) {
+			print(e);
 			Fluttertoast.showToast(
 					msg: "Something went wrong ...\nPlease Login again",
 					toastLength: Toast.LENGTH_SHORT,

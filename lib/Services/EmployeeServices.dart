@@ -1,5 +1,4 @@
 
-import 'dart:collection';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
@@ -100,21 +99,25 @@ class EmployeeServices{
 	
 	Future<List<JobHistory>> getJobHistory(UserBasic userBasic) async{
 		List<JobHistory> jobHistory = [];
+		try{
 		dbf = firebaseDatabase.reference()
 				.child('WorkHistory')
 				.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 				.child(DateTime.now().year.toString())
 				.child(DateTime.now().month.toString());
-		try {
+		
 			await dbf.once().then((DataSnapshot snapshot) async {
 				print(snapshot.value);
-				Map<dynamic, dynamic> map = await snapshot.value;
-				jobHistory.add(JobHistory(
-					id: map['id'],
-					distance: map['distance'],
-					time: map['time'],
-					url: map['url'],
-				));
+				Map<dynamic,dynamic> map = await snapshot.value;
+				print(map);
+				if(map != null)
+				for(var v in map.entries){
+					jobHistory.add(JobHistory(
+						id: v.value['id'],
+						distance: v.value['distance'],
+						time: v.value['time'],
+						url: v.value['url'],
+				));}
 			});
 			return jobHistory;
 		}catch(e){

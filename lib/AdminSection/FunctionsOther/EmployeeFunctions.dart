@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:laundry/AdminSection/Class/EmployeeList.dart';
 import 'package:laundry/AdminSection/Class/EmployeesAttendance.dart';
+import 'package:laundry/Classes/JobHistory.dart';
 
 
 
@@ -18,9 +19,7 @@ Future<List<EmployeeList>> getEmployee() async{
 		
 		await dbf.once().then((DataSnapshot snapshot) async {
 			Map<dynamic, dynamic> map = await snapshot.value;
-			
 			print(map);
-			
 			key = map.keys.toList();
 			for (var v in key) {
 				print(v.toString().split('_')[1]);
@@ -56,6 +55,7 @@ Future<EmployeeData> getEmployeeAttendance(EmployeeList employeeList) async{
 	
 	await dbf.once().then((DataSnapshot snapshot) async{
 		Map<dynamic,dynamic> map = await snapshot.value;
+		if(map != null)
 		for(var v in map.values){
 			if(v == "absent"){
 				a=a+1;
@@ -66,6 +66,10 @@ Future<EmployeeData> getEmployeeAttendance(EmployeeList employeeList) async{
 			else if(v == "half"){
 				h = h +1;
 			}
+		}
+		
+		else{
+			a = 0 ; p =0 ; h =0 ;
 		}
 	});
 	
@@ -88,4 +92,38 @@ Future<EmployeeData> getEmployeeAttendance(EmployeeList employeeList) async{
 	
 	print(employeeData.totalDistance);
 	return employeeData;
+}
+
+Future<List<JobHistory>> getEmployeeWorkHistory(EmployeeList employee) async{
+	List<JobHistory> listOfJob = [];
+	
+	final FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+	DatabaseReference dbf ;
+	
+	try{
+		dbf = firebaseDatabase.reference()
+				.child('WorkHistory')
+				.child(employee.phone +"_"+employee.name+"_"+employee.id)
+				.child(DateTime.now().year.toString())
+				.child(DateTime.now().month.toString());
+		
+		await dbf.once().then((DataSnapshot snapshot) async{
+			Map<dynamic,dynamic> map = await snapshot.value;
+			if(map !=null)
+			for(var v in map.entries){
+				listOfJob.add(JobHistory(
+					url: v.value["url"],
+					distance: v.value["distance"],
+					time: v.value["time"],
+					id: v.value["id"]
+				));
+			}
+		});
+		
+		return listOfJob;
+	}catch(e){
+		print("error");
+		print(e.toString());
+		return null;
+	}
 }
