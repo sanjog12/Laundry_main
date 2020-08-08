@@ -602,6 +602,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 						          	Navigator.push(context,
 									          MaterialPageRoute(
 											          builder: (context) => PdfProviderScreen(
+												          userBasic: widget.userBasic,
 												          path: filePath,))
 							          );},
 					          ),
