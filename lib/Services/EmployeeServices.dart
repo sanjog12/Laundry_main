@@ -1,6 +1,7 @@
 
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:laundry/Classes/JobHistory.dart';
 import 'package:laundry/Classes/MonthDetail.dart';
@@ -94,7 +95,6 @@ class EmployeeServices{
 			print("error");
 			print(e);
 		}
-		
 	}
 	
 	Future<List<JobHistory>> getJobHistory(UserBasic userBasic) async{
@@ -122,7 +122,7 @@ class EmployeeServices{
 			return jobHistory;
 		}catch(e){
 			print("error in getJobHistory");
-			print(e.toString());
+			debugPrint(e);
 		}
 		
 		return jobHistory;

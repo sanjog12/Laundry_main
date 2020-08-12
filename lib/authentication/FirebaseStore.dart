@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'dart:convert';
 
@@ -8,6 +9,8 @@ class UserService{
 	
 	Future<UserBasic> getUserDetails(String mobile, String password) async {
 		UserBasic userBasic;
+		
+		
 		
 		try {
 			print("1");
@@ -31,7 +34,9 @@ class UserService{
 			print(data);
 			if (data['Entity'] == null)
 				throw('Wrong Credential');
+			
 			print("7");
+			
 			userBasic = UserBasic(
 				name: data['Entity']['UName'].toString(),
 				userID: data['Entity']['UserId'].toString(),
@@ -46,6 +51,8 @@ class UserService{
 				storeName: data['Entity']['StoreName'],
 				hours: data['Entity']['NoOfHours'].toString(),
 			);
+//			print(DateFormat("HH:mm").parse(userBasic.startTime.split(" ")[0]));
+			print(DateFormat("HH:mm").parse(userBasic.startTime).isBefore(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now()))));
 			print("return");
 			return userBasic;
 		} catch (e) {

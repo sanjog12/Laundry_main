@@ -55,7 +55,7 @@ Future<EmployeeData> getEmployeeAttendance(EmployeeList employeeList) async{
 	
 	await dbf.once().then((DataSnapshot snapshot) async{
 		Map<dynamic,dynamic> map = await snapshot.value;
-		if(map != null)
+		if(map != null){
 		for(var v in map.values){
 			if(v == "absent"){
 				a=a+1;
@@ -66,7 +66,7 @@ Future<EmployeeData> getEmployeeAttendance(EmployeeList employeeList) async{
 			else if(v == "half"){
 				h = h +1;
 			}
-		}
+		}}
 		
 		else{
 			a = 0 ; p =0 ; h =0 ;
@@ -81,13 +81,23 @@ Future<EmployeeData> getEmployeeAttendance(EmployeeList employeeList) async{
 	
 	await dbf.once().then((DataSnapshot snapshot) async{
 		Map<dynamic,dynamic> map = await snapshot.value;
-		employeeData = EmployeeData(
-			absent: a.toString(),
-			present: p.toString(),
-			half: h.toString(),
-			totalDistance: map["Distance"].toString(),
-			totalTime: map["Time"].toString()
-		);
+		if(map != null){
+			employeeData = EmployeeData(
+				absent: a.toString(),
+				present: p.toString(),
+				half: h.toString(),
+				totalDistance: map["Distance"].toString(),
+				totalTime:  map["Time"].toString(),
+		);}
+		
+		else{
+			employeeData = EmployeeData(
+				absent: a.toString(),
+				present: p.toString(),
+				half: h.toString(),
+				totalDistance: '0',
+				totalTime: '0',
+			);}
 	});
 	
 	print(employeeData.totalDistance);

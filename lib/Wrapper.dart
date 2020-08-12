@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
+import 'package:laundry/WaitScreen.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/authentication/FirebaseStore.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
@@ -27,7 +28,6 @@ class _WrapperState extends State<Wrapper> {
   Future<String> getUserFirebaseId() async{
 		String m = await SharedPrefs.getStringPreference('Mobile');
 		String p = await SharedPrefs.getStringPreference('Password');
-		print(m);
 		this.setState((){
 			mobile = m;
 			password = p;
@@ -47,7 +47,7 @@ class _WrapperState extends State<Wrapper> {
 			        return HomePage(userBasic: snapshot.data);
 		        }
 	    	    else{
-	    	    	return Login();
+	    	    	return WaitScreen();
 		        }
 	        },
     );

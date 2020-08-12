@@ -104,7 +104,9 @@ class _HomePageState extends State<HomePage> {
             ),
             CustomListTile(Icons.lock,"Logout",() async{
               try {
-                await AuthServices().logOutUser(widget.userBasic);
+                bool temp = await AuthServices().logOutUser(widget.userBasic, context);
+                if(!temp)
+                  throw(" ");
                 Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.push(context,
@@ -218,7 +220,7 @@ class _HomePageState extends State<HomePage> {
 //                )),
 //              );
 //            },),
-            if(widget.userBasic.designation == 'DeliveryBoy')
+            if(widget.userBasic.designation != 'DeliveryBoy')
               ListGrid(widget.userBasic,Icons.access_time,"Admin",()=>(){
                 Navigator.push(
                   context,
