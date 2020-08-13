@@ -74,7 +74,6 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	
 	@override
   void initState() {
-		
     super.initState();
     location.getLocation().then((value){
     	previousLocation = currentLocation;

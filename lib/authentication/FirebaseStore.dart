@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'dart:convert';
 
@@ -8,26 +9,33 @@ class UserService{
 	
 	Future<UserBasic> getUserDetails(String mobile, String password) async {
 		UserBasic userBasic;
+		
+		
+		
 		try {
+			print("1");
 			var user = {
 				"Password": password,
 				"MobileNo": mobile,
 			};
-			
+			print("2");
 			var userJson = jsonEncode(user);
-			
+			print("3");
+			print(userJson);
 			Map<String, String> header = {
 				'Content-type': 'application/json',
 				'Accept': 'application/json'
 			};
-			
-			final response = await http.post(
-					"http://208.109.15.34:8081/api/Employee/v1/LoginEmployee",
-					body: userJson, headers: header);
+			print("4");
+			final response = await http.post("http://208.109.15.34:8081/api/Employee/v1/LoginEmployee", body: userJson, headers: header);
+			print("5");
 			var data = await jsonDecode(response.body);
+			print("6");
 			print(data);
 			if (data['Entity'] == null)
 				throw('Wrong Credential');
+			
+			print("7");
 			
 			userBasic = UserBasic(
 				name: data['Entity']['UName'].toString(),
@@ -43,8 +51,12 @@ class UserService{
 				storeName: data['Entity']['StoreName'],
 				hours: data['Entity']['NoOfHours'].toString(),
 			);
+//			print(DateFormat("HH:mm").parse(userBasic.startTime.split(" ")[0]));
+			print(DateFormat("HH:mm").parse(userBasic.startTime).isBefore(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now()))));
+			print("return");
 			return userBasic;
 		} catch (e) {
+			print(e);
 			Fluttertoast.showToast(
 					msg: "Something went wrong ...\nPlease Login again",
 					toastLength: Toast.LENGTH_SHORT,

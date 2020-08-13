@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 import 'package:laundry/AdminSection/Class/EmployeeList.dart';
 import 'package:laundry/AdminSection/Class/EmployeesAttendance.dart';
 import 'package:laundry/AdminSection/FunctionsOther/EmployeeFunctions.dart';
+import 'package:laundry/AdminSection/Screen/EmployeeWorkHistory.dart';
 
 class AttendanceAdmin extends StatefulWidget {
   @override
@@ -35,9 +36,30 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
     getEmployeeCall();
   }
 	
+	
+	Future<bool> popUpFunction() async{
+		return showDialog(
+				context: context,
+				builder: (context){
+					return AlertDialog(
+						title: Text("Attention"),
+						content: Text("You cant go back from this page"),
+						actions: <Widget>[
+							FlatButton(
+									child: Text("Ok"),
+									onPressed: () => Navigator.of(context).pop(false)
+							)
+						],
+					);
+				}
+		)??false;
+	}
+	
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+	    onWillPop: popUpFunction,
+      child: Scaffold(
 	    appBar: AppBar(
 				backgroundColor: Colors.blueGrey[700],
 				elevation: 8,
@@ -85,53 +107,60 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
 									    title: Padding(
 									      padding: EdgeInsets.only(top:10.0),
 									      child: Text(
-													employeeList[index].id,
-								style: TextStyle(
-								fontWeight: FontWeight.w800,
-								fontFamily: "OpenSans",
-								letterSpacing: .5,
-								fontSize: 20,
-								color: Color.fromRGBO(88, 89, 91,1)
-											),
-											),
+										      employeeList[index].id,
+										      style: TextStyle(
+												      fontWeight: FontWeight.w800, fontFamily: "OpenSans", letterSpacing: .5, fontSize: 20,
+												      color: Color.fromRGBO(88, 89, 91,1)
+										      ),
+									      ),
 									    ),
-									    subtitle: Column(
-										    crossAxisAlignment: CrossAxisAlignment.start,
-									      children: <Widget>[
-													Divider(thickness: 1.5,),
-								            Text(
-															employeeList[index].name,
-														style: TextStyle(
-																fontWeight: FontWeight.w800,
-																fontFamily: "OpenSans",
-																letterSpacing: .5,
-																fontSize: 14,
-																color: Color.fromRGBO(88, 89, 91,1)
-														),
-													),
-									        SizedBox(
-														height: 5,
-													),
-									        Text(
-															employeeList[index].phone,
-														style: TextStyle(
-																fontWeight: FontWeight.w800,
-																fontFamily: "OpenSans",
-																letterSpacing: .5,
-																fontSize: 12,
-																color: Color.fromRGBO(88, 89, 91,1)
-														),
-													),
-									      ],
-									    ),
-									    onTap: () async{
-										    EmployeeData employeeData;
-										    loadingWindow(context);
+									      subtitle: Column(
+										      crossAxisAlignment: CrossAxisAlignment.start,
+										      children: <Widget>[
+										      	Divider(thickness: 1.5,),
+											      Text(
+												      employeeList[index].name,
+												      style: TextStyle(
+														      fontWeight: FontWeight.w800,
+														      fontFamily: "OpenSans",
+														      letterSpacing: .5,
+																	fontSize: 14,
+																	color: Color.fromRGBO(88, 89, 91,1)
+												      ),
+											      ),
+											      SizedBox(
+												      height: 5,
+											      ),
+											      Text(
+												      employeeList[index].phone,
+												      style: TextStyle(
+														      fontWeight: FontWeight.w800,
+														      fontFamily: "OpenSans",
+														      letterSpacing: .5,
+														      fontSize: 12,
+														      color: Color.fromRGBO(88, 89, 91,1)
+												      ),
+											      ),
+										      ],
+									      ),
+									      onTap: () async{
+												EmployeeData employeeData;
+												loadingWindow(context);
 									    	employeeData = await getEmployeeAttendance(employeeList[index]);
 									    	print("test " +employeeData.present);
 									    	Navigator.pop(context);
 									    	detailedWindow(context, employeeData, employeeList[index]);
-									    },
+									    	},
+									      
+									      onLongPress: () async{
+												Navigator.push(context,
+													MaterialPageRoute(
+														builder: (context) => EmployeeWorkHistory(
+															employeeList: employeeList[index],
+														)
+													),
+												);
+									      },
 								      ),
 								    ),
 							    );
@@ -143,25 +172,26 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
 						    }
 						  }
 				    ),
-			    	):
-						    Center(
-						      child: Container(
-							    child: CircularProgressIndicator(
-								    valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey[700]),
-							    ),
-						      ),
+				    ):
+				    Center(
+					    child: Container(
+						    child: CircularProgressIndicator(
+							    valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey[700]),
 						    ),
+					    ),
+				    ),
 			    ],
 		    ),
-		decoration: BoxDecoration(
-		image: DecorationImage(
-		image: AssetImage("images/12.jpg"),
-		fit: BoxFit.fill,
+		    decoration: BoxDecoration(
+			    image: DecorationImage(
+				    image: AssetImage("images/12.jpg"),
+				    fit: BoxFit.fill,
+			    ),
+		    ),
 	    ),
-		),
-			),
+      ),
     );
-  }
+	}
   
   Future<void> detailedWindow(BuildContext context, EmployeeData employeeData, EmployeeList employeeList){
 		return showDialog(
@@ -338,6 +368,7 @@ class _AttendanceAdminState extends State<AttendanceAdmin> {
 								borderRadius: BorderRadiusDirectional.circular(10)
 						),
 						content: Container(
+							height: 100,
 							padding: EdgeInsets.all(10),
 							child: Center(child: CircularProgressIndicator(
 								valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey[700]),

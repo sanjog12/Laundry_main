@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
+import 'package:laundry/WaitScreen.dart';
 import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/authentication/FirebaseStore.dart';
 import 'package:laundry/pick_drop_ui/home_page.dart';
@@ -43,8 +44,11 @@ class _WrapperState extends State<Wrapper> {
 	        builder: (BuildContext context, snapshot){
 	    	    if(snapshot.hasData){
 	    	    	print(snapshot.data.mobile);
+			        return HomePage(userBasic: snapshot.data);
 		        }
-		        return HomePage(userBasic: snapshot.data);
+	    	    else{
+	    	    	return WaitScreen();
+		        }
 	        },
     );
   }

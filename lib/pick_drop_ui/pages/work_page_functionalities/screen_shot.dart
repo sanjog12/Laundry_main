@@ -143,7 +143,7 @@ class _ScreenShotState extends State<ScreenShot> {
 					.child(widget.userBasic.mobile +"_"+ widget.userBasic.name+"_"+widget.userBasic.userID)
 					.child(DateTime.now().year.toString())
 					.child(DateTime.now().month.toString())
-			    .push()
+			    .child("-" +widget.job.jobId)
 					.set({
 				"url": url,
 				"id" : widget.job.id,

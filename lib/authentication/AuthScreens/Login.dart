@@ -188,7 +188,7 @@ class _LoginState extends State<Login> {
                             )
                                 :Text("Login"),
                             onPressed: (){
-                              loginUser(userAuth);
+                              loginUser(userAuth,context);
                             },
                           ),
                         ),
@@ -240,7 +240,7 @@ class _LoginState extends State<Login> {
   
   
   
-  Future<void> loginUser(UserAuth authDetails) async {
+  Future<void> loginUser(UserAuth authDetails,BuildContext context) async {
     
     try {
       if (key.currentState.validate()) {
@@ -249,7 +249,7 @@ class _LoginState extends State<Login> {
           buttonLoading = true;
         });
       
-        UserBasic userBasic = await _auth.loginUser(authDetails);
+        UserBasic userBasic = await _auth.loginUser(authDetails,context);
       
         if (userBasic != null) {
           Navigator.pop(context);
@@ -262,7 +262,7 @@ class _LoginState extends State<Login> {
           );
           toastMessage(message: "Login Successfully");
         } else{
-          toastMessage(message: "Wrong Credential");
+//          toastMessage(message: "Wrong Credential");
         }
       }
     } on PlatformException catch (e) {

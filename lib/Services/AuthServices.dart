@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/Classes/UserDetails.dart';
 import 'package:laundry/Services/EmployeeServices.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:http/http.dart' as http;
@@ -19,14 +18,46 @@ class AuthServices{
 	final FirebaseAuth _auth = FirebaseAuth.instance;
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	DatabaseReference dbf;
+	bool logout = true;
 	
-	Future<void> logOutUser(UserBasic userBasic) async {
+	Future<bool> logOutUser(UserBasic userBasic, BuildContext context) async {
 		try {
+			await showDialog(
+					context: context,
+				builder: (context){
+						return AlertDialog(
+							title: Text("Alert"),
+							content: Text("Are you sure you want to log out"),
+							actions: [
+								FlatButton(
+									child: Text("Yes"),
+									onPressed: (){
+										Navigator.pop(context);
+									},
+								),
+								
+								FlatButton(
+									child: Text("No"),
+									onPressed: (){
+										Navigator.pop(context);
+										logout = false;
+									},
+								)
+							],
+						);
+				}
+			);
+			if(!logout) {
+				throw(" ");
+			}
+			
 			await SharedPrefs.setStringPreference('Password', null);
 			await SharedPrefs.setStringPreference('Mobile', null);
 			await EmployeeServices().logoutTimeRecord(userBasic);
+			return true;
 		}catch(e){
 			print(e);
+			return false;
 		}
 		toastMessage(message: "Logout Successfully");
 	}
@@ -58,9 +89,10 @@ class AuthServices{
 	}
 	
 	
-	Future<UserBasic> loginUser(UserAuth authDetails) async {
+	Future<UserBasic> loginUser(UserAuth authDetails, BuildContext context) async {
 		
 		UserBasic userBasic;
+		bool login = true;
 		
 		try{
 			var user={
@@ -94,21 +126,47 @@ class AuthServices{
 				startTime: data['Entity']['StartTime'].toString(),
 				designationID: data['Entity']['Designation'].toString(), storeName: data['Entity']['StoreName'], hours: data['Entity']['NoOfHours'].toString(),
 			);
+			
+//			if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isBefore(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
+//			&& DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).subtract(Duration(minutes: 30))))){
+//				print("passed time");
+//				return await showDialog(
+//					context: context,
+//					builder: (context){
+//						return AlertDialog(
+//							title: Text("Not Allowed"),
+//							content: Text("You can't login in right now "),
+//							actions: <Widget>[
+//								FlatButton(
+//									onPressed: (){
+//										login = false;
+//										Navigator.pop(context);
+//									},
+//									child: Text("Ok"),
+//								)
+//							],
+//						);
+//					}
+//				);
+//			}
+			
+			if(!login){
+				toastMessage(message: "Not Allowed right now");
+				throw(" ");
+			}
+			
 			try {
-				print("1");
 				await Authenticate().validateUser(userBasic, authDetails);
-				print("2");
 				await SharedPrefs.setStringPreference('Mobile', userBasic.mobile);
-				print("3");
-				await SharedPrefs.setStringPreference('Password', userBasic.password);
-				print("4");
+				await SharedPrefs.setStringPreference('Password', authDetails.password);
 				await EmployeeServices().loginTimeRecord(userBasic);
-				print("5");
 			}catch(e){
+				print("error");
 				print(e);
 			}
 			return userBasic;
 		}catch(e){
+			debugPrint(e);
 			Fluttertoast.showToast(
 					msg: e.toString(),
 					toastLength: Toast.LENGTH_SHORT,
@@ -117,18 +175,18 @@ class AuthServices{
 					backgroundColor: Color(0xff666666),
 					textColor: Colors.white,
 					fontSize: 16.0);
-			print(e);
+			return null;
 		}
 	}
 	
 	
-	Future<User> registerUser(User user) async {
-		final userRegister = {
-			"UName":user.name,
-			"Designation":user,
-		};
-	
-	}
+//	Future<User> registerUser(User user) async {
+//		final userRegister = {
+//			"UName":user.name,
+//			"Designation":user,
+//		};
+//
+//	}
 //		try {
 //			AuthResult newUser = await _auth.createUserWithEmailAndPassword(
 //					email: user.email, password: user.password);

@@ -104,7 +104,9 @@ class _HomePageState extends State<HomePage> {
             ),
             CustomListTile(Icons.lock,"Logout",() async{
               try {
-                await AuthServices().logOutUser(widget.userBasic);
+                bool temp = await AuthServices().logOutUser(widget.userBasic, context);
+                if(!temp)
+                  throw(" ");
                 Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.push(context,
@@ -201,7 +203,8 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 2,
           childAspectRatio: 0.88,
           children: <Widget>[
-            ListGrid(widget.userBasic,Icons.work,"Task",()=>(){
+            if(widget.userBasic.designation == 'DeliveryBoy')
+            ListGrid(widget.userBasic,Icons.work,"Work Assigned",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Work(
@@ -217,13 +220,16 @@ class _HomePageState extends State<HomePage> {
 //                )),
 //              );
 //            },),
-            ListGrid(widget.userBasic,Icons.access_time,"Details",()=>(){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context)=> AttendanceAdmin(
-                )),
-              );
-            },),
+            if(widget.userBasic.designation != 'DeliveryBoy')
+              ListGrid(widget.userBasic,Icons.access_time,"Admin",()=>(){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context)=> AttendanceAdmin(
+                  
+                  )),
+                );
+                },),
+            if(widget.userBasic.designation == 'DeliveryBoy')
             ListGrid(widget.userBasic,Icons.assignment_turned_in,"Attendance",()=>(){
               Navigator.push(
                 context,
@@ -232,6 +238,7 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
+            if(widget.userBasic.designation == 'DeliveryBoy')
             ListGrid(widget.userBasic,Icons.history,"This Month",()=>(){
               Navigator.push(
                 context,
