@@ -101,34 +101,34 @@ class AuthServices{
 			
 			
 			if(userBasic.designation == "DeliveryBoy")
-			if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isBefore(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
-			&& DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).subtract(Duration(minutes: 30))))
-			|| userBasic.designation != "DeliveryBoy"){
-				print("passed time");
-				return await showDialog(
-					context: context,
-					builder: (context){
-						return AlertDialog(
-							title: Text("Not Allowed"),
-							content: Text("You can't login in right now "),
-							actions: <Widget>[
-								FlatButton(
-									onPressed: (){
-										login = false;
-										Navigator.pop(context);
-									},
-									child: Text("Ok"),
-								)
-							],
-						);
-					}
-				);
-			}
-			
-			if(!login){
-				toastMessage(message: "Not Allowed right now");
-				throw(" ");
-			}
+//			if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isBefore(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
+//			&& DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).subtract(Duration(minutes: 30))))
+//			|| userBasic.designation != "DeliveryBoy"){
+//				print("passed time");
+//				return await showDialog(
+//					context: context,
+//					builder: (context){
+//						return AlertDialog(
+//							title: Text("Not Allowed"),
+//							content: Text("You can't login in right now "),
+//							actions: <Widget>[
+//								FlatButton(
+//									onPressed: (){
+//										login = false;
+//										Navigator.pop(context);
+//									},
+//									child: Text("Ok"),
+//								)
+//							],
+//						);
+//					}
+//				);
+//			}
+//
+//			if(!login){
+//				toastMessage(message: "Not Allowed right now");
+//				throw(" ");
+//			}
 			
 			try {
 				await Authenticate().validateUser(userBasic, authDetails);
