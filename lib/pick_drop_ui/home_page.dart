@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     
                     Padding(
-                      padding: EdgeInsets.all(15),
+                      padding: EdgeInsets.all(8),
                       child: RichText(
                           textAlign: TextAlign.center,
                         text: TextSpan(
@@ -167,18 +167,18 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey[700],
+        backgroundColor: Color.fromRGBO(2, 124, 149, 1),
         elevation: 8,
         iconTheme: IconThemeData(
-          color:Colors.blue[100],
+          color:Color.fromRGBO(255, 255, 255, 1),
         ),
         title: Text(
           "HOME",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontFamily: "OpenSans",
+            fontFamily: "Seguisb",
             letterSpacing: 1.0,
-            color:Colors.blue[100],
+            color:Color.fromRGBO(255, 255, 255, 1),
           ),
         ),
         centerTitle: true,
@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(
               Icons.notifications,
-              color:Colors.blue[100],
+              color:Color.fromRGBO(255, 255, 255, 1),
             ),
             onPressed: () {},
           ),
@@ -196,13 +196,13 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: GridView.count(
-          mainAxisSpacing: 5,
-          crossAxisCount: 2,
-          childAspectRatio: 0.88,
+        child: Column(
           children: <Widget>[
+            SizedBox(
+              height: 50,
+            ),
             if(widget.userBasic.designation == 'DeliveryBoy')
-            ListGrid(widget.userBasic,Icons.work,"Work Assigned",()=>(){
+            List(widget.userBasic,Icons.work,"Work Assigned",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Work(
@@ -219,7 +219,7 @@ class _HomePageState extends State<HomePage> {
 //              );
 //            },),
             if(widget.userBasic.designation != 'DeliveryBoy')
-              ListGrid(widget.userBasic,Icons.access_time,"Admin",()=>(){
+              List(widget.userBasic,Icons.access_time,"Admin",()=>(){
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context)=> AttendanceAdmin(
@@ -227,8 +227,11 @@ class _HomePageState extends State<HomePage> {
                   )),
                 );
                 },),
+            SizedBox(
+              height: 50,
+            ),
             if(widget.userBasic.designation == 'DeliveryBoy')
-            ListGrid(widget.userBasic,Icons.assignment_turned_in,"Attendance",()=>(){
+            List(widget.userBasic,Icons.assignment_turned_in,"Attendance",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> Attendance(
@@ -236,8 +239,11 @@ class _HomePageState extends State<HomePage> {
                 )),
               );
             },),
+            SizedBox(
+              height: 50,
+            ),
             if(widget.userBasic.designation == 'DeliveryBoy')
-            ListGrid(widget.userBasic,Icons.history,"This Month",()=>(){
+            List(widget.userBasic,Icons.history,"This Month",()=>(){
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context)=> WorkHistory(
@@ -247,72 +253,63 @@ class _HomePageState extends State<HomePage> {
             },),
           ],
         ),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("images/12.jpg"),
-            fit: BoxFit.fill,
-          ),
-        ),
+        color: Color.fromRGBO(255, 255, 255, 1),
       ),
     );
   }
 }
 
-class ListGrid extends StatelessWidget {//Class for grid display of homepage
+class List extends StatelessWidget {//Class for grid display of homepage
   final IconData icon;
   final String text;
   final UserBasic userBasic;
   final Function onTap;
-  ListGrid(this.userBasic,this.icon,this.text,this.onTap);
+  List(this.userBasic,this.icon,this.text,this.onTap);
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:EdgeInsets.all(15.0),
-      child: Container(
-        padding:  EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("images/laundry.png"),
-            fit: BoxFit.fill,
+    return Stack(
+      children: [
+        Container(
+          height: 56,
+          width: 250,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+            ),
+          child: RaisedButton(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40),
+            ),
+            color: Color.fromRGBO(224, 238, 242, 1),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color.fromRGBO(88,89,91,1),
+                fontFamily: "Seguisb",
+                fontWeight: FontWeight.w400,
+                fontSize: 18,
+              ),
+            ),
+            onPressed: onTap()
           ),
-        ) ,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: Color.fromRGBO(88,89,91,1),
-                  fontFamily: "OpenSans",
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom:3.0),
-              child: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(88,89,91,1),
-                  borderRadius: BorderRadius.circular(18.0),
-                ),
-                child: IconButton(
-                    icon: Icon(
-                      icon,
-                      color: Colors.white,
-                      size: 23.0,
-                    ),
-                    onPressed: onTap()
-                ),
-              ),
-            ),
-          ],
         ),
-      ),
+        Container(
+          height: 56,
+          width: 56,
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(88,89,91,1),
+            borderRadius: BorderRadius.circular(40.0),
+          ),
+          child: IconButton(
+              icon: Icon(
+                icon,
+                color: Colors.white,
+                size: 25.0,
+              ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -371,3 +368,7 @@ class CustomListTile extends StatelessWidget{        //Class for items to be dis
     );
   }
 }
+
+
+
+
