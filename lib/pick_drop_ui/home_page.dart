@@ -1,6 +1,5 @@
 /* Home page of the pick and drop worker */
 import 'package:background_location/background_location.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:laundry/AdminSection/Screen/AttendanceAdmin.dart';
@@ -25,7 +24,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   
   int i = 0;
-  FirebaseUser user;
   UserAuth userAuth = UserAuth();
   
   

@@ -57,13 +57,13 @@ Future<EmployeeData> getEmployeeAttendance(EmployeeList employeeList) async{
 		Map<dynamic,dynamic> map = await snapshot.value;
 		if(map != null){
 		for(var v in map.values){
-			if(v == "absent"){
+			if(v == "absent" || v == "absent_late"){
 				a=a+1;
 			}
-			else if(v == "full"){
+			else if(v == "full" || v== "full_late"){
 				p = p+1;
 			}
-			else if(v == "half"){
+			else if(v == "half" || v== "half_late"){
 				h = h +1;
 			}
 		}}
