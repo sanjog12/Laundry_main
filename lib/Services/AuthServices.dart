@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
@@ -15,7 +14,6 @@ import 'package:laundry/others/ToastOutputs.dart';
 
 
 class AuthServices{
-	final FirebaseAuth _auth = FirebaseAuth.instance;
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	DatabaseReference dbf;
 	bool logout = true;
@@ -59,34 +57,8 @@ class AuthServices{
 			print(e);
 			return false;
 		}
-		toastMessage(message: "Logout Successfully");
 	}
 	
-	
-	
-	Future<void> resetPassword(st,context) async{
-		try {
-			await _auth.sendPasswordResetEmail(email: st);
-			Fluttertoast.showToast(
-					msg: "A link has been sent your registered email Id ",
-					toastLength: Toast.LENGTH_SHORT,
-					gravity: ToastGravity.BOTTOM,
-					timeInSecForIosWeb: 2,
-					backgroundColor: Color(0xff666666),
-					textColor: Colors.white,
-					fontSize: 16.0);
-			Navigator.pop(context);
-		}on PlatformException catch(e){
-			Fluttertoast.showToast(
-					msg: e.message,
-					toastLength: Toast.LENGTH_SHORT,
-					gravity: ToastGravity.BOTTOM,
-					timeInSecForIosWeb: 2,
-					backgroundColor: Color(0xff666666),
-					textColor: Colors.white,
-					fontSize: 16.0);
-		}
-	}
 	
 	
 	Future<UserBasic> loginUser(UserAuth authDetails, BuildContext context) async {
@@ -127,28 +99,31 @@ class AuthServices{
 				designationID: data['Entity']['Designation'].toString(), storeName: data['Entity']['StoreName'], hours: data['Entity']['NoOfHours'].toString(),
 			);
 			
-//			if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isBefore(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
-//			&& DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).subtract(Duration(minutes: 30))))){
-//				print("passed time");
-//				return await showDialog(
-//					context: context,
-//					builder: (context){
-//						return AlertDialog(
-//							title: Text("Not Allowed"),
-//							content: Text("You can't login in right now "),
-//							actions: <Widget>[
-//								FlatButton(
-//									onPressed: (){
-//										login = false;
-//										Navigator.pop(context);
-//									},
-//									child: Text("Ok"),
-//								)
-//							],
-//						);
-//					}
-//				);
-//			}
+			
+			if(userBasic.designation == "DeliveryBoy")
+			if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isBefore(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
+			&& DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).subtract(Duration(minutes: 30))))
+			|| userBasic.designation != "DeliveryBoy"){
+				print("passed time");
+				return await showDialog(
+					context: context,
+					builder: (context){
+						return AlertDialog(
+							title: Text("Not Allowed"),
+							content: Text("You can't login in right now "),
+							actions: <Widget>[
+								FlatButton(
+									onPressed: (){
+										login = false;
+										Navigator.pop(context);
+									},
+									child: Text("Ok"),
+								)
+							],
+						);
+					}
+				);
+			}
 			
 			if(!login){
 				toastMessage(message: "Not Allowed right now");
