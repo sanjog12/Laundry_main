@@ -102,7 +102,8 @@ class _HomePageState extends State<HomePage> {
             ),
             CustomListTile(Icons.lock,"Logout",() async{
               try {
-                bool temp = await AuthServices().logOutUser(widget.userBasic, context);
+                bool temp =  false;
+                temp = await AuthServices().logOutUser(widget.userBasic, context);
                 if(!temp)
                   throw(" ");
                 Navigator.pop(context);
@@ -302,6 +303,7 @@ class List extends StatelessWidget {//Class for grid display of homepage
             borderRadius: BorderRadius.circular(40.0),
           ),
           child: IconButton(
+            onPressed: (){},
               icon: Icon(
                 icon,
                 color: Colors.white,

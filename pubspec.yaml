@@ -18,6 +18,7 @@ environment:
 
 dependencies:
   share_extend: ^1.1.9
+  screen: ^0.0.5
   background_location:
   http:
   firebase_database:

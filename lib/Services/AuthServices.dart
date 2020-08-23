@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/EmployeeServices.dart';
@@ -31,6 +31,7 @@ class AuthServices{
 									child: Text("Yes"),
 									onPressed: (){
 										Navigator.pop(context);
+										logout = true;
 									},
 								),
 								
@@ -96,39 +97,43 @@ class AuthServices{
 				storeId: data['Entity']['StoreId'].toString(),
 				mobile: data['Entity']['Mobile'].toString(),
 				startTime: data['Entity']['StartTime'].toString(),
+				endTime: data['Entity']['EndTime'].toString(),
 				designationID: data['Entity']['Designation'].toString(), storeName: data['Entity']['StoreName'], hours: data['Entity']['NoOfHours'].toString(),
 			);
 			
-			
+//			print(DateFormat("hh:mm").parse(DateFormat("hh:mm").format(DateTime.now())));
+//			print(DateFormat("jm").parse(userBasic.endTime));
+//			print(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime)));
+//			print(DateFormat("jm").parse(DateFormat("jm").format(DateTime.now())).isBefore(DateFormat("jm").parse(userBasic.endTime)));
 			if(userBasic.designation == "DeliveryBoy")
-//			if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isBefore(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
-//			&& DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).subtract(Duration(minutes: 30))))
-//			|| userBasic.designation != "DeliveryBoy"){
-//				print("passed time");
-//				return await showDialog(
-//					context: context,
-//					builder: (context){
-//						return AlertDialog(
-//							title: Text("Not Allowed"),
-//							content: Text("You can't login in right now "),
-//							actions: <Widget>[
-//								FlatButton(
-//									onPressed: (){
-//										login = false;
-//										Navigator.pop(context);
-//									},
-//									child: Text("Ok"),
-//								)
-//							],
-//						);
-//					}
-//				);
-//			}
-//
-//			if(!login){
-//				toastMessage(message: "Not Allowed right now");
-//				throw(" ");
-//			}
+			if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
+			&& DateFormat("jm").parse(DateFormat("jm").format(DateTime.now())).isBefore(DateFormat("jm").parse(userBasic.endTime).subtract(Duration(minutes: 30))))
+			){
+				print("passed time");
+				return await showDialog(
+					context: context,
+					builder: (context){
+						return AlertDialog(
+							title: Text("Not Allowed"),
+							content: Text("You can't login in right now "),
+							actions: <Widget>[
+								FlatButton(
+									onPressed: (){
+										login = false;
+										Navigator.pop(context);
+									},
+									child: Text("Ok"),
+								)
+							],
+						);
+					}
+				);
+			}
+
+			if(!login){
+				toastMessage(message: "Not Allowed right now");
+				throw(" ");
+			}
 			
 			try {
 				await Authenticate().validateUser(userBasic, authDetails);
@@ -153,50 +158,4 @@ class AuthServices{
 			return null;
 		}
 	}
-	
-	
-//	Future<User> registerUser(User user) async {
-//		final userRegister = {
-//			"UName":user.name,
-//			"Designation":user,
-//		};
-//
-//	}
-//		try {
-//			AuthResult newUser = await _auth.createUserWithEmailAndPassword(
-//					email: user.email, password: user.password);
-//			await newUser.user.sendEmailVerification();
-//
-//			await firebaseDatabase.reference().child("UserDetails").child(newUser.user.uid)
-//			.set({
-//				"fullname": user.name.toString(),
-//				"phone": user.phoneNumber.toString(),
-//				"email": user.email.toString(),
-//				"password": user.password.toString(),
-//				"userType": "Enter".toString(),
-//				"workLat": "0".toString(),
-//				"workLong": "0".toString(),
-////        "userConstitution": user.userConstitution,
-////        "companyName": user.companyName,
-////				"progress": 1,
-//			});
-//			firebaseDatabase = FirebaseDatabase.instance;
-//			await firebaseDatabase.reference().child('Employee Record Distance').child(newUser.user.uid).child('jobId').set({
-//				"currentId": user.email.split("@")[0]+"000001",
-//			});
-//
-//			AuthResult loginUser = await _auth.signInWithEmailAndPassword(
-//					email: user.email, password: user.password);
-//			SharedPrefs.setStringPreference("uid", loginUser.user.uid);
-//
-//			return User(
-//				email: newUser.user.email,
-//				uid: newUser.user.uid,
-//				name: user.name,
-//			);
-//		} catch (e) {
-//			print(e);
-//			return null;
-//		}
-//	}
 }

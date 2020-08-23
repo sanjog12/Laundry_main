@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import'package:flutter/material.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/pick_drop_ui/home_page.dart';
 class Empprofile extends StatelessWidget{
 	final UserBasic userBasic;
 

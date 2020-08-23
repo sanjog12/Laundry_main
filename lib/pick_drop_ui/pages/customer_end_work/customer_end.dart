@@ -13,6 +13,7 @@ import 'package:laundry/Classes/WorkAvailable.dart';
 import 'package:laundry/others/PDFBuilder.dart';
 import 'package:laundry/others/PDFViewer.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:screen/screen.dart';
 
 bool listShow = false;
 String _searchText = '';
@@ -54,8 +55,9 @@ class _CustomerEndState extends State<CustomerEnd> {
 				"CreatedBy":2,
 				"LstMobileDetailChallanModel" : [
 					for(var v in list){
-							"GarmentId": int.parse(v.garmentObject.garmentId),
-							"GarmentJobId": v.jobIdJson,
+						"GarmentId": int.parse(v.garmentObject.garmentId),
+						"Quantity": v.quantity,
+						"GarmentJobId": v.jobIdJson,
 					}
 				]
 			};
@@ -98,6 +100,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 	
 	@override
   void initState() {
+		Screen.keepOn(false);
     super.initState();
     hashMap.clear();
     workAvailableListFetch();
@@ -266,7 +269,6 @@ class _CustomerEndState extends State<CustomerEnd> {
 								      SizedBox(height: 2),
 								      TextFormField(
 									      decoration: InputDecoration(
-										     
 									      ),
 									      onChanged: (value){
 									      	numberOfPieces = int.parse(value);

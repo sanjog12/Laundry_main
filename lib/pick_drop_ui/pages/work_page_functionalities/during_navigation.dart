@@ -1,7 +1,8 @@
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-
+import 'package:screen/screen.dart';
 import 'screen_shot.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	
 	@override
   void initState() {
+		Screen.keepOn(true);
     super.initState();
     location.getLocation().then((value){
     	previousLocation = currentLocation;

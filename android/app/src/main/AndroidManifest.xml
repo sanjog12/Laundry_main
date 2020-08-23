@@ -18,7 +18,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="laundry"
+        android:label="Westend Dry Cleaner"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc"/>
