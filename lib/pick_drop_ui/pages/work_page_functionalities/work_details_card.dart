@@ -5,45 +5,45 @@ which is specified in the work card in the work section .
 
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'package:laundry/pick_drop_ui/pages/Work_Page_Functionalities/During_navigation.dart';
-import 'package:laundry/pick_drop_ui/pages/Work_Page_Functionalities/Maps_functions.dart';
+import 'package:laundry/Classes/Job.dart';
+import 'package:laundry/Classes/UserBasic.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:flutter/rendering.dart';
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
 
 
 
-Future<bool> work_description(context,name , address){
+Future<bool> workDescription(context, Job job, UserBasic userBasic){
 
 	return showDialog(
 			context: context,
-			builder: (BuildContext context){
-				return Mappage();
-			}
+			builder: (BuildContext context) => MapPage(
+				userBasic: userBasic,
+				job: job,
+			)
 	);
 }
 
 
-
-
-class Mappage extends StatefulWidget{
+class MapPage extends StatefulWidget{
+	final UserBasic userBasic;
+	final Job job ;
+  const MapPage({Key key, this.userBasic, this.job}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _MapPageState();
   }
 }
 
 
-class _MapPageState extends State<Mappage>{
+class _MapPageState extends State<MapPage>{
 	Completer<GoogleMapController> _controller = Completer();
-	static final CameraPosition _intial = CameraPosition(target: LatLng(28.640884,77.126071), zoom: 19);
 	 List<Marker> markers = [];
+	 
 	 @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     markers.add(Marker(
 			markerId: MarkerId("Sanjog House"),
@@ -51,63 +51,71 @@ class _MapPageState extends State<Mappage>{
 			onTap: (){
 				print("Tapped");
 			},
-			position: LatLng(28.640884,77.126071)
+			position: LatLng(widget.job.position.latitude, widget.job.position.longitude),
+//	    position: LatLng(28.601231, 77.082344),
 		));
   }
 
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return SimpleDialog(
+    return AlertDialog(
 			shape: RoundedRectangleBorder(
 					borderRadius: BorderRadius.circular(10)
 			),
-			title: Padding(padding:EdgeInsets.all(10.0),child: Text("JOB ASSIGNED",textAlign: TextAlign.center,style: TextStyle(fontSize: 20),)),
-			titlePadding: EdgeInsets.only(left: 20),
-			backgroundColor: Colors.lightBlueAccent,
-			children: <Widget>[
-				Padding(
-					padding: EdgeInsets.only(top: 30),
-					child: Container(
-						height: 300,
-						width: 200,
-						child: Stack(
-							children: <Widget>[
-								Center(
-									child: Container(
-										child: GoogleMap(initialCameraPosition: _intial,markers: Set.from(markers),
-										mapType: MapType.normal,onMapCreated: (GoogleMapController controller){
-											_controller.complete(controller);
-											},)
-									),
-								),
-
-							],
-						),
-						decoration: BoxDecoration(
-							color: Colors.white,
-						),
-					),
-				),
-
-				Padding(
-					padding: EdgeInsets.only(left: 20, right: 60),
-					child: RaisedButton(
-						child: new Text("NAVIGATE",textAlign: TextAlign.center,),
-						onPressed: (){
-							final String doc_name ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
-							polyline object = polyline(doc_name);
-							object.start_record();
-							get_navigation();
-							Navigator.of(context).pop();
-							Navigator.push(context,
-									MaterialPageRoute(builder: (context)=>During_navigation(object , doc_name))
-							);
-						},
-					),
-				)
-			],
+			title: Column(
+				crossAxisAlignment: CrossAxisAlignment.stretch,
+				children: <Widget>[
+					Text(widget.job.customerName,style: TextStyle(
+						color: Colors.blueGrey,
+						fontWeight: FontWeight.bold,
+					),),
+					Divider(
+						thickness: 1,
+					)
+				],
+			),
+			backgroundColor: Colors.grey[400],
+	    content:SingleChildScrollView(
+	      child: Container(
+	      	height: 400,
+	      	width: 350,
+	      	child: Center(
+	      		child: GoogleMap(
+	      			initialCameraPosition: CameraPosition(target: LatLng(widget.job.position.latitude, widget.job.position.longitude), zoom: 15),
+	      			markers: Set.from(markers),
+	      			mapType: MapType.normal,
+	      			onMapCreated: (GoogleMapController controller){
+	      				_controller.complete(controller);
+	      			},),
+	      	),
+	      	decoration: BoxDecoration(
+	      		color: Colors.white,
+	      	),
+	      ),
+	    ),
+	    
+	    actions: <Widget>[
+		    RaisedButton(
+			    shape: RoundedRectangleBorder(
+				    borderRadius: BorderRadius.circular(15),
+			    ),
+			    color: Colors.blueGrey[700],
+			    child: Text("NAVIGATE",textAlign: TextAlign.center,style: TextStyle(
+				    color: Colors.blue[100],
+			    ),),
+			    
+			    onPressed: (){
+				    final String docName ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
+				    CreatePolyline object = CreatePolyline(docName);
+				    object.startRecord(widget.job);
+				    Navigator.of(context).pop();
+				    Navigator.push(context,
+						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object , docName: docName,userBasic: widget.userBasic, job: widget.job,))
+				    );
+			    },
+		    ),
+	    ],
 		);
   }
 }

@@ -2,126 +2,167 @@
 will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
-
-
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Work_details_card.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
+import 'package:laundry/Classes/Job.dart';
+import 'package:laundry/Classes/UserBasic.dart';
+import 'package:http/http.dart' as http;
+import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
 
-getData() {
-  return Firestore.instance.collection('Jobs').snapshots();
-}
 
-
-class work extends StatefulWidget {
+class Work extends StatefulWidget{
+  final UserBasic userBasic;
+  const Work({Key key, this.userBasic}) : super(key: key);
   @override
-  _workState createState() => _workState();
+  _WorkState createState() => _WorkState();
 }
 
 
 
-class _workState extends State<work> {
+class _WorkState extends State<Work> {
   
   double lat;
   double long;
-  var workdata;                         ///Variable to get the snapshot of the works available in the firestore
+  var workData;
+  String uid;
+  
+  Future<Position> getPosition(String address) async{
+    
+    List<Placemark> placeMark = [];
+    print(address);
+    placeMark = await Geolocator().placemarkFromAddress(address);
+    
+    return placeMark.first.position;
+}
+  
+  
+  Future<List<Job>> getData() async{
+    List<Job> job = [];
+    print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/${widget.userBasic.userID}");
+    http.Response response = await  http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/${widget.userBasic.userID}");
+    
+    var ra = jsonDecode(response.body);
+    print(ra);
+    
+    for(var value in ra['Entity']){
+      job.add(Job(
+        customerName: value['CustomerName'].toString(), id: value['Id'].toString(), customerId: value['CustomerId'].toString(), storeId: value['StoreId'].toString(),
+        jobId: value['JobId'].toString(), jobName: value['JobName'].toString(), userId: value['UserId'].toString(),
+        isCompleted: value['IsCompleted'].toString(), isPending: value['IsPending'].toString(),
+        createdBy: value['CreatedBy'].toString(), modifiedBy: value['ModifiedBy'].toString(), createdDate: value['CreatedDate'].toString(),
+        modifiedDate: value['ModifiedDate'].toString(),
+        isDeleted: value['IsDeleted'].toString(), store: value['Store'].toString(),
+        customerAddress: value['CustomerAddress'].toString(), customerMobile: value['CustomerMobile'].toString(),
+        userName: value['UserName'].toString(), completed: value['Completed'].toString(), pending: value['Pending'].toString(),
+        position: await getPosition(await value['CustomerAddress'])
+      ));
+    }
+    return job;
+  }
+  
   
   
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    setState(() {
-      workdata = getData();
-    });
+    getData();
+    DateFormat dateFormat = DateFormat('HH:mm:ss');
+    DateTime dateTime = dateFormat.parse('8:40:23');
+    DateTime dateTime2 = dateFormat.parse(DateTime.now().toString().split(' ')[1]);
+    print("test " + dateTime2.isAfter(dateTime).toString());
   }
   
   
-  get_work_details(){
-    /*
-    Function to get data from the cloud_firebase and displaying details in the ListView as soon as the
-    the details are uploaded in the the fire_store
-     */
-    if(workdata != null){
-      return StreamBuilder(
-        stream: workdata,
-        builder: (context,snapshot){
-          if(snapshot.data != null){
+  fetchWorkDetails(){
+      return StreamBuilder<List<Job>>(
+        stream: getData().asStream(),
+        builder: (context,AsyncSnapshot<List<Job>> snapshot){
+          print(snapshot.hasData);
+          if(!snapshot.hasData){
+            return Center(
+              child:CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey[700]),
+              ),
+            );
+          }else{
           return ListView.builder(
             shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context,i){
-              return workcards(snapshot.data.documents[i].data['Name of customer'],snapshot.data.documents[i].data['Address']);
+            itemCount: snapshot.data.length,
+            itemBuilder: (context,int index){
+              return workCards(context,snapshot.data[index], widget.userBasic);
             },
           );
-          }else{
-            return loading();
           }
         },
       );
-    }else{
-      print("getting workdata");
-    }
   }
-  
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.blue[100]
+        ),
         title: Text(
           "JOBS ASSIGNED",
         style: TextStyle(
           fontFamily: "OpenSans",
           fontWeight: FontWeight.bold,
-          letterSpacing: 1.0
-        ),
+          letterSpacing: 1.0,
+          color: Colors.blue[100]
+,        ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.indigoAccent[200],
+        backgroundColor: Colors.blueGrey[700],
       ),
       
-      body:  StreamBuilder(
-	      /*
-	         To check whether net is connected or not when the user opens work page
-	       */
-          stream: Connectivity().onConnectivityChanged,
-          builder:(BuildContext context,
-              AsyncSnapshot<ConnectivityResult> snapShot){
-            if (!snapShot.hasData) return CircularProgressIndicator();
-            var result = snapShot.data;
-            switch (result){
-              case ConnectivityResult.none:
-                return Padding(padding: EdgeInsets.all(10.0),child: internet_check());
-              case ConnectivityResult.mobile:
-              case ConnectivityResult.wifi:
-                return get_work_details();
-              default:
-                return Padding(padding: EdgeInsets.all(10.0),child: internet_check());
-            }
-          } ),
+      body:  Container(
+        padding: EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("images/12.jpg"),
+              fit: BoxFit.fill
+          ),
+        ),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: StreamBuilder(
+            stream: Connectivity().onConnectivityChanged,
+            builder:(BuildContext context, AsyncSnapshot<ConnectivityResult> snapShot){
+              if (!snapShot.hasData) return Center(child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>
+                  (Colors.blueGrey[700]),
+              ));
+              var result = snapShot.data;
+              switch (result){
+                case ConnectivityResult.none:
+                  return Container(padding:EdgeInsets.all(10),child: InternetCheck());
+                case ConnectivityResult.mobile:
+                case ConnectivityResult.wifi:
+                  return fetchWorkDetails();
+                default:
+                  return Container(padding: EdgeInsets.all(10),child: InternetCheck());
+              }
+            }),
+      ),
     );
   }
 }
 
-
-
-
-class internet_check extends StatelessWidget {
-  /*
-    Image to show whether net is connected or not
-   */
+class InternetCheck extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Center(
       child: Container(
 	      height : 200,
         width: 200,
         decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage('images/network.gif'),fit: BoxFit.contain),
+            image: DecorationImage(image: AssetImage('images/network.gif'), fit: BoxFit.contain),
             borderRadius:BorderRadius.circular(10.0)
         ),
       ),
@@ -129,90 +170,113 @@ class internet_check extends StatelessWidget {
   }
 }
 
-
-
-class loading extends StatelessWidget {
-	/*
-    Loading gif for various purposes
-   */
-	
-	@override
-	Widget build(BuildContext context) {
-		// TODO: implement build
-		return Center(
-		  child: Column(
-		    children: <Widget>[
-		      Container(
-		      		height : 200,
-		      		width: 200,
-		      		decoration: BoxDecoration(
-		      				image: DecorationImage(image: AssetImage('images/loading.gif'),fit: BoxFit.contain),
-		      				borderRadius:BorderRadius.circular(10.0)
-		      		),
-		      ),
-		  	  Text("Laoding....", style: TextStyle(
-		  		  fontSize: 10,
-		  		  fontWeight: FontWeight.bold,
-		  	  ),)
-		    ],
-		  ),
-		);
-	}
-}
-
-
-
-class workcards extends StatelessWidget{
-  /*
-  Class to generate TileView from the gathered data from from the fire_store
-   */
-  
-  final  name;
-  final  address;
-  workcards(this.name,this.address);
-  
-  
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Card(
-      color: Colors.blue[50],
-      child: InkWell(
-        splashColor: Colors.blue[100].withAlpha(100),
-        onTap: () {
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-             ListTile(
-              leading: Icon(Icons.view_module,
-              color: Colors.grey[700],),
-              title: Text(
-                name,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: .5,
+Widget workCards(BuildContext context, Job job, UserBasic userBasic){
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Card(
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        color: Colors.blueGrey[50],
+        child: InkWell(
+          splashColor: Colors.blue[100].withAlpha(100),
+          onTap: () {
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+               ListTile(
+                leading: job.customerAddress!=" "?Icon(Icons.view_module,
+                color: Colors.blueGrey[700],):Text(""),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 2,),
+                    Text(
+                      job.customerName,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontFamily: "OpenSans",
+                        letterSpacing: .5,
+                        fontSize: 19,
+                        color: Color.fromRGBO(88, 89, 91,1)
+                      ),
+                    ),
+                    Divider(thickness: 1.5,)
+                  ],
+                ),
+                subtitle:  Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 10,),
+//                    SizedBox(height: 5,),
+                    job.customerAddress != " "?RichText(
+                      text:TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(text: 'Direction: ',style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "OpenSans",
+                              color: Color.fromRGBO(88, 89, 91,1),
+                              fontSize: 12)),
+                          TextSpan(text: job.customerAddress,style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: "OpenSans",
+                              color:Color.fromRGBO(88, 89, 91,1)
+                          )),
+                        ]
+                      ),
+                      overflow: TextOverflow.clip,
+                    ):Text(""),
+                    
+                    SizedBox(height: 10,),
+                    Row(
+                      children: <Widget>[
+                        Text('Mobile: ',style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "OpenSans",
+                            fontSize: 12
+                        ),),
+                        Text(job.customerMobile,
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: "OpenSans",
+                              color:Color.fromRGBO(88, 89, 91,1)
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              subtitle:  Text(address),
-            ),
-            ButtonBar(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text('OPEN'),
-                  onPressed: () {
-                   
-                  	work_description(context,name, address);
-                  },
-                  focusElevation: 15,
-                ),
-              ],
-            ),
-          ],
+              
+              ButtonBar(
+                children: <Widget>[
+                  job.customerAddress != " "?RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    color:Colors.blueGrey[700],
+                    child: Text(
+                        'OPEN',
+                      style: TextStyle(
+                        color: Colors.blue[100],
+                      ),
+                    ),
+                    onPressed: () {
+                      print(userBasic.mobile);
+                      workDescription(context, job, userBasic);
+                    },
+                    focusElevation: 15,
+                  ):Container(),
+                  SizedBox(width: 10,),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
-
-

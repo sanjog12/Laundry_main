@@ -1,83 +1,80 @@
 /*
-All works related to the maps and navigation
+All works related to the maps and navigation ..//  \\..
  */
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:background_location/background_location.dart';
+import 'package:laundry/Classes/Job.dart';
 
 
-get_navigation(){
+
+//googleMapNavigation(){
+//	launch('https://www.google.com/maps/');
+//}
+
+class CreatePolyline {
 	
-	/*
-	   Navi places and other places is done using this function  in the following url we can pass
-	   location variable and driving mode .
-	 */
-	
-	launch('https://www.google.com/maps/dir/?api=1&destination=28.640884,77.126071&dir_action=navigate&travelmode=two_wheeler');
-}
-
-
-
-
-class polyline {
-	/*
-	   Class that makes polyline of the trip first records it and then makes a polyline on the google maps for storing
-	the ss in of the google map in the database along with the specified job
-	 */
-	
-	String doc_name;
-	polyline(this.doc_name);
+	String docName;
+	CreatePolyline(this.docName);
 	GeoPoint a ;
-	
 	bool check;
-	List<LatLng> _listltlg= [];
+	List<LatLng> _listltlg = [];
+	List<DateTime> dateTime= [];
+	Set<Marker> delayInJob ={};
 	
-	List<LatLng> getlist(){
+	List<LatLng> getrecordedlist(){
 		print("list accessed");
 		return this._listltlg;
 	}
 	
 	
-	start_record() {
-		/*
-		Starts background location tracking
-		 */
+	startRecord(Job job) async{
 		BackgroundLocation.startLocationService();
 		_listltlg.add(LatLng(0,0));
 		BackgroundLocation.getLocationUpdates((location) {
 			print('getLocationUpdate invoked');
-			
-			Corordinate_filter(location);
+			coordinateFilter(location,job);
 		});
+		dateTime.add(DateTime.now());
 	}
 	
 	
-	stop_polyline() {
+	stopPolyline() {
 		this.check = this._listltlg.isNotEmpty;
 		print("stop_polyline function is invoked " + '$check');
-		/*
-		     Function that returns the plotted map on the screen and stops the background process
-		 */
 		BackgroundLocation.stopLocationService();
 		_listltlg.removeAt(0);
 	}
 	
 	
-	void Corordinate_filter(location) {
-		
+	
+	void coordinateFilter(location,Job job) {
 		print('inside filter property');
-		
-		if(_listltlg.last.longitude != location.longitude && _listltlg.last.latitude != location.latitude){
+		if(_listltlg.last.longitude.toStringAsFixed(3) != location.longitude.toStringAsFixed(3)
+				&& _listltlg.last.latitude.toStringAsFixed(3) != location.latitude.toStringAsFixed(3)){
 			print('Condition for not recording same points ');
 			this._listltlg.add(LatLng(location.latitude,location.longitude));
-			
-			a=GeoPoint(location.latitude,location.longitude);
-			
-			Firestore.instance.collection('Location Points').document(doc_name).setData({
-				'${DateTime.now()}' : a
-			},merge: true);
+			a = GeoPoint(location.latitude,location.longitude);
+			print("minute " +DateTime.now().difference(dateTime.last).inMinutes.toString());
+			if(DateTime.now().difference(dateTime.last).inMinutes >= 5){
+				print("delay");
+				this.delayInJob.add(Marker(
+					
+					icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+					markerId: MarkerId("Delay"),
+					consumeTapEvents: true,
+					infoWindow: InfoWindow(
+						snippet: DateTime.now().difference(dateTime.last).inMinutes.toString(),
+					),
+					position: LatLng(location.latitude,location.longitude),
+				));
+			}
+			print(this.delayInJob.length);
+			dateTime.add(DateTime.now());
+			// Firestore.instance.collection('Location Points').document(job.id).setData({
+			// 	'${DateTime.now()}' : a
+			// },merge: true);
 		}
 	}
 }
