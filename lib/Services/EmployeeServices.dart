@@ -34,8 +34,7 @@ class EmployeeServices{
 					.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 					.child(now.year.toString())
 					.child(now.month.toString())
-					.child(now.day.toString())
-					.set(onTime ? DateFormat('HH:mm:ss').format(now):DateFormat('HH:mm:ss').format(now).toString() + "_late");
+					.set({now.day.toString(): onTime ? DateFormat('HH:mm:ss').format(now):DateFormat('HH:mm:ss').format(now).toString() + "_late"});
 		}catch(e){
 			print(e.toString());
 		}

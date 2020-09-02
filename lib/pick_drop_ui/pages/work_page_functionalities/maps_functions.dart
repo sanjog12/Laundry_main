@@ -72,9 +72,9 @@ class CreatePolyline {
 			}
 			print(this.delayInJob.length);
 			dateTime.add(DateTime.now());
-			Firestore.instance.collection('Location Points').document(job.id).setData({
-				'${DateTime.now()}' : a
-			},merge: true);
+			// Firestore.instance.collection('Location Points').document(job.id).setData({
+			// 	'${DateTime.now()}' : a
+			// },merge: true);
 		}
 	}
 }

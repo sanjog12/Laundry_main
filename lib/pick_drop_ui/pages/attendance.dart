@@ -97,8 +97,10 @@ class AttendanceSate extends State<Attendance> {
     presentDates = [];
     absentDates = [];
     halfDates = [];
-    getData();
+    if(DateTime.now().day > 4)
+      getData();
   }
+  
   
   
   @override

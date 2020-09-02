@@ -125,7 +125,6 @@ class _HomePageState extends State<HomePage> {
   
   void locationPermission() async{
     PermissionStatus f = await BackgroundLocation.checkPermissions();
-    
     if(f.value ==0 ){
       await BackgroundLocation.getPermissions(onDenied:(){
         alertPop();
