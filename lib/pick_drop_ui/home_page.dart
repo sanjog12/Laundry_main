@@ -1,582 +1,375 @@
 /* Home page of the pick and drop worker */
-
-
+import 'package:background_location/background_location.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:laundry/AdminSection/Screen/AttendanceAdmin.dart';
+import 'package:laundry/Classes/UserAuth.dart';
+import 'package:laundry/Classes/UserBasic.dart';
+import 'package:laundry/Services/AuthServices.dart';
+import 'package:laundry/authentication/AuthScreens/Login.dart';
+import 'package:laundry/pick_drop_ui/EmpProfile.dart';
+import 'package:laundry/pick_drop_ui/pages/WorkHistory.dart';
+import 'package:laundry/pick_drop_ui/pages/attendance.dart';
 import 'package:laundry/pick_drop_ui/pages/works.dart';
+import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
-
-class home_page extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  final UserBasic userBasic;
+  
+  const HomePage({Key key, this.userBasic}) : super(key: key);
   @override
-  _home_pageState createState() => _home_pageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _home_pageState extends State<home_page> {
-  Widget _buildProfileImage(){               //Image widget in sliver app bar
-    return Center(
-      child: Container(
-        width: 180,
-        height:180,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/profile1.png"),
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(100.0),
-          border: Border.all(
-            color: Colors.blueGrey[50],
-            width: 6.0,
-          ),
+class _HomePageState extends State<HomePage> {
+  
+  int i = 0;
+  UserAuth userAuth = UserAuth();
+  
+  
+  
+  Widget buildSideMenu(){
+    return Container(
+      width: 260,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage("images/12.jpg"),
+            fit: BoxFit.cover
+        ),
+      ),
+      child: Drawer(
+        elevation: 0,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Container(
+              height: 250,
+              width: 200,
+              child: DrawerHeader(
+                child: Column(
+//                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      width: 120,
+                      height:118,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("images/profileimg.png"),
+                          fit: BoxFit.fill,
+                        ),
+                        borderRadius: BorderRadius.circular(100.0),
+                        border: Border.all(
+                          color: Colors.blueGrey[50],
+                          width: 6.0,
+                        ),
+                      ),
+                    ),
+                    
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: RichText(
+                          textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(text:widget.userBasic.name !=null? '${widget.userBasic.name}\n':" ",style: TextStyle(
+                              fontStyle: FontStyle.italic,color: Colors.white
+                            )),
+                            TextSpan(text: ' '),
+                            TextSpan(text:widget.userBasic.userID !=null? '${widget.userBasic.userID}':"")
+                          ],
+                        )
+                      ),
+                    ),
+                  ],
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey[700],
+                ),
+              ),
+            ),
+            CustomListTile(Icons.person,"Profile",()=>
+                Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context)=> Empprofile(
+                          userBasic: widget.userBasic,
+                        )
+                    )
+                )
+            ),
+            CustomListTile(Icons.lock,"Logout",() async{
+              try {
+                bool temp =  false;
+                temp = await AuthServices().logOutUser(widget.userBasic, context);
+                if(!temp)
+                  throw(" ");
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context)=>Login()
+                    )
+                );
+              }catch(e){
+              
+              }
+            }),
+          ],
         ),
       ),
     );
   }
+  
+  void locationPermission() async{
+    PermissionStatus f = await BackgroundLocation.checkPermissions();
+    if(f.value ==0 ){
+      await BackgroundLocation.getPermissions(onDenied:(){
+        alertPop();
+      },onGranted: (){
+      
+      });
+    }
+  }
+  
+  
+  alertPop() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text("Administrator"),
+            content: Text("It is Compulsory to give location permission"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Ok"),
+                onPressed: (){
+                  Navigator.pop(context);
+                  locationPermission();
+                },
+              )
+            ],
+          );
+        }
+    );
+  }
+  
+  
+  @override
+  void initState() {
+    super.initState();
+    locationPermission();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(2, 124, 149, 1),
+        elevation: 8,
+        iconTheme: IconThemeData(
+          color:Color.fromRGBO(255, 255, 255, 1),
+        ),
+        title: Text(
+          "HOME",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: "Seguisb",
+            letterSpacing: 1.0,
+            color:Color.fromRGBO(255, 255, 255, 1),
+          ),
+        ),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.notifications,
+              color:Color.fromRGBO(255, 255, 255, 1),
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      drawer: buildSideMenu(),
       body: Container(
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              floating: true,
-              snap: true,
-              iconTheme: IconThemeData(
-                color: Colors.blueGrey[50]
-              ),
-              flexibleSpace: FlexibleSpaceBar(
-                title:Padding(
-                  padding: EdgeInsets.fromLTRB(20,12,9,12),
-                  child: Text(
-                    "Person Name",
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.ltr,
-                    style: TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.blueGrey[50],
-                      fontFamily: "OpenSans",
-                      letterSpacing: 0.5
-                    ),
-                  ),
-                ),
-                background: _buildProfileImage(),
-                ),
-              leading: IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: (){},
-              ),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(
-                      Icons.more_vert,
-                    color: Colors.blueGrey[50],
-                  ),
-                  onPressed: (){},
-                ),
-              ],
-              backgroundColor: Colors.indigoAccent[200],
-              expandedHeight: 280,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.elliptical(200, 100)
-                )
-              ),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 50,
             ),
-            SliverPadding(
-              padding: EdgeInsets.all(20),
-              sliver: SliverGrid.count(
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
-                crossAxisCount: 2,
-                children: <Widget>[
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                            child: Text(
-                              "TASKS",
-                              style: TextStyle(
-                                color: Colors.indigo[900],
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                              ),
-                            ),
-                          ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.indigo[900],
-                          borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.work,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context)=>work()),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "PROFILE",
-                            style: TextStyle(
-                                color: Colors.blue[800],
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.blue[800],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.account_circle,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){
-                                print("Profile Clicked");
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "TIME",
-                            style: TextStyle(
-                                color: Colors.lightBlue[800],
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.lightBlue[800],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.access_time,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){
-                                print("Time Clicked");
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "DISTANCE",
-                            style: TextStyle(
-                                color: Colors.cyan[800],
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.cyan[800],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.directions_run,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){
-                                print("Distance Clicked");
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "ATTENDANCE",
-                            style: TextStyle(
-                                color: Colors.deepPurple[600],
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 17.0,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple[700],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.assignment_turned_in,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){
-                                print("Attendance Clicked");
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "PROGRESS",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.indigo[900],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.announcement,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){},
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "PROGRESS",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.indigo[900],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.announcement,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){},
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "PROGRESS",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.indigo[900],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.announcement,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){},
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "PROGRESS",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.indigo[900],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.announcement,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){},
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:  EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.cyan[50],
-                      border: Border.all(
-                        width: 3,
-                        color: Colors.blueGrey[600],
-                      ),
-                    ) ,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15.0,15.0,2.0,7.0),
-                          child: Text(
-                            "PROGRESS",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontFamily: "OpenSans",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                                letterSpacing: 0.5
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.indigo[900],
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.announcement,
-                                color: Colors.white,
-                                size: 25.0,
-                              ),
-                              onPressed: (){},
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            if(widget.userBasic.designation == 'DeliveryBoy')
+            List(widget.userBasic,Icons.work,"Work Assigned",()=>(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> Work(
+                  userBasic: widget.userBasic,
+                )),
+              );
+            },),
+//            ListGrid(widget.userBasic,Icons.directions_run,"DISTANCE",()=>(){
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context)=> Attendance(
+//                  userBasic: widget.userBasic,
+//                )),
+//              );
+//            },),
+            if(widget.userBasic.designation != 'DeliveryBoy')
+              List(widget.userBasic,Icons.access_time,"Admin",()=>(){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context)=> AttendanceAdmin(
+                  
+                  )),
+                );
+                },),
+            SizedBox(
+              height: 50,
             ),
+            if(widget.userBasic.designation == 'DeliveryBoy')
+            List(widget.userBasic,Icons.assignment_turned_in,"Attendance",()=>(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> Attendance(
+                  userBasic: widget.userBasic,
+                )),
+              );
+            },),
+            SizedBox(
+              height: 50,
+            ),
+            if(widget.userBasic.designation == 'DeliveryBoy')
+            List(widget.userBasic,Icons.history,"This Month",()=>(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> WorkHistory(
+                  userBasic: widget.userBasic,
+                )),
+              );
+            },),
           ],
         ),
+        color: Color.fromRGBO(255, 255, 255, 1),
+      ),
+    );
+  }
+}
+
+class List extends StatelessWidget {//Class for grid display of homepage
+  final IconData icon;
+  final String text;
+  final UserBasic userBasic;
+  final Function onTap;
+  List(this.userBasic,this.icon,this.text,this.onTap);
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          height: 56,
+          width: 250,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+            ),
+          child: RaisedButton(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40),
+            ),
+            color: Color.fromRGBO(224, 238, 242, 1),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color.fromRGBO(88,89,91,1),
+                fontFamily: "Seguisb",
+                fontWeight: FontWeight.w400,
+                fontSize: 18,
+              ),
+            ),
+            onPressed: onTap()
+          ),
+        ),
+        Container(
+          height: 56,
+          width: 56,
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(88,89,91,1),
+            borderRadius: BorderRadius.circular(40.0),
+          ),
+          child: IconButton(
+            onPressed: (){},
+              icon: Icon(
+                icon,
+                color: Colors.white,
+                size: 25.0,
+              ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CustomListTile extends StatelessWidget{        //Class for items to be displayed in the drawer
+  final IconData icon;
+  final String text;
+  final Function onTap;
+  CustomListTile(this.icon,this.text,this.onTap);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+      child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-              end: Alignment.center,
-            colors: <Color>[
-              Color(0xFF1E88E5),
-              Color(0xFFb3E5FC),
-            ]
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.grey.shade700,
+            ),
+          ),
+        ),
+        child: InkWell(
+          splashColor: Colors.blue[50],
+          onTap: onTap,
+          child: Container(
+            height: 55,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Icon(icon,
+                      color:Color.fromRGBO(88,89,91,1),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        text,
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            color: Color.fromRGBO(88,89,91,1),
+                            fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Icon(Icons.arrow_right,
+                  color: Color.fromRGBO(88,89,91,1),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+
+
+

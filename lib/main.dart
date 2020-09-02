@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'pick_drop_ui/home_page.dart';
+import 'package:laundry/Wrapper.dart';
 
-void main() => runApp(start());
+void main() => runApp(Start());
 
-class start extends StatelessWidget {
+class Start extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Laundry -beta",
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           canvasColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white
       ),
-      home: home_page(),
+      home: Wrapper(),
     );
   }
 }
