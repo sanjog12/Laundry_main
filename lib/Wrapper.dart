@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:laundry/WaitScreen.dart';
-import 'package:laundry/authentication/AuthScreens/Login.dart';
-import 'package:laundry/authentication/FirebaseStore.dart';
-import 'package:laundry/pick_drop_ui/home_page.dart';
+import 'package:laundry/WorkerSection/Screen/HomePage.dart';
+import 'package:laundry/authentication/AuthScreens/LoginScreen.dart';
+import 'package:laundry/authentication/UserServices.dart';
 
 class Wrapper extends StatefulWidget {
   @override

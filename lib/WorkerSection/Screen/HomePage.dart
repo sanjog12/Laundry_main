@@ -6,11 +6,11 @@ import 'package:laundry/AdminSection/Screen/AttendanceAdmin.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/AuthServices.dart';
-import 'package:laundry/authentication/AuthScreens/Login.dart';
-import 'package:laundry/pick_drop_ui/EmpProfile.dart';
-import 'package:laundry/pick_drop_ui/pages/WorkHistory.dart';
-import 'package:laundry/pick_drop_ui/pages/attendance.dart';
-import 'package:laundry/pick_drop_ui/pages/works.dart';
+import 'package:laundry/WorkerSection/Screen/AttendanceScreen.dart';
+import 'package:laundry/WorkerSection/Screen/EmpProfile.dart';
+import 'package:laundry/WorkerSection/Screen/JobAssigned.dart';
+import 'package:laundry/WorkerSection/Screen/WorkHistory.dart';
+import 'package:laundry/authentication/AuthScreens/LoginScreen.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 class HomePage extends StatefulWidget {

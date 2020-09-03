@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/pick_drop_ui/pages/works.dart';
+import 'package:laundry/WorkerSection/Screen/JobAssigned.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 

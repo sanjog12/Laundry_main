@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
+import 'package:laundry/WorkerSection/Screen/NavigationScreen.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.dart';
 
 
 

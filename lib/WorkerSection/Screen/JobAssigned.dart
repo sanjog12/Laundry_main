@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:http/http.dart' as http;
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
+import 'package:laundry/WorkerSection/Screen/JobDetailScreen.dart';
 
 
 class Work extends StatefulWidget{

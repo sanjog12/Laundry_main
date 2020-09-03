@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -8,9 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/TripDetails.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/pick_drop_ui/pages/customer_end_work/customer_end.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
+import 'package:laundry/WorkerSection/Screen/ChallanPage.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/MapFunctions.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.dart';
 
 class ScreenShot extends StatefulWidget {
 	final UserBasic userBasic;
