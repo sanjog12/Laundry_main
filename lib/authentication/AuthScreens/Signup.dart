@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laundry/Classes/UserDetails.dart';
-import 'package:laundry/Services/AuthServices.dart';
-import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/others/Style.dart';
 import 'package:laundry/others/Validator.dart';
 
@@ -210,7 +207,7 @@ class _SignUpState extends State<SignUp> {
 															color: Colors.white
 														),),
 														onPressed: (){
-															createUser();
+//															createUser();
 														},
 													),
 												)
@@ -227,38 +224,38 @@ class _SignUpState extends State<SignUp> {
 	}
 	
 	
-	Future<void> createUser() async {
-		if (key.currentState.validate()) {
-			key.currentState.save();
-			this.setState(() {
-				submitButtonLoading = true;
-			});
-			AuthServices _authService = AuthServices();
-			User _user = await _authService.registerUser(user);
-			this.setState(() {
-				submitButtonLoading = false;
-			});
-			if (_user != null) {
-					print(_user);
-					
-					Navigator.pop(context);
-					Navigator.push(
-						context,
-						MaterialPageRoute(
-							builder: (context) => Login(),
-						)
-					);
-					Fluttertoast.showToast(
-							msg: "Now logIn using your credential",
-							toastLength: Toast.LENGTH_SHORT,
-							gravity: ToastGravity.BOTTOM,
-							timeInSecForIosWeb: 1,
-							backgroundColor: Color(0xff666666),
-							textColor: Colors.white,
-							fontSize: 16.0);
-			} else {
-				print("Didnt create");
-			}
-		}
-	}
+//	Future<void> createUser() async {
+//		if (key.currentState.validate()) {
+//			key.currentState.save();
+//			this.setState(() {
+//				submitButtonLoading = true;
+//			});
+//			AuthServices _authService = AuthServices();
+//			User _user = await _authService.registerUser(user);
+//			this.setState(() {
+//				submitButtonLoading = false;
+//			});
+//			if (_user != null) {
+//					print(_user);
+//
+//					Navigator.pop(context);
+//					Navigator.push(
+//						context,
+//						MaterialPageRoute(
+//							builder: (context) => Login(),
+//						)
+//					);
+//					Fluttertoast.showToast(
+//							msg: "Now logIn using your credential",
+//							toastLength: Toast.LENGTH_SHORT,
+//							gravity: ToastGravity.BOTTOM,
+//							timeInSecForIosWeb: 1,
+//							backgroundColor: Color(0xff666666),
+//							textColor: Colors.white,
+//							fontSize: 16.0);
+//			} else {
+//				print("Didnt create");
+//			}
+//		}
+//	}
 }

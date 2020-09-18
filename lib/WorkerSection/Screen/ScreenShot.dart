@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -8,16 +7,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/TripDetails.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/pick_drop_ui/pages/customer_end_work/customer_end.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
+import 'package:laundry/WorkerSection/Screen/ChallanPage.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/MapFunctions.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.dart';
 
 class ScreenShot extends StatefulWidget {
 	final UserBasic userBasic;
 	final CreatePolyline object;
-	final String docName;
 	final Job job;
-	ScreenShot({this.job, this.userBasic, this.object , this.docName ,Key key}): super(key: key);
+	ScreenShot({this.job, this.userBasic, this.object ,Key key}): super(key: key);
   @override
   _ScreenShotState createState() => _ScreenShotState();
 }
@@ -39,6 +37,7 @@ class _ScreenShotState extends State<ScreenShot> {
     super.initState();
     widget.object.stopPolyline();
     
+    
     print("FetchRoadSnapped function is called ");
     callFetchRoadSnapped().whenComplete(polylineIdGenerate);
     print("FetchRoadSnapped function is completed");
@@ -46,7 +45,7 @@ class _ScreenShotState extends State<ScreenShot> {
   }
   
   Future<void> callFetchRoadSnapped() async{
-			_temp = await fetchRoadSnapped(widget.object.getrecordedlist(),widget.docName);
+			_temp = await fetchRoadSnapped(widget.object.getrecordedlist());
 			print(_points);
 			if(this.mounted) {
 				setState(() {
@@ -143,7 +142,7 @@ class _ScreenShotState extends State<ScreenShot> {
 					.child(widget.userBasic.mobile +"_"+ widget.userBasic.name+"_"+widget.userBasic.userID)
 					.child(DateTime.now().year.toString())
 					.child(DateTime.now().month.toString())
-			    .push()
+			    .child("-" +widget.job.jobId)
 					.set({
 				"url": url,
 				"id" : widget.job.id,
@@ -167,25 +166,25 @@ class _ScreenShotState extends State<ScreenShot> {
 		    Material(
 			    type: MaterialType.transparency,
 		      child: Container(
-			    color: Colors.grey,
+			      color: Color.fromRGBO(2, 124, 149, 1),
 				    child: Column(
 					    mainAxisAlignment: MainAxisAlignment.center,
 					    children: <Widget>[
 					    	CircularProgressIndicator(
 							    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
 				        ),
-					      SizedBox(height: 20,),
-					      Container(child: Text('Getting things Up....',style: TextStyle(
-						      color: Colors.blueGrey[100],
-						      fontSize: 20,
-						      fontWeight: FontWeight.w500,
+						    SizedBox(height: 20,),
+						    Container(child: Text('Wait for a while',style: TextStyle(
+						      fontWeight: FontWeight.bold,
+						      fontFamily: "Seguisb",
+						      letterSpacing: 1.0,
+						      color:Color.fromRGBO(255, 255, 255, 1),
 					      ),))
-					      
 				      ],
 				    ),
 		      ),
 		    )
-		    : AbsorbPointer(
+		    :AbsorbPointer(
 		      child: Container(
 			      height: size.height-200,
 	          child: GoogleMap(
@@ -197,6 +196,7 @@ class _ScreenShotState extends State<ScreenShot> {
 		          zoomControlsEnabled: true,
 		          onMapCreated: (GoogleMapController controller) async {
 		        	  _controller.complete(controller);
+			          await Future.delayed(Duration(seconds: 2));
 			          await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),60)).whenComplete(() async{
 			        	  print("onMapCreated");
 				          tripDetails = await distanceTimeNavigation(_points,widget.job,widget.userBasic);
@@ -205,12 +205,13 @@ class _ScreenShotState extends State<ScreenShot> {
 				            tripDetails = tripDetails;
 				          });
 				          print("waiting");
-			        	  await Future.delayed(Duration(seconds: 8));
+			        	  await Future.delayed(Duration(seconds: 6));
 			        	  print("wait over");
 			        	  var png = await controller.takeSnapshot();
-			        	  print("snapShot taken");
+			        	  setState(() {
+					          waiting = true;
+			        	  });
 			        	  await uploadPic(png).whenComplete(() {
-			        		  print("uploading Completed");
 			        		  Navigator.pop(context);
 			        		  Navigator.push(context,
 							          MaterialPageRoute(
@@ -218,9 +219,6 @@ class _ScreenShotState extends State<ScreenShot> {
 										          userBasic: widget.userBasic,
 										          job: widget.job,)));
 			        	  });
-			        	  await Firestore.instance.collection('Location Points').document().setData({
-					          '${DateTime.now()}' : 'Screen Short Taken',
-				          }, merge: true);
 			          });
 			          },
 	            ),

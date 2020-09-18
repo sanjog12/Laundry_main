@@ -7,12 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/TripDetails.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/Services/SharedPrefs.dart';
 
-
-
-
-Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
+Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList) async{
 	List<LatLng> points =[];
 	String url = '';
 	
@@ -31,9 +27,9 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 			points.add(LatLng(map['snappedPoints'][i]['location']['latitude'] as double,
 					map['snappedPoints'][i]['location']['longitude'] as double));
 		}
-		await Firestore.instance.collection('Location Points').document(docName).setData({
-			"api url":url,
-		},merge: true);
+		// await Firestore.instance.collection('Location Points').document(docName).setData({
+		// 	"api url":url,
+		// },merge: true);
 		return points;
 		
 	}
@@ -47,10 +43,8 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 
 
 Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job, UserBasic userBasic) async{
-	
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	DatabaseReference dbf = firebaseDatabase.reference();
-	String mobile = await SharedPrefs.getStringPreference('Mobile');
 	String distance = '0';
 	String time = '0';
 	double totalDistance;

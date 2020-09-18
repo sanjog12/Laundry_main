@@ -12,14 +12,16 @@ List<DateTime> absentDates = [];
 
 List<DateTime> halfDates = [];
 
+
 class Attendance extends StatefulWidget{
   final UserBasic userBasic;
 
   const Attendance({Key key, this.userBasic}) : super(key: key);
 @override
   State<StatefulWidget> createState() => AttendanceSate();
-
 }
+
+
 
 class AttendanceSate extends State<Attendance> {
   
@@ -95,8 +97,10 @@ class AttendanceSate extends State<Attendance> {
     presentDates = [];
     absentDates = [];
     halfDates = [];
-    getData();
+    if(DateTime.now().day > 4)
+      getData();
   }
+  
   
   
   @override
@@ -223,10 +227,10 @@ class AttendanceSate extends State<Attendance> {
 //            ),
             
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                height: 65,
+                height: 60,
 //              padding: EdgeInsets.only(left: 20,right: 10),
                 decoration: BoxDecoration(
                   color: Color.fromRGBO( 224, 238, 242, 1),
@@ -237,8 +241,8 @@ class AttendanceSate extends State<Attendance> {
 //                 crossAxisAlignment: CrossAxisAlignment.stretch,
                    children: <Widget>[
                      Padding(
-                       padding: const EdgeInsets.only(left: 35.0),
-                       child: Text("Present",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
+                       padding: EdgeInsets.only(left: 35.0),
+                       child: Text("Present",style: TextStyle(fontFamily: "Myriad", fontSize: 22),),
                      ),
                      Container(
                        margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -252,18 +256,19 @@ class AttendanceSate extends State<Attendance> {
                        child: Center(
                          child: Text(
                            '${presentDates.length}',
-                           style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
+                           style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 20,fontWeight: FontWeight.w300, color: Colors.white),),
                        ),
                      )
                    ],
                  ),
               ),
             ),
+            
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                height: 65,
+                height: 60,
 //              padding: EdgeInsets.only(left: 20,right: 10),
                 decoration: BoxDecoration(
                     color: Color.fromRGBO( 224, 238, 242, 1),
@@ -274,8 +279,8 @@ class AttendanceSate extends State<Attendance> {
 //                 crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 35.0),
-                      child: Text("Absent",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
+                      padding: EdgeInsets.only(left: 35.0),
+                      child: Text("Absent",style: TextStyle(fontFamily: "Myriad", fontSize: 22),),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -289,18 +294,19 @@ class AttendanceSate extends State<Attendance> {
                       child: Center(
                         child: Text(
                           '${absentDates.length}',
-                          style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
+                          style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 20,fontWeight: FontWeight.w300, color: Colors.white),),
                       ),
                     )
                   ],
                 ),
               ),
             ),
+            
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 15),
-                height: 65,
+                height: 60,
 //              padding: EdgeInsets.only(left: 20,right: 10),
                 decoration: BoxDecoration(
                     color: Color.fromRGBO( 224, 238, 242, 1),
@@ -311,8 +317,8 @@ class AttendanceSate extends State<Attendance> {
 //                 crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 35.0),
-                      child: Text("Half Days",style: TextStyle(fontFamily: "Myriad", fontSize: 32),),
+                      padding: EdgeInsets.only(left: 35.0),
+                      child: Text("Half Days",style: TextStyle(fontFamily: "Myriad", fontSize: 22),),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -326,7 +332,7 @@ class AttendanceSate extends State<Attendance> {
                       child: Center(
                         child: Text(
                           '${halfDates.length}',
-                          style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 30,fontWeight: FontWeight.w300, color: Colors.white),),
+                          style: TextStyle(fontFamily: "Myriad_Bold",fontSize: 20,fontWeight: FontWeight.w300, color: Colors.white),),
                       ),
                     )
                   ],

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,10 +7,11 @@ import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:flutter/services.dart';
 import 'package:laundry/Services/AuthServices.dart';
+import 'package:laundry/Services/LocalNotification.dart';
+import 'package:laundry/WorkerSection/Screen/HomePage.dart';
 import 'package:laundry/others/ToastOutputs.dart';
 import 'package:location/location.dart';
 import 'package:laundry/others/Style.dart';
-import 'package:laundry/pick_drop_ui/home_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 
@@ -188,7 +190,7 @@ class _LoginState extends State<Login> {
                             )
                                 :Text("Login"),
                             onPressed: (){
-                              loginUser(userAuth);
+                              loginUser(userAuth,context);
                             },
                           ),
                         ),
@@ -240,7 +242,7 @@ class _LoginState extends State<Login> {
   
   
   
-  Future<void> loginUser(UserAuth authDetails) async {
+  Future<void> loginUser(UserAuth authDetails,BuildContext context) async {
     
     try {
       if (key.currentState.validate()) {
@@ -249,9 +251,12 @@ class _LoginState extends State<Login> {
           buttonLoading = true;
         });
       
-        UserBasic userBasic = await _auth.loginUser(authDetails);
-      
+        UserBasic userBasic = await _auth.loginUser(authDetails,context);
         if (userBasic != null) {
+          NotificationServices().setReminderNotification(id: Random.secure().nextInt(10000),
+              titleString: "Reminder",
+              bodyString: "Please Ensure that you logout in the app",
+              scheduleTime: DateTime.now().add(Duration(hours: int.parse(userBasic.hours.split(":")[0],),minutes: 30)));
           Navigator.pop(context);
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -262,7 +267,7 @@ class _LoginState extends State<Login> {
           );
           toastMessage(message: "Login Successfully");
         } else{
-          toastMessage(message: "Wrong Credential");
+//          toastMessage(message: "Wrong Credential");
         }
       }
     } on PlatformException catch (e) {

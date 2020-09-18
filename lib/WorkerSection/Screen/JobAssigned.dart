@@ -6,12 +6,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:http/http.dart' as http;
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
+import 'package:laundry/WorkerSection/Screen/JobDetailScreen.dart';
 
 
 class Work extends StatefulWidget{
@@ -34,22 +35,29 @@ class _WorkState extends State<Work> {
     
     List<Placemark> placeMark = [];
     print(address);
-    placeMark = await Geolocator().placemarkFromAddress(address);
-    
-    return placeMark.first.position;
+    try {
+      placeMark = await Geolocator().placemarkFromAddress("India Gate ,New Delhi");
+      return placeMark.first.position;
+    }on PlatformException catch(e){
+      print(e.message);
+      return null;
+    } catch(e){
+      print(e);
+      return null;
+    }
 }
   
   
   Future<List<Job>> getData() async{
     List<Job> job = [];
     print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/${widget.userBasic.userID}");
-    http.Response response = await  http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/8");
+    http.Response response = await  http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/${widget.userBasic.userID}");
     
     var ra = jsonDecode(response.body);
     print(ra);
     
     for(var value in ra['Entity']){
-      job.add(Job(
+      Job j = Job(
         customerName: value['CustomerName'].toString(), id: value['Id'].toString(), customerId: value['CustomerId'].toString(), storeId: value['StoreId'].toString(),
         jobId: value['JobId'].toString(), jobName: value['JobName'].toString(), userId: value['UserId'].toString(),
         isCompleted: value['IsCompleted'].toString(), isPending: value['IsPending'].toString(),
@@ -59,8 +67,12 @@ class _WorkState extends State<Work> {
         customerAddress: value['CustomerAddress'].toString(), customerMobile: value['CustomerMobile'].toString(),
         userName: value['UserName'].toString(), completed: value['Completed'].toString(), pending: value['Pending'].toString(),
         position: await getPosition(await value['CustomerAddress'])
-      ));
+      );
+      if(j.position != null){
+        job.add(j);
+      }
     }
+    
     return job;
   }
   

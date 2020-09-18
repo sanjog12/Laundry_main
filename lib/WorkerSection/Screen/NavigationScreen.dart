@@ -1,25 +1,24 @@
-
 import 'dart:async';
+import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-
-import 'screen_shot.dart';
+import 'package:screen/screen.dart';
+import 'ScreenShot.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_map_polyline/google_map_polyline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.dart';
 import 'package:location/location.dart';
-
 
 
 class DuringNavigation extends StatefulWidget {
 
 	final UserBasic userBasic;
-	final String docName ;
 	final CreatePolyline object;
 	final Job job;
-	DuringNavigation({this.userBasic, this.object, this.docName, this.job, Key key}):super(key : key);
+	DuringNavigation({this.userBasic, this.object, this.job, Key key}):super(key : key);
 
 	@override
 	_DuringNavigationState createState() => _DuringNavigationState();
@@ -36,9 +35,8 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	Set<Polyline> polyline ={};
 	
 	Future<List<LatLng>> getPolyline() async{
-		
 		try{
-		await googleMapPolyline.getCoordinatesWithLocation(
+			await googleMapPolyline.getCoordinatesWithLocation(
 				origin: currentLocation,
 				destination: LatLng(widget.job.position.latitude , widget.job.position.longitude),
 				mode: RouteMode.driving,
@@ -74,7 +72,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	
 	@override
   void initState() {
-		
+		Screen.keepOn(true);
     super.initState();
     location.getLocation().then((value){
     	previousLocation = currentLocation;
@@ -98,6 +96,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 		    }
 	    });
     });
+    
   }
   
   Future<void> updateCamera() async{
@@ -112,17 +111,16 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	
   @override
   Widget build(BuildContext context) {
+		location.changeSettings(accuracy: LocationAccuracy.navigation);
 	  location.onLocationChanged.listen((event) {
-	  	print("inside location Changed event ");
 	  	if(mounted) {
+			  print("Navigation location Changed");
 			  setState(() {
 				  currentLocation = LatLng(event.latitude, event.longitude);
 			  });
 			  updateCamera();
 		  }
 	  });
-	  
-	  
     return WillPopScope(
 	    onWillPop: popUpFunction,
       child: Stack(
@@ -165,7 +163,6 @@ class _DuringNavigationState extends State<DuringNavigation> {
 						        	Navigator.push(context,
 									        MaterialPageRoute(builder: (context) => ScreenShot(
 										        object: widget.object,
-										        docName: widget.docName,
 										        userBasic: widget.userBasic,
 										        job: widget.job,
 									        )));
