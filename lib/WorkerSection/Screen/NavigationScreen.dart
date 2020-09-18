@@ -1,5 +1,5 @@
-
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:screen/screen.dart';
@@ -13,14 +13,12 @@ import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.d
 import 'package:location/location.dart';
 
 
-
 class DuringNavigation extends StatefulWidget {
 
 	final UserBasic userBasic;
-	final String docName ;
 	final CreatePolyline object;
 	final Job job;
-	DuringNavigation({this.userBasic, this.object, this.docName, this.job, Key key}):super(key : key);
+	DuringNavigation({this.userBasic, this.object, this.job, Key key}):super(key : key);
 
 	@override
 	_DuringNavigationState createState() => _DuringNavigationState();
@@ -37,9 +35,8 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	Set<Polyline> polyline ={};
 	
 	Future<List<LatLng>> getPolyline() async{
-		
 		try{
-		await googleMapPolyline.getCoordinatesWithLocation(
+			await googleMapPolyline.getCoordinatesWithLocation(
 				origin: currentLocation,
 				destination: LatLng(widget.job.position.latitude , widget.job.position.longitude),
 				mode: RouteMode.driving,
@@ -99,6 +96,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 		    }
 	    });
     });
+    
   }
   
   Future<void> updateCamera() async{
@@ -113,17 +111,16 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	
   @override
   Widget build(BuildContext context) {
+		location.changeSettings(accuracy: LocationAccuracy.navigation);
 	  location.onLocationChanged.listen((event) {
-	  	print("inside location Changed event ");
 	  	if(mounted) {
+			  print("Navigation location Changed");
 			  setState(() {
 				  currentLocation = LatLng(event.latitude, event.longitude);
 			  });
 			  updateCamera();
 		  }
 	  });
-	  
-	  
     return WillPopScope(
 	    onWillPop: popUpFunction,
       child: Stack(
@@ -166,7 +163,6 @@ class _DuringNavigationState extends State<DuringNavigation> {
 						        	Navigator.push(context,
 									        MaterialPageRoute(builder: (context) => ScreenShot(
 										        object: widget.object,
-										        docName: widget.docName,
 										        userBasic: widget.userBasic,
 										        job: widget.job,
 									        )));

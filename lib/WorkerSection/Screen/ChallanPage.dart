@@ -588,17 +588,12 @@ class _CustomerEndState extends State<CustomerEnd> {
 						          ),),
 						          onPressed: () async {
 							          loadingWidget(context);
-							          print("1");
 							          await sendDataToWeb(hashMap);
-							          print("2");
 						          	await writeInPdf(hashMap,challanNumber);
-							          print("3");
 						          	await savePdf(challanNumber);
-							          print("4");
 						          	Directory documentDirectory = await getApplicationDocumentsDirectory();
 						          	String documentPath = documentDirectory.path;
-						          	String filePath = "$documentPath/example.pdf";
-							          print("5");
+						          	String filePath = "$documentPath/${challanNumber.replaceAll("/", "r")}.pdf";
 						          	Navigator.pop(context);
 						          	Navigator.pop(context);
 						          	Navigator.push(context,

@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:laundry/Classes/Job.dart';
@@ -34,9 +35,16 @@ class _WorkState extends State<Work> {
     
     List<Placemark> placeMark = [];
     print(address);
-    placeMark = await Geolocator().placemarkFromAddress(address);
-    
-    return placeMark.first.position;
+    try {
+      placeMark = await Geolocator().placemarkFromAddress("India Gate ,New Delhi");
+      return placeMark.first.position;
+    }on PlatformException catch(e){
+      print(e.message);
+      return null;
+    } catch(e){
+      print(e);
+      return null;
+    }
 }
   
   
@@ -49,7 +57,7 @@ class _WorkState extends State<Work> {
     print(ra);
     
     for(var value in ra['Entity']){
-      job.add(Job(
+      Job j = Job(
         customerName: value['CustomerName'].toString(), id: value['Id'].toString(), customerId: value['CustomerId'].toString(), storeId: value['StoreId'].toString(),
         jobId: value['JobId'].toString(), jobName: value['JobName'].toString(), userId: value['UserId'].toString(),
         isCompleted: value['IsCompleted'].toString(), isPending: value['IsPending'].toString(),
@@ -59,8 +67,12 @@ class _WorkState extends State<Work> {
         customerAddress: value['CustomerAddress'].toString(), customerMobile: value['CustomerMobile'].toString(),
         userName: value['UserName'].toString(), completed: value['Completed'].toString(), pending: value['Pending'].toString(),
         position: await getPosition(await value['CustomerAddress'])
-      ));
+      );
+      if(j.position != null){
+        job.add(j);
+      }
     }
+    
     return job;
   }
   

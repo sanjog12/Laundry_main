@@ -19,6 +19,7 @@ environment:
 dependencies:
   share_extend: ^1.1.9
   screen: ^0.0.5
+  flutter_local_notifications: ^1.4.4+4
   background_location:
   http:
   firebase_database:
@@ -36,11 +37,14 @@ dependencies:
   google_maps_flutter: 0.5.26+2
   google_map_polyline:
   firebase_storage:
-  table_calendar:
+#  table_calendar:
   flutter_calendar_carousel:
   pdf:
+#  workmanager: ^0.2.3
   path_provider:
   flutter_pdfview:
+  permission_handler: ^5.0.1+1
+  firebase_messaging: ^7.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

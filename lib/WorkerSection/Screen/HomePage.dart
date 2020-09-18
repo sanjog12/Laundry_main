@@ -1,17 +1,22 @@
 /* Home page of the pick and drop worker */
-import 'package:background_location/background_location.dart';
+
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:laundry/AdminSection/Screen/AttendanceAdmin.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/AuthServices.dart';
+import 'package:laundry/Services/LocalNotification.dart';
 import 'package:laundry/WorkerSection/Screen/AttendanceScreen.dart';
 import 'package:laundry/WorkerSection/Screen/EmpProfile.dart';
 import 'package:laundry/WorkerSection/Screen/JobAssigned.dart';
 import 'package:laundry/WorkerSection/Screen/WorkHistory.dart';
 import 'package:laundry/authentication/AuthScreens/LoginScreen.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 class HomePage extends StatefulWidget {
   final UserBasic userBasic;
@@ -25,6 +30,9 @@ class _HomePageState extends State<HomePage> {
   
   int i = 0;
   UserAuth userAuth = UserAuth();
+  NotificationServices notificationServices = NotificationServices();
+  final FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+  DatabaseReference dbf;
   
   
   
@@ -114,7 +122,8 @@ class _HomePageState extends State<HomePage> {
                     )
                 );
               }catch(e){
-              
+                print("error");
+                print(e);
               }
             }),
           ],
@@ -124,28 +133,35 @@ class _HomePageState extends State<HomePage> {
   }
   
   void locationPermission() async{
-    PermissionStatus f = await BackgroundLocation.checkPermissions();
-    if(f.value ==0 ){
-      await BackgroundLocation.getPermissions(onDenied:(){
-        alertPop();
-      },onGranted: (){
-      
-      });
+    var f = await Permission.locationAlways.isGranted;
+    if(!f){
+      await Permission.locationAlways.request();
+      // await BackgroundLocation.getPermissions(onDenied:(){
+      //   alertPop();
+      // },onGranted: (){
+      //
+      // });
     }
   }
   
   
-  alertPop() {
+  Future<dynamic> alertPop() async{
     return showDialog(
         context: context,
         builder: (BuildContext context){
           return AlertDialog(
-            title: Text("Administrator"),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Administrator"),
+                Divider(thickness: 1,),
+              ],
+            ),
             content: Text("It is Compulsory to give location permission"),
             actions: <Widget>[
               FlatButton(
                 child: Text("Ok"),
-                onPressed: (){
+                onPressed: () {
                   Navigator.pop(context);
                   locationPermission();
                 },
@@ -155,12 +171,68 @@ class _HomePageState extends State<HomePage> {
         }
     );
   }
+
+
+
+  static Future<dynamic> backgroundMessage(Map<String, dynamic> message) async{
+    NotificationServices notificationServices = NotificationServices();
+    notificationServices.initializeSetting();
+    print("background");
+    if (message.containsKey('data')) {
+      final dynamic data = message['data'];
+    }
+  
+    if (message.containsKey('notification')) {
+      final dynamic notification = message['notification'];
+    }
+    return Future<void>.value();
+  }
+
+  Future<void> messageFCM() async{
+    String title;
+    String body;
+    notificationServices.initializeSetting();
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    firebaseMessaging.configure(
+      onMessage: (Map<String,dynamic> message) async{
+        try {
+          print("on Message " + message.toString());
+          title = await message["notification"]["title"];
+          body = await message["notification"]["body"];
+          print("title " +title);
+          print("body " +body);
+          notificationServices.showNotification(title, body);
+        }catch(e){
+          print(e);
+        }
+      },
+      onBackgroundMessage:backgroundMessage,
+      onLaunch: (Map<String,dynamic> message) async{
+        print("on Launch" + message.toString());
+      },
+      onResume: (Map<String,dynamic> message) async{
+        print("on Resume" + message.toString());
+      },
+    );
+    await firebaseMessaging.getToken().then((value){
+      print(value);
+      dbf = firebaseDatabase.reference();
+      dbf
+          .child("FCMTokens")
+          .child(widget.userBasic.userID.toString())
+          .set({
+        'token':value
+      });
+    });
+    print("conpleted");
+  }
   
   
   @override
   void initState() {
     super.initState();
     locationPermission();
+    messageFCM();
   }
   
   @override

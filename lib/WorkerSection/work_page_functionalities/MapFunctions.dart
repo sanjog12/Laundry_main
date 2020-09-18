@@ -8,10 +8,7 @@ import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/TripDetails.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 
-
-
-
-Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
+Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList) async{
 	List<LatLng> points =[];
 	String url = '';
 	
@@ -30,9 +27,9 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 			points.add(LatLng(map['snappedPoints'][i]['location']['latitude'] as double,
 					map['snappedPoints'][i]['location']['longitude'] as double));
 		}
-		await Firestore.instance.collection('Location Points').document(docName).setData({
-			"api url":url,
-		},merge: true);
+		// await Firestore.instance.collection('Location Points').document(docName).setData({
+		// 	"api url":url,
+		// },merge: true);
 		return points;
 		
 	}

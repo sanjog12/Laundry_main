@@ -4,7 +4,6 @@ which is specified in the work card in the work section .
  */
 
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
@@ -106,12 +105,11 @@ class _MapPageState extends State<MapPage>{
 			    ),),
 			    
 			    onPressed: (){
-				    final String docName ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
-				    CreatePolyline object = CreatePolyline(docName);
+				    CreatePolyline object = CreatePolyline();
 				    object.startRecord(widget.job);
 				    Navigator.of(context).pop();
 				    Navigator.push(context,
-						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object , docName: docName,userBasic: widget.userBasic, job: widget.job,))
+						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object, userBasic: widget.userBasic, job: widget.job,))
 				    );
 			    },
 		    ),

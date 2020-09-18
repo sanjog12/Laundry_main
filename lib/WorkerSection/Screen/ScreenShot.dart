@@ -14,9 +14,8 @@ import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.d
 class ScreenShot extends StatefulWidget {
 	final UserBasic userBasic;
 	final CreatePolyline object;
-	final String docName;
 	final Job job;
-	ScreenShot({this.job, this.userBasic, this.object , this.docName ,Key key}): super(key: key);
+	ScreenShot({this.job, this.userBasic, this.object ,Key key}): super(key: key);
   @override
   _ScreenShotState createState() => _ScreenShotState();
 }
@@ -38,6 +37,7 @@ class _ScreenShotState extends State<ScreenShot> {
     super.initState();
     widget.object.stopPolyline();
     
+    
     print("FetchRoadSnapped function is called ");
     callFetchRoadSnapped().whenComplete(polylineIdGenerate);
     print("FetchRoadSnapped function is completed");
@@ -45,7 +45,7 @@ class _ScreenShotState extends State<ScreenShot> {
   }
   
   Future<void> callFetchRoadSnapped() async{
-			_temp = await fetchRoadSnapped(widget.object.getrecordedlist(),widget.docName);
+			_temp = await fetchRoadSnapped(widget.object.getrecordedlist());
 			print(_points);
 			if(this.mounted) {
 				setState(() {

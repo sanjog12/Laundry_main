@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,7 @@ import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:flutter/services.dart';
 import 'package:laundry/Services/AuthServices.dart';
+import 'package:laundry/Services/LocalNotification.dart';
 import 'package:laundry/WorkerSection/Screen/HomePage.dart';
 import 'package:laundry/others/ToastOutputs.dart';
 import 'package:location/location.dart';
@@ -250,8 +252,11 @@ class _LoginState extends State<Login> {
         });
       
         UserBasic userBasic = await _auth.loginUser(authDetails,context);
-      
         if (userBasic != null) {
+          NotificationServices().setReminderNotification(id: Random.secure().nextInt(10000),
+              titleString: "Reminder",
+              bodyString: "Please Ensure that you logout in the app",
+              scheduleTime: DateTime.now().add(Duration(hours: int.parse(userBasic.hours.split(":")[0],),minutes: 30)));
           Navigator.pop(context);
           Navigator.of(context).push(
             MaterialPageRoute(
