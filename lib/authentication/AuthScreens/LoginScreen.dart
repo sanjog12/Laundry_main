@@ -61,94 +61,72 @@ class _LoginState extends State<Login> {
     
     return Scaffold(
       body: SingleChildScrollView(
-        child: Stack(
-          children:<Widget> [
-  
-            Container(
-						height: size.height,
-						width: size.width,
-						child: Image.asset('images/12.jpg',
-							colorBlendMode: BlendMode.saturation,
-							fit: BoxFit.fill,
-							height: double.infinity,
-							width: double.infinity,
-						),
-					),
-            
-            Container(
-              padding: EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  SizedBox(
-                    height: 70,
+        child: SafeArea(
+          child: Container(
+            padding: EdgeInsets.all(24),
+            child: Column(
+
+              children: <Widget>[
+                SizedBox(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left:45.0,right: 45.0),
+                  child: Container(
+                    height: 140,
+                    width: 280,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: AssetImage('images/wdclogo.png'),fit: BoxFit.fill)
+                    ),
+
                   ),
-                  
-                  Text("Welcome" , style: themeData.textTheme.headline.merge(TextStyle(
-                      fontSize: 26,
-                      color: Colors.black
-                  
-                  ),),),
-                  
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "Sign in to Continue",
-                    style: themeData.textTheme.subhead.merge(TextStyle(
-                      color: Colors.black,
-                        fontWeight: FontWeight.w300
-                    )),
-                  ),
-                  
-                  SizedBox(
-                    height: 70,
-                  ),
-                  
-                  Form(
-                    key: key,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Text("Registered Mobile Number" , style: TextStyle(
-                        ),),
-                        
-                        SizedBox(
-                          height: 10,
-                        ),
-                        
-                        TextFormField(
-                          maxLength: 10,
-                          decoration: buildCustomInput(hintText: 'Registered Mobile Number'),
-                          onChanged: (value){
-                            userAuth.mobileNo = value;
-                          },
-                        ),
-                        
-                        SizedBox(
-                          height: 30,
-                        ),
-                        
-                        Text("Password",),
-                        
-                        SizedBox(
-                          height: 10,
-                        ),
-                        
-                        TextFormField(
-                          decoration: buildCustomInput(hintText: "Password"),
-                          onChanged: (value){
-                            password = value;
-                            userAuth.password = value;
-                          },
-                        ),
-                        
-                        
-                        SizedBox(
-                          height: 5,
-                        ),
-                        
-                        
+                ),
+                SizedBox(
+                  height: 140,
+                  width: MediaQuery.of(context).size.width,
+                ),
+                Form(
+                  key: key,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Text("Registered Mobile Number" , style: TextStyle(fontFamily: 'Myriad_Bold',fontSize: 15
+                      ),),
+
+
+
+                      TextFormField(
+                        maxLength: 10,
+                        decoration: InputDecoration(),
+                        onChanged: (value){
+                          userAuth.mobileNo = value;
+                        },
+
+                      ),
+
+                      SizedBox(
+                        height: 30,
+                      ),
+
+                      Text("Password",style: TextStyle(fontFamily: 'Myriad_Bold',fontSize: 15 ),),
+
+
+
+                      TextFormField(
+                        decoration: InputDecoration(),
+                        onChanged: (value){
+                          password = value;
+                          userAuth.password = value;
+                        },
+                      ),
+
+
+                      SizedBox(
+                        height: 5,
+                      ),
+
+
 //                        Container(
 //                          alignment: Alignment.centerRight,
 //                          child: InkWell(
@@ -165,40 +143,19 @@ class _LoginState extends State<Login> {
 //                            ),
 //                          ),
 //                        ),
-                        
-                        
-                        SizedBox(
-                          height: 80,
-                        ),
-                        
-                        
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey
-                          ),
-                          height: 50,
-                          child:FlatButton(
-                            child: buttonLoading?
-                            Container(
-                              height: 30,
-                              width: 30,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>
-                                  (Colors.white70),
-                              ),
-                            )
-                                :Text("Login"),
-                            onPressed: (){
-                              loginUser(userAuth,context);
-                            },
-                          ),
-                        ),
-                        
-                        SizedBox(
-                          height: 30,
-                        ),
-                        
+
+
+                      SizedBox(
+                        height: 50,
+                      ),
+
+
+
+
+                      SizedBox(
+                        height: 30,
+                      ),
+
 //                        Wrap(
 //                          crossAxisAlignment: WrapCrossAlignment.center,
 //                          children: <Widget>[
@@ -224,13 +181,35 @@ class _LoginState extends State<Login> {
 //                            ),
 //                          ],
 //                        ),
-                      ],
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color.fromRGBO(2, 124, 149, 1)
+                  ),
+                  height: 50,
+                  width: 180,
+                  child:FlatButton(
+                    child: buttonLoading?
+                    Container(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>
+                          (Colors.white70),
+                      ),
+                    )
+                        :Text("Login",style: TextStyle(fontFamily: 'Myriad_Bold',color: Color.fromRGBO(255, 255, 255, 1),fontSize: 20),),
+                    onPressed: (){
+                      loginUser(userAuth,context);
+                    },
+                  ),
+                ),
+              ],
             ),
-          ]
+          ),
         ),
       ),
     );
