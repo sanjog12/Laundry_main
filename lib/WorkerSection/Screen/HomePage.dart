@@ -38,12 +38,9 @@ class _HomePageState extends State<HomePage> {
   
   Widget buildSideMenu(){
     return Container(
-      width: 260,
+      width: 380,
       decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage("images/12.jpg"),
-            fit: BoxFit.cover
-        ),
+        color: Color.fromRGBO(224, 238, 242, 1)
       ),
       child: Drawer(
         elevation: 0,
@@ -54,8 +51,9 @@ class _HomePageState extends State<HomePage> {
               height: 250,
               width: 200,
               child: DrawerHeader(
-                child: Column(
+                child: Row(
 //                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Container(
                       width: 120,
@@ -66,15 +64,12 @@ class _HomePageState extends State<HomePage> {
                           fit: BoxFit.fill,
                         ),
                         borderRadius: BorderRadius.circular(100.0),
-                        border: Border.all(
-                          color: Colors.blueGrey[50],
-                          width: 6.0,
-                        ),
+                       
                       ),
                     ),
                     
                     Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.only(right: 8,left: 8,top:35),
                       child: RichText(
                           textAlign: TextAlign.center,
                         text: TextSpan(
@@ -84,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           children: <TextSpan>[
                             TextSpan(text:widget.userBasic.name !=null? '${widget.userBasic.name}\n':" ",style: TextStyle(
-                              fontStyle: FontStyle.italic,color: Colors.white
+                              color: Colors.white,fontFamily: 'Seguisb',
                             )),
                             TextSpan(text: ' '),
                             TextSpan(text:widget.userBasic.userID !=null? '${widget.userBasic.userID}':"")
@@ -95,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blueGrey[700],
+                  color: Color.fromRGBO(2, 144, 149, 1),
                 ),
               ),
             ),
@@ -424,7 +419,8 @@ class CustomListTile extends StatelessWidget{        //Class for items to be dis
                         style: TextStyle(
                             fontSize: 16.0,
                             color: Color.fromRGBO(88,89,91,1),
-                            fontWeight: FontWeight.w600
+                            fontWeight: FontWeight.w600,
+                          fontFamily: 'Myriad'
                         ),
                       ),
                     ),

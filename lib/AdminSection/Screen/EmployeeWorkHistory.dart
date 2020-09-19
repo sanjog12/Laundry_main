@@ -21,7 +21,7 @@ class _EmployeeWorkHistoryState extends State<EmployeeWorkHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
 	    appBar: AppBar(
-		    backgroundColor: Colors.blueGrey[700],
+		    backgroundColor: Color.fromRGBO(2, 124, 149, 1),
 		    elevation: 8,
 		    iconTheme: IconThemeData(
 			    color:Colors.blue[100],
@@ -32,7 +32,7 @@ class _EmployeeWorkHistoryState extends State<EmployeeWorkHistory> {
 				    fontWeight: FontWeight.bold,
 				    fontFamily: "OpenSans",
 				    letterSpacing: 1.0,
-				    color:Colors.blue[100],
+				    color:Color.fromRGBO(255, 255, 255, 1)
 			    ),
 		    ),
 		    centerTitle: true,
