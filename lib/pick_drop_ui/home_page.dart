@@ -195,40 +195,43 @@ class CustomListTile extends StatelessWidget {         //Class for items to be d
   CustomListTile(this.icon,this.text,this.ontap);
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.grey.shade500,
+    return SafeArea(
+      left: false,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Colors.grey.shade500,
+              ),
             ),
           ),
-        ),
-        child: InkWell(
-          splashColor: Colors.blue[50],
-          onTap: ontap,
-          child: Container(
-            height: 55,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Icon(icon),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        text,
-                        style: TextStyle(
-                          fontSize: 16.0
+          child: InkWell(
+            splashColor: Colors.blue[50],
+            onTap: ontap,
+            child: Container(
+              height: 55,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Icon(icon),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          text,
+                          style: TextStyle(
+                            fontSize: 16.0
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Icon(Icons.arrow_right)
-              ],
+                    ],
+                  ),
+                  Icon(Icons.arrow_right)
+                ],
+              ),
             ),
           ),
         ),
