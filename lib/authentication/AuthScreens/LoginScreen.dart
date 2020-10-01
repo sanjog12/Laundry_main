@@ -10,9 +10,8 @@ import 'package:laundry/Services/AuthServices.dart';
 import 'package:laundry/Services/LocalNotification.dart';
 import 'package:laundry/WorkerSection/Screen/HomePage.dart';
 import 'package:laundry/others/ToastOutputs.dart';
-import 'package:location/location.dart';
-import 'package:laundry/others/Style.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 
@@ -28,23 +27,46 @@ class _LoginState extends State<Login> {
   
   String email = ' ';
   String password = ' ';
-  LocationData currentLocation;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   UserAuth userAuth = UserAuth();
   AuthServices _auth = AuthServices();
   FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
   DatabaseReference dbf;
   
-  Location location = Location();
-  
   bool buttonLoading = false;
   
   locationPermission() async{
-    PermissionStatus s = await location.hasPermission();
-    if(s.index==0){
-      location.requestPermission();
+    var f = await Permission.location.isGranted;
+    if(!f){
+      await Permission.location.request();
     }
-    currentLocation = await location.getLocation();
+  }
+  
+  Future<dynamic> alertPop() async{
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Administrator"),
+                Divider(thickness: 1,),
+              ],
+            ),
+            content: Text("Your location data is necessary"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  locationPermission();
+                },
+              )
+            ],
+          );
+        }
+    );
   }
   
   @override
@@ -72,7 +94,7 @@ class _LoginState extends State<Login> {
                   width: MediaQuery.of(context).size.width,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left:45.0,right: 45.0),
+                  padding: EdgeInsets.only(left:45.0,right: 45.0),
                   child: Container(
                     height: 140,
                     width: 280,
@@ -111,8 +133,6 @@ class _LoginState extends State<Login> {
 
                       Text("Password",style: TextStyle(fontFamily: 'Myriad_Bold',fontSize: 15 ),),
 
-
-
                       TextFormField(
                         decoration: InputDecoration(),
                         onChanged: (value){
@@ -120,8 +140,7 @@ class _LoginState extends State<Login> {
                           userAuth.password = value;
                         },
                       ),
-
-
+                      
                       SizedBox(
                         height: 5,
                       ),
@@ -148,8 +167,6 @@ class _LoginState extends State<Login> {
                       SizedBox(
                         height: 50,
                       ),
-
-
 
 
                       SizedBox(

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:background_location/background_location.dart';
 import 'package:laundry/Classes/Job.dart';
+import 'package:http/http.dart';
 
 
 
@@ -19,16 +20,16 @@ class CreatePolyline {
 	
 	
 	List<LatLng> getrecordedlist(){
-		print("list accessed");
+		// print("list accessed");
 		return this._listltlg;
 	}
 	
 	
-	startRecord(Job job) async{
-		await BackgroundLocation.startLocationService();
+	startRecord(Job job) {
+		BackgroundLocation.startLocationService();
 		_listltlg.add(LatLng(0,0));
-		await BackgroundLocation.getLocationUpdates((location) {
-			print('getLocationUpdate invoked');
+		BackgroundLocation.getLocationUpdates((location) {
+			print("Latitude : " +location.latitude.toString() + " " +"Longitude : " +location.longitude.toString());
 			coordinateFilter(location,job);
 		});
 		dateTime.add(DateTime.now());
@@ -44,15 +45,14 @@ class CreatePolyline {
 	
 	
 	void coordinateFilter(location,Job job) {
-		print('inside filter property');
 		if(_listltlg.last.longitude.toStringAsFixed(3) != location.longitude.toStringAsFixed(3)
 				&& _listltlg.last.latitude.toStringAsFixed(3) != location.latitude.toStringAsFixed(3)){
-			print('Condition for not recording same points ');
+			// print('Condition for not recording same points ');
 			this._listltlg.add(LatLng(location.latitude,location.longitude));
 			a = GeoPoint(location.latitude,location.longitude);
-			print("minute " +DateTime.now().difference(dateTime.last).inMinutes.toString());
+			// print("minute " +DateTime.now().difference(dateTime.last).inMinutes.toString());
 			if(DateTime.now().difference(dateTime.last).inMinutes >= 5){
-				print("delay");
+				// print("delay");
 				this.delayInJob.add(Marker(
 					icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
 					markerId: MarkerId("Delay"),
@@ -63,7 +63,7 @@ class CreatePolyline {
 					position: LatLng(location.latitude,location.longitude),
 				));
 			}
-			print(this.delayInJob.length);
+			// print(this.delayInJob.length);
 			dateTime.add(DateTime.now());
 		}
 	}

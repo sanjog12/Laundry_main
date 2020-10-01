@@ -51,7 +51,7 @@ class _CustomerEndState extends State<CustomerEnd> {
 	Future<void> sendDataToWeb(List<GarmentInBasket> list) async{
 		try{
 			Map<String,dynamic> json ={
-				"PickDropJobId" : int.parse(widget.job.jobId),
+				"PickDropJobId" : int.parse(widget.job.id),
 				"CreatedBy":2,
 				"LstMobileDetailChallanModel" : [
 					for(var v in list){
@@ -591,10 +591,11 @@ class _CustomerEndState extends State<CustomerEnd> {
 							          await sendDataToWeb(hashMap);
 						          	await writeInPdf(hashMap,challanNumber);
 						          	await savePdf(challanNumber);
+						          	print(challanNumber);
 						          	Directory documentDirectory = await getApplicationDocumentsDirectory();
 						          	String documentPath = documentDirectory.path;
 						          	String filePath = "$documentPath/${challanNumber.replaceAll("/", "r")}.pdf";
-						          	Navigator.pop(context);
+							          // String filePath = "$documentPath/example.pdf";
 						          	Navigator.pop(context);
 						          	Navigator.push(context,
 									          MaterialPageRoute(
@@ -711,14 +712,21 @@ class _CustomerEndState extends State<CustomerEnd> {
   }
   
   loadingWidget(BuildContext context){
+		print("loading widget");
 		return showDialog(
+			// barrierColor: Colors.black,
 			context: context,
 			builder: (BuildContext context){
 				return AlertDialog(
+					elevation: 10.0,
 					shape: RoundedRectangleBorder(),
-					content: Center(
-					  child: CircularProgressIndicator(
-					  	valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+					content: Container(
+						height: 40,
+					  width: 40,
+					  child: Center(
+					    child: CircularProgressIndicator(
+					    	valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+					    ),
 					  ),
 					),
 				);

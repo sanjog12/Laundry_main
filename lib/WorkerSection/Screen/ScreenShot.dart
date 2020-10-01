@@ -38,9 +38,9 @@ class _ScreenShotState extends State<ScreenShot> {
     widget.object.stopPolyline();
     
     
-    print("FetchRoadSnapped function is called ");
+    // print("FetchRoadSnapped function is called ");
     callFetchRoadSnapped().whenComplete(polylineIdGenerate);
-    print("FetchRoadSnapped function is completed");
+    // print("FetchRoadSnapped function is completed");
     print(widget.userBasic.mobile);
   }
   
@@ -200,7 +200,7 @@ class _ScreenShotState extends State<ScreenShot> {
 			          await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),60)).whenComplete(() async{
 			        	  print("onMapCreated");
 				          tripDetails = await distanceTimeNavigation(_points,widget.job,widget.userBasic);
-				          print("trip Details Fetched");
+				          // print("trip Details Fetched");
 				          setState(() {
 				            tripDetails = tripDetails;
 				          });

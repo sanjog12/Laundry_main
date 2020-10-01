@@ -128,14 +128,9 @@ class _HomePageState extends State<HomePage> {
   }
   
   void locationPermission() async{
-    var f = await Permission.locationAlways.isGranted;
-    if(!f){
-      await Permission.locationAlways.request();
-      // await BackgroundLocation.getPermissions(onDenied:(){
-      //   alertPop();
-      // },onGranted: (){
-      //
-      // });
+    var permission = await Permission.locationAlways.isGranted;
+    if(!permission){
+      var t = await Permission.locationAlways.request();
     }
   }
   
@@ -152,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                 Divider(thickness: 1,),
               ],
             ),
-            content: Text("It is Compulsory to give location permission"),
+            content: Text("You have to give always location tracking permission"),
             actions: <Widget>[
               FlatButton(
                 child: Text("Ok"),
@@ -223,6 +218,7 @@ class _HomePageState extends State<HomePage> {
   }
   
   
+  
   @override
   void initState() {
     super.initState();
@@ -255,7 +251,9 @@ class _HomePageState extends State<HomePage> {
               Icons.notifications,
               color:Color.fromRGBO(255, 255, 255, 1),
             ),
-            onPressed: () {},
+            onPressed: () {
+            
+            },
           ),
         ],
       ),
@@ -332,6 +330,7 @@ class List extends StatelessWidget {//Class for grid display of homepage
   final UserBasic userBasic;
   final Function onTap;
   List(this.userBasic,this.icon,this.text,this.onTap);
+  
   @override
   Widget build(BuildContext context) {
     return Stack(
