@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -8,16 +7,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/TripDetails.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/pick_drop_ui/pages/customer_end_work/customer_end.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/Json_Road_Snapped.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
+import 'package:laundry/WorkerSection/Screen/ChallanPage.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/MapFunctions.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.dart';
 
 class ScreenShot extends StatefulWidget {
 	final UserBasic userBasic;
 	final CreatePolyline object;
-	final String docName;
 	final Job job;
-	ScreenShot({this.job, this.userBasic, this.object , this.docName ,Key key}): super(key: key);
+	ScreenShot({this.job, this.userBasic, this.object ,Key key}): super(key: key);
   @override
   _ScreenShotState createState() => _ScreenShotState();
 }
@@ -39,14 +37,15 @@ class _ScreenShotState extends State<ScreenShot> {
     super.initState();
     widget.object.stopPolyline();
     
-    print("FetchRoadSnapped function is called ");
+    
+    // print("FetchRoadSnapped function is called ");
     callFetchRoadSnapped().whenComplete(polylineIdGenerate);
-    print("FetchRoadSnapped function is completed");
+    // print("FetchRoadSnapped function is completed");
     print(widget.userBasic.mobile);
   }
   
   Future<void> callFetchRoadSnapped() async{
-			_temp = await fetchRoadSnapped(widget.object.getrecordedlist(),widget.docName);
+			_temp = await fetchRoadSnapped(widget.object.getrecordedlist());
 			print(_points);
 			if(this.mounted) {
 				setState(() {
@@ -201,7 +200,7 @@ class _ScreenShotState extends State<ScreenShot> {
 			          await controller.animateCamera(CameraUpdate.newLatLngBounds(_latLngBounds(_points),60)).whenComplete(() async{
 			        	  print("onMapCreated");
 				          tripDetails = await distanceTimeNavigation(_points,widget.job,widget.userBasic);
-				          print("trip Details Fetched");
+				          // print("trip Details Fetched");
 				          setState(() {
 				            tripDetails = tripDetails;
 				          });

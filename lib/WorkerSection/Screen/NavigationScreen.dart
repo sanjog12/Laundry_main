@@ -1,26 +1,23 @@
-
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:screen/screen.dart';
-import 'screen_shot.dart';
+import 'ScreenShot.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_map_polyline/google_map_polyline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
-import 'package:location/location.dart';
-
+import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.dart';
 
 
 class DuringNavigation extends StatefulWidget {
 
 	final UserBasic userBasic;
-	final String docName ;
 	final CreatePolyline object;
 	final Job job;
-	DuringNavigation({this.userBasic, this.object, this.docName, this.job, Key key}):super(key : key);
+	DuringNavigation({this.userBasic, this.object, this.job, Key key}):super(key : key);
 
 	@override
 	_DuringNavigationState createState() => _DuringNavigationState();
@@ -29,17 +26,18 @@ class DuringNavigation extends StatefulWidget {
 class _DuringNavigationState extends State<DuringNavigation> {
 	
 	GoogleMapPolyline googleMapPolyline = GoogleMapPolyline(apiKey: 'AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc');
-	Location location =Location();
+	// Location location =Location();
 	LatLng currentLocation;
 	LatLng previousLocation;
 	List<LatLng> routeCoordinates;
 	Completer<GoogleMapController> _controller = Completer();
 	Set<Polyline> polyline ={};
+	PointerMoveEvent pointerMoveEvent;
+	double bearing = 0.0;
 	
 	Future<List<LatLng>> getPolyline() async{
-		
 		try{
-		await googleMapPolyline.getCoordinatesWithLocation(
+			await googleMapPolyline.getCoordinatesWithLocation(
 				origin: currentLocation,
 				destination: LatLng(widget.job.position.latitude , widget.job.position.longitude),
 				mode: RouteMode.driving,
@@ -77,34 +75,39 @@ class _DuringNavigationState extends State<DuringNavigation> {
   void initState() {
 		Screen.keepOn(true);
     super.initState();
-    location.getLocation().then((value){
-    	previousLocation = currentLocation;
-    	currentLocation = LatLng(value.latitude,value.longitude);
-    }).whenComplete(() async{
-	    await getPolyline().then((value){
-	    	if(this.mounted) {
-			    setState(() {
-				    polyline.add(
-						    Polyline(
-							    polylineId: PolylineId('route1'),
-							    visible: true,
-							    points: value,
-							    color: Colors.lightBlue,
-							    width: 3,
-							    startCap: Cap.roundCap,
-							    endCap: Cap.buttCap,
-						    )
-				    );
-			    });
-		    }
-	    });
-    });
+    // location.getLocation().then((value){
+    // 	previousLocation = currentLocation;
+    // 	currentLocation = LatLng(value.latitude,value.longitude);
+    // }).whenComplete(() async{
+	  //   await getPolyline().then((value){
+	  //   	if(this.mounted) {
+		// 	    setState(() {
+		// 		    polyline.add(
+		// 				    Polyline(
+		// 					    polylineId: PolylineId('route1'),
+		// 					    visible: true,
+		// 					    points: value,
+		// 					    color: Colors.lightBlue,
+		// 					    width: 3,
+		// 					    startCap: Cap.roundCap,
+		// 					    endCap: Cap.buttCap,
+		// 				    )
+		// 		    );
+		// 	    });
+		//     }
+	  //   });
+    // });
+    
   }
   
-  Future<void> updateCamera() async{
-		final GoogleMapController controller = await _controller.future;
-		controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation,zoom: 17)));
-  }
+  // Future<void> updateCamera() async{
+	// 	final GoogleMapController controller = await _controller.future;
+	// 	// var v = await controller.getScreenCoordinate(currentLocation);
+	// 	// print("x = " +v.x.toString());
+	// 	// print("y = " +v.y.toString());
+	// 	// var v = await controller.getVisibleRegion();
+	// 	controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation,zoom: 17,bearing: bearing)));
+	// }
   
   @override
   void dispose() {
@@ -113,33 +116,47 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	
   @override
   Widget build(BuildContext context) {
-	  location.onLocationChanged.listen((event) {
-	  	print("inside location Changed event ");
-	  	if(mounted) {
-			  setState(() {
-				  currentLocation = LatLng(event.latitude, event.longitude);
-			  });
-			  updateCamera();
-		  }
-	  });
-	  
-	  
+		// location.changeSettings(accuracy: LocationAccuracy.navigation);
+	  // location.onLocationChanged.listen((event) {
+	  //
+	  // 	if(mounted) {
+		// 	  print("Navigation location Changed");
+		// 	  setState(() {
+		// 	  	bearing = event.heading;
+		// 		  currentLocation = LatLng(event.latitude, event.longitude);
+		// 	  });
+		// 	  updateCamera();
+		//   }
+	  // });
     return WillPopScope(
 	    onWillPop: popUpFunction,
       child: Stack(
         children : <Widget>[
         	Container(
 		        height: MediaQuery.of(context).size.height - 40,
-		        child: GoogleMap(
-			        initialCameraPosition: CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17),
-			        polylines: polyline,
-			        compassEnabled: true,
-			        myLocationEnabled: true,
-			        mapType: MapType.normal,
-			        onMapCreated: (GoogleMapController controller) async{
-			        	_controller.complete(controller);
-			        	controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17)));
-			        	},
+		        child: GestureDetector(
+		          child: Container(
+			          decoration: BoxDecoration(
+				          color: Colors.white,
+				          image: DecorationImage(
+					          image: AssetImage("assets/navigationpana.png"),
+				          )
+			          ),
+			          child: Center(
+				          child: Text(''),
+			          ),
+		          )
+		          // GoogleMap(
+			        //   initialCameraPosition: CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17),
+			        //   polylines: polyline,
+			        //   compassEnabled: true,
+			        //   myLocationEnabled: true,
+			        //   mapType: MapType.normal,
+			        //   onMapCreated: (GoogleMapController controller) async{
+			        // 	  _controller.complete(controller);
+			        // 	  controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentLocation != null?currentLocation:LatLng(0,0),zoom: 17)));
+			        // 	  },
+		          // ),
 		        ),
 	        ),
 	        
@@ -162,11 +179,10 @@ class _DuringNavigationState extends State<DuringNavigation> {
 				        child: FlatButton(
 						        child: Text("End Ride",style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1),fontFamily: "Seguisb",fontSize: 20),),
 						        onPressed: () {
-						        	Navigator.of(context).pop();
+						        	Navigator.pop(context);
 						        	Navigator.push(context,
 									        MaterialPageRoute(builder: (context) => ScreenShot(
 										        object: widget.object,
-										        docName: widget.docName,
 										        userBasic: widget.userBasic,
 										        job: widget.job,
 									        )));

@@ -101,39 +101,35 @@ class AuthServices{
 				designationID: data['Entity']['Designation'].toString(), storeName: data['Entity']['StoreName'], hours: data['Entity']['NoOfHours'].toString(),
 			);
 			
-//			print(DateFormat("hh:mm").parse(DateFormat("hh:mm").format(DateTime.now())));
-//			print(DateFormat("jm").parse(userBasic.endTime));
-//			print(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime)));
-//			print(DateFormat("jm").parse(DateFormat("jm").format(DateTime.now())).isBefore(DateFormat("jm").parse(userBasic.endTime)));
-			if(userBasic.designation == "DeliveryBoy")
-			if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
-			&& DateFormat("jm").parse(DateFormat("jm").format(DateTime.now())).isBefore(DateFormat("jm").parse(userBasic.endTime).subtract(Duration(minutes: 30))))
-			){
-				print("passed time");
-				return await showDialog(
-					context: context,
-					builder: (context){
-						return AlertDialog(
-							title: Text("Not Allowed"),
-							content: Text("You can't login in right now "),
-							actions: <Widget>[
-								FlatButton(
-									onPressed: (){
-										login = false;
-										Navigator.pop(context);
-									},
-									child: Text("Ok"),
-								)
-							],
-						);
-					}
-				);
-			}
-
-			if(!login){
-				toastMessage(message: "Not Allowed right now");
-				throw(" ");
-			}
+			// if(userBasic.designation == "DeliveryBoy")
+			// if(!(DateFormat("HH:mm").parse(DateFormat("HH:mm").format(DateTime.now())).isAfter(DateFormat("HH:mm").parse(userBasic.startTime).add(Duration(minutes: 30)))
+			// && DateFormat("jm").parse(DateFormat("jm").format(DateTime.now())).isBefore(DateFormat("jm").parse(userBasic.endTime).subtract(Duration(minutes: 30))))
+			// ){
+			// 	print("passed time");
+			//   return await showDialog(
+			// 		context: context,
+			// 		builder: (context){
+			// 			return AlertDialog(
+			// 				title: Text("Not Allowed"),
+			// 				content: Text("You can't login in right now "),
+			// 				actions: <Widget>[
+			// 					FlatButton(
+			// 						onPressed: (){
+			// 							login = false;
+			// 							Navigator.pop(context);
+			// 						},
+			// 						child: Text("Ok"),
+			// 					)
+			// 				],
+			// 			);
+			// 		}
+			// 	);
+			// }
+			//
+			// if(!login){
+			// 	toastMessage(message: "Not Allowed right now");
+			// 	throw(" ");
+			// }
 			
 			try {
 				await Authenticate().validateUser(userBasic, authDetails);

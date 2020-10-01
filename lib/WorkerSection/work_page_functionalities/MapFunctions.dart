@@ -1,18 +1,13 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/TripDetails.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/Services/SharedPrefs.dart';
 
-
-
-
-Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
+Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList) async{
 	List<LatLng> points =[];
 	String url = '';
 	
@@ -21,7 +16,7 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 	
 	url = 'https://roads.googleapis.com/v1/snapToRoads?path='+url+'&interpolate=true&key=AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc';
 	
-	print(url);
+	// print(url);
 	
 	http.Response response = await http.get(url);
 	
@@ -31,9 +26,9 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 			points.add(LatLng(map['snappedPoints'][i]['location']['latitude'] as double,
 					map['snappedPoints'][i]['location']['longitude'] as double));
 		}
-		await Firestore.instance.collection('Location Points').document(docName).setData({
-			"api url":url,
-		},merge: true);
+		// await Firestore.instance.collection('Location Points').document(docName).setData({
+		// 	"api url":url,
+		// },merge: true);
 		return points;
 		
 	}
@@ -47,10 +42,8 @@ Future<List<LatLng>> fetchRoadSnapped(List<LatLng> recordedList,docName) async{
 
 
 Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job, UserBasic userBasic) async{
-	
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 	DatabaseReference dbf = firebaseDatabase.reference();
-	String mobile = await SharedPrefs.getStringPreference('Mobile');
 	String distance = '0';
 	String time = '0';
 	double totalDistance;
@@ -68,15 +61,15 @@ Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job, UserBasic
 		http.Response response = await http.get(url);
 		Map<dynamic, dynamic> map = await json.decode(response.body);
 		
-		print('length distance JSON: '+map['rows'][0]['elements'][0]['distance']['text'].toString());
-		print('length distance JSON: '+map['rows'][0]['elements'][0]['duration']['text'].toString());
-		print("1");
+		// print('length distance JSON: '+map['rows'][0]['elements'][0]['distance']['text'].toString());
+		// print('length distance JSON: '+map['rows'][0]['elements'][0]['duration']['text'].toString());
+		// print("1");
 		dbf = firebaseDatabase.reference()
 				.child("EmployeeRecordDistance")
 				.child(userBasic.mobile+"_"+userBasic.name+"_"+userBasic.userID)
 		    .child(DateTime.now().year.toString())
 				.child(DateTime.now().month.toString());
-		print("2");
+		// print("2");
 		try{
 		dbf.once().then((DataSnapshot snapshot) async{
 			Map<dynamic,dynamic> map = await snapshot.value;
@@ -86,11 +79,11 @@ Future<TripDetails> distanceTimeNavigation(List<LatLng> temp, Job job, UserBasic
 			}
 		});
 		}catch(e){
-			print("error " +e.toString());
+			// print("error " +e.toString());
 		}
 		
-		print("distance " +distance);
-		print("time " + time);
+		// print("distance " +distance);
+		// print("time " + time);
 		
 		if(distance != null){
 			totalDistance = double.parse(distance) + double.parse(map['rows'][0]['elements'][0]['distance']['text'].toString().split(' ')[0]);
@@ -134,7 +127,7 @@ Future<double> distanceFormStore(LatLng currentLocation, LatLng storeLocation) a
 			"&key=AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc";
 	
 	http.Response response = await http.get(url);
-	print("response\n" + '${response.body}');
+	// print("response\n" + '${response.body}');
 	Map<String, dynamic> map = await json.decode(response.body);
 	
 	return double.parse(map['rows'][0]['elements'][0]['distance']['text']);

@@ -2,16 +2,18 @@
 will be shown here in the form of the tile view form here the worker
 can select the work and start navigation and all the distance and the
  */
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:http/http.dart' as http;
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/work_details_card.dart';
+import 'package:laundry/WorkerSection/Screen/JobDetailScreen.dart';
 
 
 class Work extends StatefulWidget{
@@ -34,9 +36,16 @@ class _WorkState extends State<Work> {
     
     List<Placemark> placeMark = [];
     print(address);
-    placeMark = await Geolocator().placemarkFromAddress(address);
-    
-    return placeMark.first.position;
+    try {
+      placeMark = await Geolocator().placemarkFromAddress(address);
+      return placeMark.first.position;
+    }on PlatformException catch(e){
+      print(e.message);
+      return null;
+    } catch(e){
+      print(e);
+      return null;
+    }
 }
   
   
@@ -46,12 +55,11 @@ class _WorkState extends State<Work> {
     http.Response response = await  http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/${widget.userBasic.userID}");
     
     var ra = jsonDecode(response.body);
-    print(ra);
     
     for(var value in ra['Entity']){
-      job.add(Job(
+      Job j = Job(
         customerName: value['CustomerName'].toString(), id: value['Id'].toString(), customerId: value['CustomerId'].toString(), storeId: value['StoreId'].toString(),
-        jobId: value['JobId'].toString(), jobName: value['JobName'].toString(), userId: value['UserId'].toString(),
+        jobId: value['jobId'].toString(), jobName: value['JobName'].toString(), userId: value['UserId'].toString(),
         isCompleted: value['IsCompleted'].toString(), isPending: value['IsPending'].toString(),
         createdBy: value['CreatedBy'].toString(), modifiedBy: value['ModifiedBy'].toString(), createdDate: value['CreatedDate'].toString(),
         modifiedDate: value['ModifiedDate'].toString(),
@@ -59,8 +67,12 @@ class _WorkState extends State<Work> {
         customerAddress: value['CustomerAddress'].toString(), customerMobile: value['CustomerMobile'].toString(),
         userName: value['UserName'].toString(), completed: value['Completed'].toString(), pending: value['Pending'].toString(),
         position: await getPosition(await value['CustomerAddress'])
-      ));
+      );
+      if(j.position != null){
+        job.add(j);
+      }
     }
+    
     return job;
   }
   
@@ -68,18 +80,27 @@ class _WorkState extends State<Work> {
   
   @override
   void initState() {
+    print("initState");
     super.initState();
     getData();
     DateFormat dateFormat = DateFormat('HH:mm:ss');
     DateTime dateTime = dateFormat.parse('8:40:23');
     DateTime dateTime2 = dateFormat.parse(DateTime.now().toString().split(' ')[1]);
     print("test " + dateTime2.isAfter(dateTime).toString());
+    // Timer.periodic(Duration(seconds: 15), (Timer timer){
+    //   if(!this.mounted){
+    //     timer.cancel();
+    //   }else
+    //     setState(() {
+    //
+    //     });
+    // });
   }
   
   
-  fetchWorkDetails(){
-      return StreamBuilder<List<Job>>(
-        stream: getData().asStream(),
+  Widget fetchWorkDetails(){
+      return FutureBuilder<List<Job>>(
+        future: getData(),
         builder: (context,AsyncSnapshot<List<Job>> snapshot){
           print(snapshot.hasData);
           if(!snapshot.hasData){
@@ -106,7 +127,7 @@ class _WorkState extends State<Work> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: Colors.blue[100]
+          color: Color.fromRGBO(2, 124, 149, 1),
         ),
         title: Text(
           "JOBS ASSIGNED",
@@ -114,7 +135,7 @@ class _WorkState extends State<Work> {
           fontFamily: "OpenSans",
           fontWeight: FontWeight.bold,
           letterSpacing: 1.0,
-          color: Colors.blue[100]
+          color: Color.fromRGBO(255, 255, 255, 1)
 ,        ),
         ),
         centerTitle: true,
@@ -216,7 +237,7 @@ Widget workCards(BuildContext context, Job job, UserBasic userBasic){
                       text:TextSpan(
                         style: DefaultTextStyle.of(context).style,
                         children: <TextSpan>[
-                          TextSpan(text: 'Direction: ',style: TextStyle(
+                          TextSpan(text: 'Location: ',style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontFamily: "OpenSans",
                               color: Color.fromRGBO(88, 89, 91,1),

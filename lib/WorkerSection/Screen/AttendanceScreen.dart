@@ -40,7 +40,7 @@ class AttendanceSate extends State<Attendance> {
     ),
     child: Center(
       child: Text(
-        day,
+        day.toUpperCase(),
         style: TextStyle(
           color: Colors.black,
         ),
@@ -146,7 +146,7 @@ class AttendanceSate extends State<Attendance> {
       return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
-              color: Colors.blue[100]
+              color: Color.fromRGBO(2, 124, 149, 1),
           ),
           title: Text(
             "ATTENDANCE",
@@ -154,7 +154,7 @@ class AttendanceSate extends State<Attendance> {
               fontFamily: "OpenSans",
               fontWeight: FontWeight.bold,
               letterSpacing: 1.0,
-              color: Colors.blue[100],
+              color: Color.fromRGBO(255, 255, 255, 1)
             ),
           ),
           centerTitle: true,
@@ -179,7 +179,14 @@ class AttendanceSate extends State<Attendance> {
               headerTextStyle: TextStyle(
                 color: Colors.black,
                 fontSize: 25
-              ),
+              ), showHeader: true,
+                daysTextStyle: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold
+                ),
+                weekDayFormat: WeekdayFormat.standaloneNarrow,
+                weekDayBackgroundColor: Colors.black,
+
 //              weekDayBackgroundColor: Colors.black,
               weekdayTextStyle: TextStyle(
                 color: Color.fromRGBO(169, 169, 169, 1),
@@ -249,9 +256,8 @@ class AttendanceSate extends State<Attendance> {
                        height: 45,
                        width: 60,
                        decoration: BoxDecoration(
-                         border: Border.all(),
                          shape: BoxShape.circle,
-                         color: Color.fromRGBO(0, 179, 50, 1),
+                         color: Color.fromRGBO(141, 241, 98, 1),
                        ),
                        child: Center(
                          child: Text(
@@ -287,9 +293,9 @@ class AttendanceSate extends State<Attendance> {
                       height: 60,
                       width: 60,
                       decoration: BoxDecoration(
-                        border: Border.all(),
+
                         shape: BoxShape.circle,
-                        color: Color.fromRGBO(244, 41, 65, 1),
+                        color: Color.fromRGBO(255, 100, 107, 1),
                       ),
                       child: Center(
                         child: Text(
@@ -325,9 +331,8 @@ class AttendanceSate extends State<Attendance> {
                       height: 60,
                       width: 60,
                       decoration: BoxDecoration(
-                        border: Border.all(),
                         shape: BoxShape.circle,
-                        color: Color.fromRGBO(252, 226, 5, 1),
+                        color: Color.fromRGBO(243, 243, 56, 1),
                       ),
                       child: Center(
                         child: Text(

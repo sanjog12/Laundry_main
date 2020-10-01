@@ -1,11 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry/Classes/UserBasic.dart';
+import 'package:laundry/Services/LocalNotification.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:laundry/WaitScreen.dart';
-import 'package:laundry/authentication/AuthScreens/Login.dart';
-import 'package:laundry/authentication/FirebaseStore.dart';
-import 'package:laundry/pick_drop_ui/home_page.dart';
+import 'package:laundry/WorkerSection/Screen/HomePage.dart';
+import 'package:laundry/authentication/AuthScreens/LoginScreen.dart';
+import 'package:laundry/authentication/UserServices.dart';
 
 class Wrapper extends StatefulWidget {
   @override
@@ -16,8 +19,13 @@ class _WrapperState extends State<Wrapper> {
 	
 	String mobile;
 	String password;
+	NotificationServices notificationServices = NotificationServices();
+	final FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+	DatabaseReference dbf;
 	
 	UserService userService = UserService();
+	
+	
 	
 	@override
   void initState() {
