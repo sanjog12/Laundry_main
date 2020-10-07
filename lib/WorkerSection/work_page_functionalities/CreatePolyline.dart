@@ -26,6 +26,7 @@ class CreatePolyline {
 	
 	
 	startRecord(Job job) {
+		BackgroundLocation.setNotificationTitle("You are being tracked");
 		BackgroundLocation.startLocationService();
 		_listltlg.add(LatLng(0,0));
 		BackgroundLocation.getLocationUpdates((location) {

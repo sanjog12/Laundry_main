@@ -20,7 +20,7 @@ dependencies:
   share_extend: ^1.1.9
   screen: ^0.0.5
   flutter_local_notifications: ^1.4.4+4
-  background_location:
+  background_location: ^0.2.0
   http:
   firebase_database:
   shared_preferences:

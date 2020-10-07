@@ -1,6 +1,5 @@
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/LocalNotification.dart';
