@@ -34,8 +34,7 @@ class ProfileState extends State<Profile>{
 	double font2=14.0;
 	
 	@override
-	Widget build(BuildContext context)
-	{
+	Widget build(BuildContext context) {
 		Widget details;
 		if(i){
 			details =Column(

@@ -83,7 +83,7 @@ class AttendanceSate extends State<Attendance> {
     ),
   );
   
-  getData() async{
+  Future<void> getData() async{
     await getAttendance(widget.userBasic).then((value){
       setState(() {
         attend = false;
