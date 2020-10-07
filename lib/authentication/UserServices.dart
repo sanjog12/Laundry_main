@@ -10,8 +10,6 @@ class UserService{
 	Future<UserBasic> getUserDetails(String mobile, String password) async {
 		UserBasic userBasic;
 		
-		
-		
 		try {
 			print("1");
 			var user = {
@@ -68,25 +66,4 @@ class UserService{
 			return null;
 		}
 	}
-		
-//		dbf= firebaseDatabase.reference().child("UserDetails");
-//		await dbf.once().then((value){
-//			Map<dynamic,dynamic> map = value.value;
-//			map.forEach((key, value) {
-//				if(key == firebaseUserId) {
-//					print("h1"+value["phone"]);
-//					userBasic = UserBasic(
-//						fullName: value["fullname"],
-//						email: value["email"],
-//						uid: key,
-//						userType: value["userType"],
-//						lat: value["workLat"],
-//						long: value["workLong"],
-//						phoneNumber: value["phone"],
-//					);
-//				}
-//			});
-//		});
-
-//		print("here "+userBasic.phoneNumber);
 }

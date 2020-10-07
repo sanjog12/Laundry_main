@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laundry/Classes/UserDetails.dart';
-import 'package:laundry/Services/AuthServices.dart';
-import 'package:laundry/authentication/AuthScreens/Login.dart';
 import 'package:laundry/others/Style.dart';
 import 'package:laundry/others/Validator.dart';
 

@@ -4,14 +4,14 @@ which is specified in the work card in the work section .
  */
 
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/during_navigation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:laundry/pick_drop_ui/pages/work_page_functionalities/maps_functions.dart';
+import 'package:laundry/WorkerSection/Screen/NavigationScreen.dart';
+import 'package:laundry/WorkerSection/work_page_functionalities/CreatePolyline.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 
@@ -105,13 +105,22 @@ class _MapPageState extends State<MapPage>{
 				    color: Colors.blue[100],
 			    ),),
 			    
-			    onPressed: (){
-				    final String docName ='${Random().nextInt(10)}' + '  '+' ${DateTime.now()}';
-				    CreatePolyline object = CreatePolyline(docName);
+			    onPressed: () async{
+				    CreatePolyline object = CreatePolyline();
 				    object.startRecord(widget.job);
-				    Navigator.of(context).pop();
+				    print(widget.job.position.latitude.toString()+" "+widget.job.position.longitude.toString());
+				    try {
+					    launch(
+							    'https://www.google.com/maps/dir/?api=1&destination=${widget
+									    .job.position.latitude.toString()}'
+									    ',${widget.job.position.longitude.toString()}&dir_action=navigate&travelmode=driving');
+				    }catch(e){
+				    	print("error");
+				    	print(e);
+				    }
+				    Navigator.pop(context);
 				    Navigator.push(context,
-						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object , docName: docName,userBasic: widget.userBasic, job: widget.job,))
+						    MaterialPageRoute(builder: (context)=>DuringNavigation(object: object, userBasic: widget.userBasic, job: widget.job,))
 				    );
 			    },
 		    ),

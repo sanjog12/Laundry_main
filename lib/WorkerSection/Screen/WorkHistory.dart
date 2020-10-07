@@ -43,8 +43,8 @@ class _WorkHistoryState extends State<WorkHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
 	    appBar: AppBar(
-		    backgroundColor: Colors.blueGrey[700],
-		    title: Text("Job History",style: TextStyle(color: Colors.blue[100]),),
+		    backgroundColor: Color.fromRGBO(2, 124, 149, 1),
+		    title: Text("Job History",style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),),
 	    ),
 	    
 	    body: Container(

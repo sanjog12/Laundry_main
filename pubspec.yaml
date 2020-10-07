@@ -19,12 +19,12 @@ environment:
 dependencies:
   share_extend: ^1.1.9
   screen: ^0.0.5
-  background_location:
+  flutter_local_notifications: ^1.4.4+4
+  background_location: ^0.2.0
   http:
   firebase_database:
   shared_preferences:
   fluttertoast:
-  location:
   geolocator:
   cloud_firestore:
   intl: ^0.16.1
@@ -36,11 +36,15 @@ dependencies:
   google_maps_flutter: 0.5.26+2
   google_map_polyline:
   firebase_storage:
-  table_calendar:
+#  table_calendar:
+  url_launcher:
   flutter_calendar_carousel:
   pdf:
+#  workmanager: ^0.2.3
   path_provider:
   flutter_pdfview:
+  permission_handler: ^5.0.1+1
+  firebase_messaging: ^7.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -62,6 +66,8 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   assets:
+    - assets/navigationpana.png
+    - assets/hanger.png
     - images/network.gif
     - images/profileimg.png
     - assets/profile1.png
@@ -70,6 +76,7 @@ flutter:
     - images/laundry.png
     - images/image1.jpg
     - images/success.flr
+    - images/wdclogo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
