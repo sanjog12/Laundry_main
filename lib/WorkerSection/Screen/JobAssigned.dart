@@ -49,7 +49,7 @@ class _WorkState extends State<Work> {
 }
   
   
-  Future<List<Job>> getData() async{
+  Future<List<Job>> getJobList() async{
     List<Job> job = [];
     print("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/${widget.userBasic.userID}");
     http.Response response = await  http.get("http://208.109.15.34:8081/api/Employee/v1/GetAllJobListById/${widget.userBasic.userID}");
@@ -82,25 +82,25 @@ class _WorkState extends State<Work> {
   void initState() {
     print("initState");
     super.initState();
-    getData();
+    getJobList();
     DateFormat dateFormat = DateFormat('HH:mm:ss');
     DateTime dateTime = dateFormat.parse('8:40:23');
     DateTime dateTime2 = dateFormat.parse(DateTime.now().toString().split(' ')[1]);
     print("test " + dateTime2.isAfter(dateTime).toString());
-    // Timer.periodic(Duration(seconds: 15), (Timer timer){
-    //   if(!this.mounted){
-    //     timer.cancel();
-    //   }else
-    //     setState(() {
-    //
-    //     });
-    // });
+    Timer.periodic(Duration(seconds: 15), (Timer timer){
+      if(!this.mounted){
+        timer.cancel();
+      }else
+        setState(() {
+
+        });
+    });
   }
   
   
   Widget fetchWorkDetails(){
       return FutureBuilder<List<Job>>(
-        future: getData(),
+        future: getJobList(),
         builder: (context,AsyncSnapshot<List<Job>> snapshot){
           print(snapshot.hasData);
           if(!snapshot.hasData){
