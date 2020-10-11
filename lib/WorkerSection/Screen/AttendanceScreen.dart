@@ -112,7 +112,7 @@ class AttendanceSate extends State<Attendance> {
     
     for(int i=0;i< len ; i++){
       dateMap.add(presentDates[i],
-      new Event(
+          Event(
         date: presentDates[i],
         title: 'Event 1',
         icon: presentIconTag(
