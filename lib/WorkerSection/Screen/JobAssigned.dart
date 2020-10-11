@@ -10,9 +10,10 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+
+import 'package:http/http.dart' as http;
 import 'package:laundry/Classes/Job.dart';
 import 'package:laundry/Classes/UserBasic.dart';
-import 'package:http/http.dart' as http;
 import 'package:laundry/WorkerSection/Screen/JobDetailScreen.dart';
 
 

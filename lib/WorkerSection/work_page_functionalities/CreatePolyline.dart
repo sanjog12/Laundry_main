@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:background_location/background_location.dart';
 import 'package:laundry/Classes/Job.dart';
-import 'package:http/http.dart';
+
 
 
 

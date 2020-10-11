@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:laundry/Classes/UserBasic.dart';
 import 'dart:convert';
+
+import 'package:laundry/Classes/UserBasic.dart';
 
 class UserService{
 	

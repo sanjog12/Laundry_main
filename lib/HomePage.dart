@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
             CustomListTile(Icons.person,"Profile",()=>
                 Navigator.push(context,
                     MaterialPageRoute(
-                        builder: (context)=> Empprofile(
+                        builder: (context)=> EmpProfile(
                           userBasic: widget.userBasic,
                         )
                     )

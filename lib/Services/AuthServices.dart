@@ -3,15 +3,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:laundry/Classes/UserAuth.dart';
 import 'package:laundry/Classes/UserBasic.dart';
 import 'package:laundry/Services/EmployeeServices.dart';
 import 'package:laundry/Services/SharedPrefs.dart';
 import 'package:http/http.dart' as http;
 import 'package:laundry/authentication/AuthenticateServices.dart';
-import 'package:laundry/others/ToastOutputs.dart';
-
 
 class AuthServices{
 	FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
