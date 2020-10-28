@@ -161,9 +161,6 @@ class _CustomerEndState extends State<CustomerEnd> {
 	  
     return Scaffold(
 	    appBar: AppBar(
-		    iconTheme: IconThemeData(
-				    color: Color.fromRGBO(2, 124, 149, 1),
-		    ),
 		    title: Text("Challan",style: TextStyle(
 				    fontFamily: "OpenSans",
 				    fontWeight: FontWeight.bold,

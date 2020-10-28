@@ -145,9 +145,6 @@ class AttendanceSate extends State<Attendance> {
     
       return Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(
-              color: Color.fromRGBO(2, 124, 149, 1),
-          ),
           title: Text(
             "ATTENDANCE",
             style: TextStyle(
@@ -157,8 +154,6 @@ class AttendanceSate extends State<Attendance> {
               color: Color.fromRGBO(255, 255, 255, 1)
             ),
           ),
-          centerTitle: true,
-          backgroundColor: Colors.blueGrey[700],
         ),
         body: attend?Container(
           child: Center(

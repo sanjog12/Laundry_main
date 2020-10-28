@@ -30,7 +30,7 @@ class CreatePolyline {
 		BackgroundLocation.startLocationService();
 		_listltlg.add(LatLng(0,0));
 		BackgroundLocation.getLocationUpdates((location) {
-			print("Latitude : " +location.latitude.toString() + " " +"Longitude : " +location.longitude.toString());
+			// print("Latitude : " +location.latitude.toString() + " " +"Longitude : " +location.longitude.toString());
 			coordinateFilter(location,job);
 		});
 		dateTime.add(DateTime.now());
@@ -48,10 +48,8 @@ class CreatePolyline {
 	void coordinateFilter(location,Job job) {
 		if(_listltlg.last.longitude.toStringAsFixed(3) != location.longitude.toStringAsFixed(3)
 				&& _listltlg.last.latitude.toStringAsFixed(3) != location.latitude.toStringAsFixed(3)){
-			// print('Condition for not recording same points ');
 			this._listltlg.add(LatLng(location.latitude,location.longitude));
 			a = GeoPoint(location.latitude,location.longitude);
-			// print("minute " +DateTime.now().difference(dateTime.last).inMinutes.toString());
 			if(DateTime.now().difference(dateTime.last).inMinutes >= 5){
 				// print("delay");
 				this.delayInJob.add(Marker(
@@ -59,7 +57,10 @@ class CreatePolyline {
 					markerId: MarkerId("Delay"),
 					consumeTapEvents: true,
 					infoWindow: InfoWindow(
-						snippet: DateTime.now().difference(dateTime.last).inMinutes.toString(),
+						title: DateTime.now().difference(dateTime.last).inMinutes.toString(),
+						onTap: (){
+							
+						}
 					),
 					position: LatLng(location.latitude,location.longitude),
 				));

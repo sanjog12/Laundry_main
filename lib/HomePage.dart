@@ -229,12 +229,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(2, 124, 149, 1),
-        elevation: 8,
-        iconTheme: IconThemeData(
-          color:Color.fromRGBO(255, 255, 255, 1),
-        ),
         title: Text(
           "HOME",
           style: TextStyle(
@@ -244,7 +240,6 @@ class _HomePageState extends State<HomePage> {
             color:Color.fromRGBO(255, 255, 255, 1),
           ),
         ),
-        centerTitle: true,
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -252,11 +247,11 @@ class _HomePageState extends State<HomePage> {
               color:Color.fromRGBO(255, 255, 255, 1),
             ),
             onPressed: () {
-            
             },
           ),
         ],
       ),
+      
       drawer: buildSideMenu(),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -318,7 +313,7 @@ class _HomePageState extends State<HomePage> {
             },),
           ],
         ),
-        color: Color.fromRGBO(255, 255, 255, 1),
+        // color: Color.fromRGBO(255, 255, 255, 1),
       ),
     );
   }
