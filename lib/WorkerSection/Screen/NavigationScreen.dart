@@ -39,7 +39,7 @@ class _DuringNavigationState extends State<DuringNavigation> {
 		try{
 			await googleMapPolyline.getCoordinatesWithLocation(
 				origin: currentLocation,
-				destination: LatLng(widget.job.position.latitude , widget.job.position.longitude),
+				destination: LatLng(widget.job.location.latitude , widget.job.location.longitude),
 				mode: RouteMode.driving,
 		).then((value){
 			routeCoordinates = value;

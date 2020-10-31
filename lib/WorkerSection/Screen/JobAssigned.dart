@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 
 import 'package:http/http.dart' as http;
@@ -33,13 +33,13 @@ class _WorkState extends State<Work> {
   var workData;
   String uid;
   
-  Future<Position> getPosition(String address) async{
-    
-    List<Placemark> placeMark = [];
+  
+  Future<Location> getPosition(String address) async{
+    List<Location> placeMark = [];
     print(address);
     try {
-      placeMark = await Geolocator().placemarkFromAddress(address);
-      return placeMark.first.position;
+      placeMark = await GeocodingPlatform.instance.locationFromAddress(address);
+      return placeMark.first;
     }on PlatformException catch(e){
       print(e.message);
       return null;
@@ -67,9 +67,9 @@ class _WorkState extends State<Work> {
         isDeleted: value['IsDeleted'].toString(), store: value['Store'].toString(),
         customerAddress: value['CustomerAddress'].toString(), customerMobile: value['CustomerMobile'].toString(),
         userName: value['UserName'].toString(), completed: value['Completed'].toString(), pending: value['Pending'].toString(),
-        position: await getPosition(await value['CustomerAddress'])
+        location: await getPosition(await value['CustomerAddress'])
       );
-      if(j.position != null){
+      if(j.location != null){
         job.add(j);
       }
     }

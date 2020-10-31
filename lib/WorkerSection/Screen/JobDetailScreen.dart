@@ -51,7 +51,7 @@ class _MapPageState extends State<MapPage>{
 			onTap: (){
 				print("Tapped");
 			},
-			position: LatLng(widget.job.position.latitude, widget.job.position.longitude),
+			position: LatLng(widget.job.location.latitude, widget.job.location.longitude),
 //	    position: LatLng(28.601231, 77.082344),
 		));
   }
@@ -82,7 +82,7 @@ class _MapPageState extends State<MapPage>{
 	      	width: 350,
 	      	child: Center(
 	      		child: GoogleMap(
-	      			initialCameraPosition: CameraPosition(target: LatLng(widget.job.position.latitude, widget.job.position.longitude), zoom: 15),
+	      			initialCameraPosition: CameraPosition(target: LatLng(widget.job.location.latitude, widget.job.location.longitude), zoom: 15),
 	      			markers: Set.from(markers),
 	      			mapType: MapType.normal,
 	      			onMapCreated: (GoogleMapController controller){
@@ -108,12 +108,12 @@ class _MapPageState extends State<MapPage>{
 			    onPressed: () async{
 				    CreatePolyline object = CreatePolyline();
 				    object.startRecord(widget.job);
-				    print(widget.job.position.latitude.toString()+" "+widget.job.position.longitude.toString());
+				    print(widget.job.location.latitude.toString()+" "+widget.job.location.longitude.toString());
 				    try {
 					    launch(
 							    'https://www.google.com/maps/dir/?api=1&destination=${widget
-									    .job.position.latitude.toString()}'
-									    ',${widget.job.position.longitude.toString()}&dir_action=navigate&travelmode=driving');
+									    .job.location.latitude.toString()}'
+									    ',${widget.job.location.longitude.toString()}&dir_action=navigate&travelmode=driving');
 				    }catch(e){
 				    	print("error");
 				    	print(e);
