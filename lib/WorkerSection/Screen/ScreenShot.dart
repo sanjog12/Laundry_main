@@ -135,7 +135,7 @@ class _ScreenShotState extends State<ScreenShot> {
 					.child(DateTime.now().year.toString())
 					.child(DateTime.now().month.toString())
 					.child(filename);
-			StorageTaskSnapshot storageTaskSnapshot = await firebaseStorageRef.putData(png).onComplete;
+			await firebaseStorageRef.putData(png).onComplete;
 			String url = await firebaseStorageRef.getDownloadURL();
 			print(url);
 			dbf.child('WorkHistory')

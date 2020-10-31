@@ -23,6 +23,7 @@ class DuringNavigation extends StatefulWidget {
 	_DuringNavigationState createState() => _DuringNavigationState();
 }
 
+
 class _DuringNavigationState extends State<DuringNavigation> {
 	
 	GoogleMapPolyline googleMapPolyline = GoogleMapPolyline(apiKey: 'AIzaSyA93lHM_TGSFAFktTinj7YYy4OlA8UM4Qc');
@@ -30,7 +31,6 @@ class _DuringNavigationState extends State<DuringNavigation> {
 	LatLng currentLocation;
 	LatLng previousLocation;
 	List<LatLng> routeCoordinates;
-	Completer<GoogleMapController> _controller = Completer();
 	Set<Polyline> polyline ={};
 	PointerMoveEvent pointerMoveEvent;
 	double bearing = 0.0;

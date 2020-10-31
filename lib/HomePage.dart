@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
   void locationPermission() async{
     var permission = await Permission.locationAlways.isGranted;
     if(!permission){
-      var t = await Permission.locationAlways.request();
+      await Permission.locationAlways.request();
     }
   }
   
